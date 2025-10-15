@@ -552,12 +552,197 @@
     <div class="presentation">
         <!-- Slide 1: Title -->
         <div class="slide active">
-            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center;">
-                <h1 style="font-size: 4em; margin-bottom: 30px;">🔒 OWASP ASVS v5.0</h1>
-                <p class="subtitle" style="font-size: 2em; margin-bottom: 50px;">Application Security Verification Standard</p>
-                <p style="font-size: 1.5em; color: #94a3b8;">Building Secure Applications from User Stories</p>
-                <p style="font-size: 1.2em; color: #64748b; margin-top: 80px;">Interactive Workshop • 60 Minutes</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; height: 100%; padding: 0 80px;">
+                <!-- Left side: Content -->
+                <div style="text-align: left;">
+                    <!-- OWASP Logo -->
+                    <div style="margin-bottom: 40px;">
+                        <img src="https://owasp.org/assets/images/logo.png" alt="OWASP Logo" style="height: 80px; filter: brightness(0) invert(1) opacity(0.9);">
+                    </div>
+                    
+                    <h1 style="font-size: 3.5em; margin-bottom: 20px; line-height: 1.2; background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        ASVS v5.0
+                    </h1>
+                    
+                    <p style="font-size: 1.8em; color: #cbd5e1; margin-bottom: 30px; font-weight: 300;">
+                        Application Security<br>Verification Standard
+                    </p>
+                    
+                    <div style="height: 3px; width: 120px; background: linear-gradient(90deg, #60a5fa, transparent); margin: 30px 0;"></div>
+                    
+                    <p style="font-size: 1.3em; color: #94a3b8; line-height: 1.6; margin-bottom: 40px;">
+                        Building Secure Applications<br>from User Stories
+                    </p>
+                    
+                    <div style="display: flex; gap: 20px; align-items: center;">
+                        <span style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 12px 24px; border-radius: 8px; font-size: 1em; border: 1px solid rgba(59, 130, 246, 0.3);">
+                            🎯 Interactive Workshop
+                        </span>
+                        <span style="color: #64748b; font-size: 1.1em;">
+                            60 Minutes
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Right side: Security Visual -->
+                <div style="position: relative; height: 600px; display: flex; align-items: center; justify-content: center;">
+                    <!-- Decorative security shield with code -->
+                    <div style="position: relative; width: 500px; height: 600px;">
+                        <!-- Background glow -->
+                        <div style="position: absolute; inset: 0; background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%); filter: blur(40px);"></div>
+                        
+                        <!-- Shield icon using SVG-like styling -->
+                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+                            <div style="font-size: 200px; opacity: 0.12; filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.5));">
+                                🛡️
+                            </div>
+                        </div>
+                        
+                        <!-- Floating ASVS Chapter Badges - All 17 Chapters -->
+                        <!-- Row 1 - Top -->
+                        <div style="position: absolute; top: 10px; left: 30px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.4); font-family: monospace; font-size: 0.7em; color: #60a5fa; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float1 3.2s ease-in-out infinite;">
+                            V1: Encoding ✓
+                        </div>
+                        <div style="position: absolute; top: 5px; left: 160px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.4); font-family: monospace; font-size: 0.7em; color: #a78bfa; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float2 3.5s ease-in-out infinite;">
+                            V2: Validation ✓
+                        </div>
+                        <div style="position: absolute; top: 15px; left: 290px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.4); font-family: monospace; font-size: 0.7em; color: #4ade80; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float3 3.8s ease-in-out infinite;">
+                            V3: Frontend ✓
+                        </div>
+                        <div style="position: absolute; top: 20px; right: 30px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(251, 146, 60, 0.4); font-family: monospace; font-size: 0.7em; color: #fb923c; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float4 3.3s ease-in-out infinite;">
+                            V4: API ✓
+                        </div>
+                        
+                        <!-- Row 2 - Upper Middle -->
+                        <div style="position: absolute; top: 100px; left: 10px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(236, 72, 153, 0.4); font-family: monospace; font-size: 0.7em; color: #ec4899; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float5 3.6s ease-in-out infinite;">
+                            V5: Files ✓
+                        </div>
+                        <div style="position: absolute; top: 90px; left: 120px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.4); font-family: monospace; font-size: 0.7em; color: #60a5fa; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float6 3.9s ease-in-out infinite;">
+                            V6: AuthN ✓
+                        </div>
+                        <div style="position: absolute; top: 95px; right: 100px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.4); font-family: monospace; font-size: 0.7em; color: #a78bfa; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float7 3.4s ease-in-out infinite;">
+                            V7: Session ✓
+                        </div>
+                        <div style="position: absolute; top: 105px; right: 10px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.4); font-family: monospace; font-size: 0.7em; color: #4ade80; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float8 3.7s ease-in-out infinite;">
+                            V8: AuthZ ✓
+                        </div>
+                        
+                        <!-- Row 3 - Center -->
+                        <div style="position: absolute; top: 200px; left: 5px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(251, 146, 60, 0.4); font-family: monospace; font-size: 0.7em; color: #fb923c; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float9 3.3s ease-in-out infinite;">
+                            V9: Tokens ✓
+                        </div>
+                        <div style="position: absolute; top: 190px; left: 120px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.4); font-family: monospace; font-size: 0.7em; color: #60a5fa; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float10 3.8s ease-in-out infinite;">
+                            V10: OAuth ✓
+                        </div>
+                        <div style="position: absolute; top: 195px; right: 90px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.4); font-family: monospace; font-size: 0.7em; color: #4ade80; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float11 3.5s ease-in-out infinite;">
+                            V11: Crypto ✓
+                        </div>
+                        <div style="position: absolute; top: 205px; right: 0px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.4); font-family: monospace; font-size: 0.7em; color: #a78bfa; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float12 3.6s ease-in-out infinite;">
+                            V12: Comms ✓
+                        </div>
+                        
+                        <!-- Row 4 - Lower Middle -->
+                        <div style="position: absolute; bottom: 180px; left: 20px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(236, 72, 153, 0.4); font-family: monospace; font-size: 0.7em; color: #ec4899; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float13 3.4s ease-in-out infinite;">
+                            V13: Config ✓
+                        </div>
+                        <div style="position: absolute; bottom: 175px; left: 140px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.4); font-family: monospace; font-size: 0.7em; color: #60a5fa; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float14 3.7s ease-in-out infinite;">
+                            V14: Data ✓
+                        </div>
+                        <div style="position: absolute; bottom: 170px; right: 80px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.4); font-family: monospace; font-size: 0.7em; color: #4ade80; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float15 3.9s ease-in-out infinite;">
+                            V15: Coding ✓
+                        </div>
+                        
+                        <!-- Row 5 - Bottom -->
+                        <div style="position: absolute; bottom: 80px; left: 60px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(251, 146, 60, 0.4); font-family: monospace; font-size: 0.7em; color: #fb923c; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float16 3.5s ease-in-out infinite;">
+                            V16: Logging ✓
+                        </div>
+                        <div style="position: absolute; bottom: 85px; left: 180px; background: rgba(30, 41, 59, 0.85); padding: 10px 16px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.4); font-family: monospace; font-size: 0.7em; color: #a78bfa; backdrop-filter: blur(12px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: float17 3.3s ease-in-out infinite;">
+                            V17: WebRTC ✓
+                        </div>
+                        
+                        <!-- Lock icon overlay -->
+                        <div style="position: absolute; bottom: 20px; right: 60px; font-size: 50px; opacity: 0.25; animation: pulse 2s ease-in-out infinite;">
+                            🔒
+                        </div>
+                    </div>
+                </div>
             </div>
+            
+            <style>
+                @keyframes float1 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-12px); }
+                }
+                @keyframes float2 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-8px); }
+                }
+                @keyframes float3 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-15px); }
+                }
+                @keyframes float4 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                }
+                @keyframes float5 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-14px); }
+                }
+                @keyframes float6 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-9px); }
+                }
+                @keyframes float7 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-11px); }
+                }
+                @keyframes float8 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-13px); }
+                }
+                @keyframes float9 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                }
+                @keyframes float10 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-12px); }
+                }
+                @keyframes float11 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-8px); }
+                }
+                @keyframes float12 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-14px); }
+                }
+                @keyframes float13 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-11px); }
+                }
+                @keyframes float14 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-13px); }
+                }
+                @keyframes float15 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-9px); }
+                }
+                @keyframes float16 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-12px); }
+                }
+                @keyframes float17 {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                }
+                
+                @keyframes pulse {
+                    0%, 100% { opacity: 0.25; transform: scale(1); }
+                    50% { opacity: 0.4; transform: scale(1.05); }
+                }
+            </style>
         </div>
 
         <!-- Slide 2: Agenda -->
@@ -808,8 +993,8 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
                 "As an authenticated user, I want to retrieve my profile information via API so that I can display it in the mobile app."
             </div>
             
-            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 30px 0; font-family: monospace;">
-                <strong>API Endpoint:</strong> GET /api/users/{userId}/profile
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 20px; border-radius: 10px; margin: 30px 0; font-family: monospace; border: 1px solid rgba(59, 130, 246, 0.3);">
+                <strong style="color: #60a5fa;">API Endpoint:</strong> <span style="color: #e2e8f0;">GET /api/users/{userId}/profile</span>
             </div>
 
             <h3 style="margin-top: 30px;">🤔 Discussion Question:</h3>
