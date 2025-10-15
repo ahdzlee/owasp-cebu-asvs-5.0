@@ -949,7 +949,918 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
             </div>
         </div>
 
-        <!-- Slide 20: Key Takeaways -->
+        <!-- Slide 20: Take-Home Assignment Intro -->
+        <div class="slide">
+            <h2>🏠 Take-Home Assignment</h2>
+            <div style="display: flex; flex-direction: column; justify-content: center; height: 80%;">
+                <div class="highlight-box">
+                    <h3 style="margin: 0; color: #333; font-size: 2em;">Phoenix Notes Application</h3>
+                    <p style="font-size: 1.3em; margin-top: 20px;">A practical exercise to apply ASVS v5.0 to a complete application</p>
+                </div>
+
+                <div class="card" style="margin-top: 40px; padding: 35px;">
+                    <h3 style="margin-top: 0; color: #667eea;">Application Overview</h3>
+                    <p style="font-size: 1.2em; line-height: 1.8;">
+                        Phoenix Notes is a web application that allows users to register, log in, and manage personal notes with profile pictures.
+                    </p>
+                </div>
+
+                <div class="grid-2" style="margin-top: 30px;">
+                    <div class="card">
+                        <h4 style="margin-top: 0;">📝 Features</h4>
+                        <ul style="font-size: 1em;">
+                            <li>User Registration & Login</li>
+                            <li>Note Management (CRUD)</li>
+                            <li>Profile Picture Upload</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4 style="margin-top: 0;">💻 Technologies</h4>
+                        <ul style="font-size: 1em;">
+                            <li>TypeScript (Auth)</li>
+                            <li>C#.NET (Notes & Upload)</li>
+                            <li>RESTful API with JSON</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21: Feature 1 - User Registration -->
+        <div class="slide">
+            <h2>Feature 1: User Registration & Login</h2>
+            
+            <div class="user-story">
+                <strong>User Stories:</strong><br>
+                • As a new user, I want to create an account with my email and password<br>
+                • As a registered user, I want to log in with my email and password<br>
+                • As a logged-in user, I want to be able to log out
+            </div>
+
+            <h3 style="margin-top: 30px;">🎯 Your Task:</h3>
+            <div style="background: #fff9e6; padding: 25px; border-radius: 10px; border: 2px dashed #ffc107; margin-top: 20px;">
+                <p style="font-size: 1.2em; margin: 0;">
+                    1. Identify security risks in the registration and login process<br>
+                    2. Map relevant ASVS v5.0 controls<br>
+                    3. Review the code examples and identify vulnerabilities<br>
+                    4. Understand the secure implementation
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 22: Feature 1 - ASVS Mapping -->
+        <div class="slide">
+            <h2>Feature 1: ASVS v5.0 Mapping</h2>
+            
+            <div class="asvs-mapping">
+                <h4>V6: Authentication</h4>
+                <ul>
+                    <li><strong>V6.2.1</strong> - Password minimum 8 characters (15+ recommended)</li>
+                    <li><strong>V6.2.5</strong> - No restrictions on password composition</li>
+                    <li><strong>V6.3.1</strong> - Brute force and credential stuffing prevention</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V11: Cryptography</h4>
+                <ul>
+                    <li><strong>V11.4.2</strong> - Passwords stored with approved KDF (bcrypt, Argon2id, scrypt)</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V7: Session Management</h4>
+                <ul>
+                    <li><strong>V7.2.4</strong> - Generate new session token on authentication</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V2: Validation & V16: Logging</h4>
+                <ul>
+                    <li><strong>V2.2.1, V2.2.2</strong> - Input validation at trusted service layer</li>
+                    <li><strong>V16.1.1</strong> - Log authentication events</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 23: Feature 1 - Bad Code (TypeScript) -->
+        <div class="slide">
+            <h2>❌ Bad Code: User Registration (TypeScript)</h2>
+            <div class="code-block">// INSECURE - Node.js/Express/TypeScript
+import express from 'express';
+import crypto from 'crypto';
+
+app.post('/api/register', async (req, res) => {
+    const { email, password } = req.body;
+    
+    // VULNERABILITY 1: No password validation
+    // VULNERABILITY 2: Weak hashing (SHA256)
+    const passwordHash = crypto.createHash('sha256')
+        .update(password).digest('hex');
+    
+    // VULNERABILITY 3: SQL Injection
+    const query = `INSERT INTO users (email, password_hash) 
+                   VALUES ('${email}', '${passwordHash}')`;
+    await db.query(query);
+    
+    res.json({ success: true });
+});
+
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+    
+    // VULNERABILITY 4: No rate limiting
+    const hash = crypto.createHash('sha256').update(password).digest('hex');
+    const user = await db.query(
+        `SELECT * FROM users WHERE email='${email}' AND password_hash='${hash}'`
+    );
+    
+    // VULNERABILITY 5: No session regeneration
+    req.session.userId = user.id;
+    res.json({ success: true });
+});</div>
+            <div class="vulnerability-box" style="margin-top: 20px;">
+                <strong style="color: #c62828;">🚨 Issues:</strong> Weak hashing • SQL injection • No rate limiting • No validation • No session regeneration
+            </div>
+        </div>
+
+        <!-- Slide 24: Feature 1 - Good Code (TypeScript) -->
+        <div class="slide">
+            <h2>✅ Good Code: User Registration (TypeScript)</h2>
+            <div class="code-block" style="max-height: 380px;">// SECURE - Node.js/Express/TypeScript
+import express from 'express';
+import bcrypt from 'bcrypt';
+import rateLimit from 'express-rate-limit';
+import { body, validationResult } from 'express-validator';
+
+// V6.3.1: Rate limiting
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5
+});
+
+// V2.2.1: Input validation middleware
+const registerValidation = [
+    body('email').isEmail().normalizeEmail(),
+    body('password').isLength({ min: 8, max: 128 })
+];
+
+app.post('/api/register', registerValidation, async (req, res) => {
+    // V2.2.2: Check validation results
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    
+    const { email, password } = req.body;
+    
+    // V11.4.2: Bcrypt with work factor 12
+    const saltRounds = 12;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+    
+    // V2.2.1: Parameterized query
+    await db.query(
+        'INSERT INTO users (email, password_hash) VALUES ($1, $2)',
+        [email, passwordHash]
+    );
+    
+    // V16.1.1: Log registration
+    logger.info(`New user registered: ${email}`);
+    
+    res.status(201).json({ success: true });
+});</div>
+        </div>
+
+        <!-- Slide 25: Feature 1 - Login Good Code (TypeScript) -->
+        <div class="slide">
+            <h2>✅ Good Code: User Login (TypeScript)</h2>
+            <div class="code-block">app.post('/api/login', authLimiter, async (req, res) => {
+    const { email, password } = req.body;
+    
+    // V2.2.1: Validate input
+    if (!email || !password) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // V6.2.1: Password length check
+    if (password.length < 8 || password.length > 128) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // V2.2.1: Parameterized query
+    const result = await db.query(
+        'SELECT id, password_hash FROM users WHERE email = $1',
+        [email]
+    );
+    
+    if (result.rows.length === 0) {
+        // V16.1.1: Log failed attempt
+        logger.warn(`Failed login attempt for ${email}`);
+        return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    const user = result.rows[0];
+    
+    // V11.4.2: Verify with bcrypt
+    const validPassword = await bcrypt.compare(password, user.password_hash);
+    
+    if (!validPassword) {
+        logger.warn(`Failed login for ${email}`);
+        return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    // V7.2.4: Regenerate session
+    req.session.regenerate((err) => {
+        if (err) return res.status(500).json({ error: 'Login failed' });
+        req.session.userId = user.id;
+        logger.info(`Successful login: ${user.id}`);
+        res.json({ success: true });
+    });
+});</div>
+        </div>
+
+        <!-- Slide 26: Feature 2 - Note Management -->
+        <div class="slide">
+            <h2>Feature 2: Note Management</h2>
+            
+            <div class="user-story">
+                <strong>User Stories:</strong><br>
+                • As a logged-in user, I want to create a new note with title and content<br>
+                • As a logged-in user, I want to view a list of all my notes<br>
+                • As a logged-in user, I want to view a single note I created<br>
+                • As a logged-in user, I want to delete a note I created
+            </div>
+
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 25px 0; font-family: monospace;">
+                <strong>API Endpoints:</strong><br>
+                POST /api/notes - Create note<br>
+                GET /api/notes - List all user's notes<br>
+                GET /api/notes/{id} - Get single note<br>
+                DELETE /api/notes/{id} - Delete note
+            </div>
+
+            <h3 style="margin-top: 30px;">🎯 Your Task:</h3>
+            <div style="background: #fff9e6; padding: 25px; border-radius: 10px; border: 2px dashed #ffc107;">
+                <p style="font-size: 1.2em; margin: 0;">
+                    Focus on: Authorization (IDOR), Input validation, Access control
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 27: Feature 2 - ASVS Mapping -->
+        <div class="slide">
+            <h2>Feature 2: ASVS v5.0 Mapping</h2>
+            
+            <div class="asvs-mapping">
+                <h4>V8: Authorization (Critical!)</h4>
+                <ul>
+                    <li><strong>V8.2.1</strong> - Function-level access control (must be authenticated)</li>
+                    <li><strong>V8.2.2</strong> - Data-specific access control - users can only access their own notes (IDOR prevention)</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V2: Validation and Business Logic</h4>
+                <ul>
+                    <li><strong>V2.2.1</strong> - Validate note title and content input</li>
+                    <li><strong>V2.2.2</strong> - Server-side input validation</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V14: Data Protection</h4>
+                <ul>
+                    <li><strong>V14.2.1</strong> - Don't expose sensitive data in URLs</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V16: Logging</h4>
+                <ul>
+                    <li><strong>V16.1.1</strong> - Log security events (failed access attempts)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 28: Feature 2 - Bad Code (C#) -->
+        <div class="slide">
+            <h2>❌ Bad Code: Note Management (C#.NET)</h2>
+            <div class="code-block">// INSECURE - ASP.NET Core C#
+[ApiController]
+[Route("api/[controller]")]
+public class NotesController : ControllerBase
+{
+    // VULNERABILITY 1: No authentication required
+    [HttpGet("{id}")]
+    public async Task&lt;IActionResult&gt; GetNote(int id)
+    {
+        // VULNERABILITY 2: No authorization check (IDOR)
+        // Any user can view any note by changing the ID
+        var note = await _context.Notes.FindAsync(id);
+        
+        if (note == null)
+            return NotFound();
+        
+        return Ok(note);
+    }
+    
+    [HttpPost]
+    public async Task&lt;IActionResult&gt; CreateNote([FromBody] Note note)
+    {
+        // VULNERABILITY 3: No input validation
+        // VULNERABILITY 4: No authentication check
+        
+        _context.Notes.Add(note);
+        await _context.SaveChangesAsync();
+        
+        return CreatedAtAction(nameof(GetNote), 
+            new { id = note.Id }, note);
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task&lt;IActionResult&gt; DeleteNote(int id)
+    {
+        // VULNERABILITY 5: Users can delete anyone's notes
+        var note = await _context.Notes.FindAsync(id);
+        
+        _context.Notes.Remove(note);
+        await _context.SaveChangesAsync();
+        
+        return NoContent();
+    }
+}</div>
+        </div>
+
+        <!-- Slide 29: Feature 2 - Good Code Part 1 (C#) -->
+        <div class="slide">
+            <h2>✅ Good Code: Note Management (C#.NET) - Part 1</h2>
+            <div class="code-block" style="max-height: 400px;">// SECURE - ASP.NET Core C#
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize] // V8.2.1: Require authentication
+public class NotesController : ControllerBase
+{
+    private readonly ApplicationDbContext _context;
+    private readonly ILogger&lt;NotesController&gt; _logger;
+    
+    private int GetCurrentUserId()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        return int.Parse(userIdClaim.Value);
+    }
+    
+    // V8.2.2: Get only current user's notes
+    [HttpGet]
+    public async Task&lt;IActionResult&gt; GetNotes()
+    {
+        var userId = GetCurrentUserId();
+        
+        var notes = await _context.Notes
+            .Where(n => n.UserId == userId)
+            .Select(n => new NoteDto 
+            { 
+                Id = n.Id, 
+                Title = n.Title, 
+                CreatedAt = n.CreatedAt 
+            })
+            .ToListAsync();
+        
+        return Ok(notes);
+    }
+    
+    [HttpGet("{id}")]
+    public async Task&lt;IActionResult&gt; GetNote(int id)
+    {
+        var userId = GetCurrentUserId();
+        
+        // V8.2.2: Ensure user can only access their own notes
+        var note = await _context.Notes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
+        
+        if (note == null)
+        {
+            // V16.1.1: Log unauthorized access attempt
+            _logger.LogWarning($"User {userId} attempted to access note {id}");
+            return NotFound();
+        }
+        
+        return Ok(note);
+    }</div>
+        </div>
+
+        <!-- Slide 30: Feature 2 - Good Code Part 2 (C#) -->
+        <div class="slide">
+            <h2>✅ Good Code: Note Management (C#.NET) - Part 2</h2>
+            <div class="code-block" style="max-height: 400px;">    [HttpPost]
+    public async Task&lt;IActionResult&gt; CreateNote([FromBody] CreateNoteRequest request)
+    {
+        // V2.2.1: Validate input
+        if (string.IsNullOrWhiteSpace(request.Title) || 
+            request.Title.Length > 200)
+        {
+            return BadRequest("Invalid title");
+        }
+        
+        if (string.IsNullOrWhiteSpace(request.Content) || 
+            request.Content.Length > 10000)
+        {
+            return BadRequest("Invalid content");
+        }
+        
+        var userId = GetCurrentUserId();
+        
+        var note = new Note
+        {
+            Title = request.Title,
+            Content = request.Content,
+            UserId = userId,
+            CreatedAt = DateTime.UtcNow
+        };
+        
+        _context.Notes.Add(note);
+        await _context.SaveChangesAsync();
+        
+        // V16.1.1: Log creation
+        _logger.LogInformation($"User {userId} created note {note.Id}");
+        
+        return CreatedAtAction(nameof(GetNote), 
+            new { id = note.Id }, note);
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task&lt;IActionResult&gt; DeleteNote(int id)
+    {
+        var userId = GetCurrentUserId();
+        
+        // V8.2.2: Ensure user can only delete their own notes
+        var note = await _context.Notes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
+        
+        if (note == null)
+        {
+            _logger.LogWarning($"User {userId} attempted to delete note {id}");
+            return NotFound();
+        }
+        
+        _context.Notes.Remove(note);
+        await _context.SaveChangesAsync();
+        
+        _logger.LogInformation($"User {userId} deleted note {id}");
+        
+        return NoContent();
+    }
+}</div>
+        </div>
+
+        <!-- Slide 31: Feature 3 - Profile Picture Upload -->
+        <div class="slide">
+            <h2>Feature 3: Profile Picture Upload</h2>
+            
+            <div class="user-story">
+                <strong>User Story:</strong><br>
+                As a logged-in user, I want to upload a profile picture (JPEG or PNG) so I can personalize my account. The application should store the uploaded picture and display it in my profile area.
+            </div>
+
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 25px 0; font-family: monospace;">
+                <strong>API Endpoint:</strong><br>
+                POST /api/users/profile-picture
+            </div>
+
+            <h3 style="margin-top: 30px;">🎯 Your Task:</h3>
+            <div style="background: #fff9e6; padding: 25px; border-radius: 10px; border: 2px dashed #ffc107;">
+                <p style="font-size: 1.2em; margin: 0;">
+                    Focus on: File type validation, Size limits, Path traversal, Storage location
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 32: Feature 3 - ASVS Mapping -->
+        <div class="slide">
+            <h2>Feature 3: ASVS v5.0 Mapping</h2>
+            
+            <div class="asvs-mapping">
+                <h4>V5: File Handling</h4>
+                <ul>
+                    <li><strong>V5.1.1</strong> - Document permitted file types and maximum size</li>
+                    <li><strong>V5.2.1</strong> - Enforce file size limits to prevent DoS</li>
+                    <li><strong>V5.3.2</strong> - Use internally generated filenames to prevent path traversal</li>
+                    <li><strong>V5.4.1</strong> - Validate user-submitted filenames</li>
+                    <li><strong>V5.4.2</strong> - Scan files for malware (production requirement)</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V2: Validation</h4>
+                <ul>
+                    <li><strong>V2.2.1</strong> - Validate file metadata and type</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V8: Authorization</h4>
+                <ul>
+                    <li><strong>V8.2.1</strong> - Require authentication for file upload</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 33: Feature 3 - Bad Code (C#) -->
+        <div class="slide">
+            <h2>❌ Bad Code: Profile Picture Upload (C#.NET)</h2>
+            <div class="code-block">// INSECURE - ASP.NET Core C#
+[ApiController]
+[Route("api/users")]
+public class UsersController : ControllerBase
+{
+    [HttpPost("profile-picture")]
+    public async Task&lt;IActionResult&gt; UploadProfilePicture(IFormFile file)
+    {
+        // VULNERABILITY 1: No authentication check
+        // VULNERABILITY 2: No file validation
+        // VULNERABILITY 3: No size limit check
+        
+        if (file == null)
+            return BadRequest("No file uploaded");
+        
+        // VULNERABILITY 4: Using user-provided filename (path traversal!)
+        var fileName = file.FileName;
+        
+        // VULNERABILITY 5: Storing in web-accessible directory
+        var filePath = Path.Combine("wwwroot/uploads", fileName);
+        
+        // VULNERABILITY 6: No path validation
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+        
+        // VULNERABILITY 7: Returning direct file path
+        return Ok(new { fileUrl = $"/uploads/{fileName}" });
+    }
+}</div>
+            <div class="vulnerability-box" style="margin-top: 20px;">
+                <strong style="color: #c62828;">🚨 Critical Issues:</strong> Path traversal • No validation • Web-accessible storage • No authentication • No size limits
+            </div>
+        </div>
+
+        <!-- Slide 34: Feature 3 - Good Code Part 1 (C#) -->
+        <div class="slide">
+            <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 1</h2>
+            <div class="code-block" style="max-height: 400px;">// SECURE - ASP.NET Core C#
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+
+[ApiController]
+[Route("api/users")]
+[Authorize] // V8.2.1: Require authentication
+public class UsersController : ControllerBase
+{
+    private readonly ApplicationDbContext _context;
+    private readonly ILogger&lt;UsersController&gt; _logger;
+    private readonly string _uploadPath;
+    
+    // V5.1.1: Configuration
+    private const long MaxFileSize = 5 * 1024 * 1024; // 5MB
+    private readonly string[] AllowedExtensions = { ".jpg", ".jpeg", ".png" };
+    private readonly string[] AllowedMimeTypes = 
+        { "image/jpeg", "image/png" };
+    
+    public UsersController(
+        ApplicationDbContext context, 
+        IConfiguration config,
+        ILogger&lt;UsersController&gt; logger)
+    {
+        _context = context;
+        _logger = logger;
+        // V5.3.2: Store outside web root
+        _uploadPath = config["FileUpload:ProfilePicturePath"] 
+            ?? Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+        
+        Directory.CreateDirectory(_uploadPath);
+    }
+    
+    private int GetCurrentUserId()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        return int.Parse(userIdClaim.Value);
+    }</div>
+        </div>
+
+        <!-- Slide 35: Feature 3 - Good Code Part 2 (C#) -->
+        <div class="slide">
+            <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 2</h2>
+            <div class="code-block" style="max-height: 400px;">    [HttpPost("profile-picture")]
+    public async Task&lt;IActionResult&gt; UploadProfilePicture(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest("No file uploaded");
+        
+        // V5.2.1: Check file size
+        if (file.Length > MaxFileSize)
+        {
+            _logger.LogWarning("File size exceeds limit");
+            return BadRequest("File size exceeds 5MB limit");
+        }
+        
+        // V5.4.1: Validate file extension
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!AllowedExtensions.Contains(extension))
+        {
+            _logger.LogWarning($"Invalid file extension: {extension}");
+            return BadRequest("Only JPEG and PNG files are allowed");
+        }
+        
+        // V2.2.1: Validate MIME type
+        if (!AllowedMimeTypes.Contains(file.ContentType.ToLowerInvariant()))
+        {
+            _logger.LogWarning($"Invalid MIME type: {file.ContentType}");
+            return BadRequest("Invalid file type");
+        }
+        
+        var userId = GetCurrentUserId();
+        
+        // V5.3.2: Generate unique filename (don't use user input)
+        var uniqueFileName = $"{userId}_{Guid.NewGuid()}{extension}";
+        var filePath = Path.Combine(_uploadPath, uniqueFileName);
+        
+        // V5.3.2: Prevent path traversal
+        var fullPath = Path.GetFullPath(filePath);
+        if (!fullPath.StartsWith(Path.GetFullPath(_uploadPath)))
+        {
+            _logger.LogWarning($"Path traversal attempt by user {userId}");
+            return BadRequest("Invalid file path");
+        }</div>
+        </div>
+
+        <!-- Slide 36: Feature 3 - Good Code Part 3 (C#) -->
+        <div class="slide">
+            <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 3</h2>
+            <div class="code-block" style="max-height: 400px;">        try
+        {
+            // V5.4.1: Verify it's actually an image by loading it
+            using (var image = await Image.LoadAsync(file.OpenReadStream()))
+            {
+                // Optional: Resize if too large
+                if (image.Width > 1000 || image.Height > 1000)
+                {
+                    image.Mutate(x => x.Resize(new ResizeOptions
+                    {
+                        Size = new Size(1000, 1000),
+                        Mode = ResizeMode.Max
+                    }));
+                }
+                
+                // Save the validated image
+                await image.SaveAsync(filePath);
+            }
+            
+            // V5.4.2: In production, scan for malware here
+            // await _malwareScanner.ScanFileAsync(filePath);
+            
+            // Update user's profile picture reference
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                // Delete old profile picture if exists
+                if (!string.IsNullOrEmpty(user.ProfilePicture))
+                {
+                    var oldPath = Path.Combine(_uploadPath, user.ProfilePicture);
+                    if (System.IO.File.Exists(oldPath))
+                        System.IO.File.Delete(oldPath);
+                }
+                
+                user.ProfilePicture = uniqueFileName;
+                await _context.SaveChangesAsync();
+            }
+            
+            _logger.LogInformation($"User {userId} uploaded profile picture");
+            
+            // V5.4.1: Return file ID, not direct path
+            return Ok(new { fileId = uniqueFileName, success = true });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error uploading profile picture");
+            return StatusCode(500, "Error uploading file");
+        }
+    }
+}</div>
+        </div>
+
+        <!-- Slide 37: Assignment Summary -->
+        <div class="slide">
+            <h2>📝 Assignment Summary</h2>
+            
+            <div class="card" style="margin: 30px 0; padding: 30px;">
+                <h3 style="margin-top: 0; color: #667eea;">What You've Learned</h3>
+                <div class="grid-2" style="margin-top: 25px;">
+                    <div>
+                        <h4>Feature 1: Authentication</h4>
+                        <ul style="font-size: 0.95em;">
+                            <li>Password hashing with bcrypt</li>
+                            <li>Rate limiting</li>
+                            <li>Session regeneration</li>
+                            <li>Input validation</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Feature 2: Note Management</h4>
+                        <ul style="font-size: 0.95em;">
+                            <li>IDOR prevention</li>
+                            <li>Authorization checks</li>
+                            <li>Data access control</li>
+                            <li>Security logging</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h4>Feature 3: File Upload</h4>
+                    <ul style="font-size: 0.95em;">
+                        <li>File type validation</li>
+                        <li>Path traversal prevention</li>
+                        <li>Size limits and storage security</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-point" style="margin-top: 30px;">
+                <span class="emoji">💡</span>
+                Practice by implementing these features in your own projects!
+            </div>
+        </div>
+
+        <!-- Slide 38: Next Steps -->
+        <div class="slide">
+            <h2>🚀 Next Steps for Phoenix Notes</h2>
+            
+            <div style="background: #f0f4ff; padding: 30px; border-radius: 15px; margin: 30px 0;">
+                <h3 style="margin-top: 0; color: #667eea;">Contact & Follow-Up</h3>
+                <p style="font-size: 1.2em; line-height: 1.8;">
+                    If you have questions about implementing these security controls or want to discuss your solutions, feel free to reach out!
+                </p>
+            </div>
+
+            <div class="card" style="padding: 30px; margin-top: 30px;">
+                <h4 style="margin-top: 0;">Additional Practice Ideas:</h4>
+                <ul style="font-size: 1.1em; line-height: 2;">
+                    <li>Add multi-factor authentication (V6.3.3)</li>
+                    <li>Implement note sharing between users (V8 controls)</li>
+                    <li>Add password reset functionality (V6.4.3)</li>
+                    <li>Implement audit logging (V16 controls)</li>
+                    <li>Add API rate limiting per user (V6.3.1)</li>
+                    <li>Implement note encryption at rest (V11 controls)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 39: Key Takeaways -->
+        <div class="slide">
+            <h2>🎓 Key Takeaways</h2>
+            
+            <div class="card" style="margin: 30px 0; padding: 30px;">
+                <h3 style="margin-top: 0; color: #667eea;">Security Requirements Process</h3>
+                <ol style="font-size: 1.2em; line-height: 2.5; margin-left: 25px;">
+                    <li style="margin-bottom: 15px;"><strong>Start with User Stories</strong> - Understand the feature</li>
+                    <li style="margin-bottom: 15px;"><strong>Identify Threats</strong> - What can go wrong?</li>
+                    <li style="margin-bottom: 15px;"><strong>Map to ASVS v5.0</strong> - Find relevant requirements</li>
+                    <li style="margin-bottom: 15px;"><strong>Implement Controls</strong> - Write secure code</li>
+                    <li style="margin-bottom: 15px;"><strong>Test & Verify</strong> - Ensure controls work</li>
+                </ol>
+            </div>
+
+            <div class="comparison" style="margin-top: 30px;">
+                <div class="comparison-bad">
+                    <h4 style="color: #c62828;">❌ Without ASVS</h4>
+                    <ul style="font-size: 1em;">
+                        <li>Ad-hoc security decisions</li>
+                        <li>Inconsistent controls</li>
+                        <li>Missing requirements</li>
+                        <li>Reactive security</li>
+                    </ul>
+                </div>
+                <div class="comparison-good">
+                    <h4 style="color: #2e7d32;">✅ With ASVS</h4>
+                    <ul style="font-size: 1em;">
+                        <li>Systematic approach</li>
+                        <li>Comprehensive coverage</li>
+                        <li>Industry standards</li>
+                        <li>Proactive security</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 40: Security Checklist -->
+        <div class="slide">
+            <h2>📋 Security Checklist for New Features</h2>
+            
+            <div style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 40px; border-radius: 15px; margin-top: 30px;">
+                <ul class="checklist" style="font-size: 1.2em;">
+                    <li>Is authentication required? → Check <strong>V6</strong></li>
+                    <li>Can users access others' data? → Check <strong>V8.2.2</strong> (IDOR)</li>
+                    <li>Does it accept user input? → Check <strong>V2</strong> (validation)</li>
+                    <li>Does it store passwords? → Check <strong>V11.4.2</strong> (bcrypt/Argon2id)</li>
+                    <li>Does it handle files? → Check <strong>V5</strong> (validation, storage)</li>
+                    <li>Is it an API endpoint? → Check <strong>V4</strong> and <strong>V8</strong></li>
+                    <li>Could it fail? → Check <strong>V16</strong> (logging, errors)</li>
+                    <li>Does it expose data? → Check <strong>V14</strong> (minimize exposure)</li>
+                </ul>
+            </div>
+
+            <div class="key-point" style="margin-top: 40px;">
+                <span class="emoji">💡</span>
+                Make this checklist part of your Definition of Done!
+            </div>
+        </div>
+
+        <!-- Slide 41: Common Vulnerabilities Mapped -->
+        <div class="slide">
+            <h2>OWASP Top 10 ↔️ ASVS v5.0</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 30px;">
+                <div class="card">
+                    <strong style="color: #e53935;">A01: Broken Access Control</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V8 (Authorization)</p>
+                </div>
+                <div class="card">
+                    <strong style="color: #e53935;">A02: Cryptographic Failures</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V11 (Cryptography), V14 (Data Protection)</p>
+                </div>
+                <div class="card">
+                    <strong style="color: #e53935;">A03: Injection</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V2 (Validation), V1 (Encoding & Sanitization)</p>
+                </div>
+                <div class="card">
+                    <strong style="color: #e53935;">A05: Security Misconfiguration</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V16 (Logging), V13 (Configuration)</p>
+                </div>
+                <div class="card">
+                    <strong style="color: #e53935;">A07: Authentication Failures</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V6 (Authentication), V7 (Session Management)</p>
+                </div>
+                <div class="card">
+                    <strong style="color: #e53935;">A08: Software & Data Integrity</strong>
+                    <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V5 (File Handling), V15 (Secure Coding)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 42: Resources -->
+        <div class="slide">
+            <h2>📚 Resources & Next Steps</h2>
+            
+            <div class="card" style="margin: 30px 0; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h3 style="margin-top: 0; color: white;">Essential Resources</h3>
+                <ul style="font-size: 1.2em; line-height: 2;">
+                    <li><strong>OWASP ASVS v5.0:</strong><br>owasp.org/www-project-application-security-verification-standard/</li>
+                    <li><strong>OWASP Cheat Sheet Series:</strong><br>cheatsheetseries.owasp.org</li>
+                    <li><strong>OWASP Top 10:</strong><br>owasp.org/www-project-top-ten/</li>
+                </ul>
+            </div>
+
+            <div class="grid-2" style="margin-top: 30px;">
+                <div class="card">
+                    <h4 style="margin-top: 0;">🛠️ Tools</h4>
+                    <ul style="font-size: 1em;">
+                        <li>SAST/DAST scanners</li>
+                        <li>Dependency checkers</li>
+                        <li>Security linters</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="margin-top: 0;">📖 Learning</h4>
+                    <ul style="font-size: 1em;">
+                        <li>OWASP WebGoat</li>
+                        <li>Security training</li>
+                        <li>Code review practices</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 43: Thank You -->
+        <div class="slide">
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center;">
+                <h1 style="font-size: 4em; margin-bottom: 30px;">Thank You! 🎉</h1>
+                <p style="font-size: 2em; color: #666; margin-bottom: 60px;">Questions & Discussion</p>
+                
+                <div style="background: #f0f4ff; padding: 40px; border-radius: 20px; max-width: 800px;">
+                    <h3 style="color: #667eea; margin-bottom: 25px;">Remember:</h3>
+                    <p style="font-size: 1.4em; line-height: 1.8; color: #333;">
+                        Security is not a feature you add at the end.<br>
+                        It's a requirement you build from the start.
+                    </p>
+                </div>
+
+                <p style="font-size: 1.2em; color: #999; margin-top: 60px;">
+                    🔐 Build secure. Build with ASVS v5.0. 🔐
+                </p>
+            </div>
+        </div>
         <div class="slide">
             <h2>🎓 Key Takeaways</h2>
             
@@ -1095,7 +2006,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
         </div>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 24</div>
+    <div class="slide-number" id="slideNumber">1 / 43</div>
 
     <div class="controls">
         <button class="btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
