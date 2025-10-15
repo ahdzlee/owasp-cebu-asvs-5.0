@@ -1012,7 +1012,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
         <!-- Slide 16: Scenario 3 - Good Code Part 1 -->
         <div class="slide">
             <h2>✅ Good Code: Secure Upload (Part 1)</h2>
-            <div class="code-block" style="max-height: 400px;"><span class="keyword">import</span> uuid, magic
+            <div class="code-block" style="max-height: 650px;"><span class="keyword">import</span> uuid, magic
 <span class="keyword">from</span> werkzeug.utils <span class="keyword">import</span> secure_filename
 
 <span class="comment"># V5.2.1: Maximum file size</span>
@@ -1273,7 +1273,7 @@ app.post(<span class="string">'/api/login'</span>, <span class="keyword">async</
         <!-- Slide 24: Feature 1 - Good Code (TypeScript) -->
         <div class="slide">
             <h2>✅ Good Code: User Registration (TypeScript)</h2>
-            <div class="code-block" style="max-height: 380px;"><span class="comment">// SECURE - Node.js/Express/TypeScript</span>
+            <div class="code-block" style="max-height: 650px;"><span class="comment">// SECURE - Node.js/Express/TypeScript</span>
 <span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>;
 <span class="keyword">import</span> bcrypt <span class="keyword">from</span> <span class="string">'bcrypt'</span>;
 <span class="keyword">import</span> rateLimit <span class="keyword">from</span> <span class="string">'express-rate-limit'</span>;
@@ -1320,7 +1320,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 25: Feature 1 - Login Good Code (TypeScript) -->
         <div class="slide">
             <h2>✅ Good Code: User Login (TypeScript)</h2>
-            <div class="code-block">app.post(<span class="string">'/api/login'</span>, authLimiter, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
+            <div class="code-block" style="max-height: 700px;">app.post(<span class="string">'/api/login'</span>, authLimiter, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
     <span class="keyword">const</span> { email, password } = req.body;
     
     <span class="comment">// V2.2.1: Validate input</span>
@@ -1431,7 +1431,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 28: Feature 2 - Bad Code (C#) -->
         <div class="slide">
             <h2>❌ Bad Code: Note Management (C#.NET)</h2>
-            <div class="code-block"><span class="comment">// INSECURE - ASP.NET Core C#</span>
+            <div class="code-block" style="max-height: 700px;"><span class="comment">// INSECURE - ASP.NET Core C#</span>
 [ApiController]
 [Route(<span class="string">"api/[controller]"</span>)]
 <span class="keyword">public class</span> NotesController : ControllerBase
@@ -1480,7 +1480,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 29: Feature 2 - Good Code Part 1 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Note Management (C#.NET) - Part 1</h2>
-            <div class="code-block" style="max-height: 400px;"><span class="comment">// SECURE - ASP.NET Core C#</span>
+            <div class="code-block" style="max-height: 700px;"><span class="comment">// SECURE - ASP.NET Core C#</span>
 <span class="keyword">using</span> Microsoft.AspNetCore.Authorization;
 <span class="keyword">using</span> System.Security.Claims;
 
@@ -1540,7 +1540,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 30: Feature 2 - Good Code Part 2 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Note Management (C#.NET) - Part 2</h2>
-            <div class="code-block" style="max-height: 400px;">    [HttpPost]
+            <div class="code-block" style="max-height: 700px;">    [HttpPost]
     <span class="keyword">public async</span> Task&lt;IActionResult&gt; CreateNote([FromBody] CreateNoteRequest request)
     {
         <span class="comment">// V2.2.1: Validate input</span>
@@ -1702,7 +1702,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 34: Feature 3 - Good Code Part 1 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 1</h2>
-            <div class="code-block" style="max-height: 400px;"><span class="comment">// SECURE - ASP.NET Core C#</span>
+            <div class="code-block" style="max-height: 700px;"><span class="comment">// SECURE - ASP.NET Core C#</span>
 <span class="keyword">using</span> SixLabors.ImageSharp;
 <span class="keyword">using</span> SixLabors.ImageSharp.Processing;
 
@@ -1745,7 +1745,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 35: Feature 3 - Good Code Part 2 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 2</h2>
-            <div class="code-block" style="max-height: 400px;">    [HttpPost(<span class="string">"profile-picture"</span>)]
+            <div class="code-block" style="max-height: 700px;">    [HttpPost(<span class="string">"profile-picture"</span>)]
     <span class="keyword">public async</span> Task&lt;IActionResult&gt; UploadProfilePicture(IFormFile file)
     {
         <span class="keyword">if</span> (file == <span class="keyword">null</span> || file.Length == 0)
@@ -1791,7 +1791,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 36: Feature 3 - Good Code Part 3 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 3</h2>
-            <div class="code-block" style="max-height: 400px;">        <span class="keyword">try</span>
+            <div class="code-block" style="max-height: 700px;">        <span class="keyword">try</span>
         {
             <span class="comment">// V5.4.1: Verify it's actually an image by loading it</span>
             <span class="keyword">using</span> (<span class="keyword">var</span> image = <span class="keyword">await</span> Image.LoadAsync(file.OpenReadStream()))
