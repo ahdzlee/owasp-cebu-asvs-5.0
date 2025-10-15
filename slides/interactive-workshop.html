@@ -1047,38 +1047,38 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
         <!-- Slide 23: Feature 1 - Bad Code (TypeScript) -->
         <div class="slide">
             <h2>❌ Bad Code: User Registration (TypeScript)</h2>
-            <div class="code-block">// INSECURE - Node.js/Express/TypeScript
-import express from 'express';
-import crypto from 'crypto';
+            <div class="code-block"><span class="comment">// INSECURE - Node.js/Express/TypeScript</span>
+<span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>;
+<span class="keyword">import</span> crypto <span class="keyword">from</span> <span class="string">'crypto'</span>;
 
-app.post('/api/register', async (req, res) => {
-    const { email, password } = req.body;
+app.post(<span class="string">'/api/register'</span>, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
+    <span class="keyword">const</span> { email, password } = req.body;
     
-    // VULNERABILITY 1: No password validation
-    // VULNERABILITY 2: Weak hashing (SHA256)
-    const passwordHash = crypto.createHash('sha256')
-        .update(password).digest('hex');
+    <span class="comment">// VULNERABILITY 1: No password validation</span>
+    <span class="comment">// VULNERABILITY 2: Weak hashing (SHA256)</span>
+    <span class="keyword">const</span> passwordHash = crypto.createHash(<span class="string">'sha256'</span>)
+        .update(password).digest(<span class="string">'hex'</span>);
     
-    // VULNERABILITY 3: SQL Injection
-    const query = `INSERT INTO users (email, password_hash) 
-                   VALUES ('${email}', '${passwordHash}')`;
-    await db.query(query);
+    <span class="comment">// VULNERABILITY 3: SQL Injection</span>
+    <span class="keyword">const</span> query = <span class="string">`INSERT INTO users (email, password_hash) 
+                   VALUES ('${email}', '${passwordHash}')`</span>;
+    <span class="keyword">await</span> db.query(query);
     
-    res.json({ success: true });
+    res.json({ <span class="string">success</span>: <span class="keyword">true</span> });
 });
 
-app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
+app.post(<span class="string">'/api/login'</span>, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
+    <span class="keyword">const</span> { email, password } = req.body;
     
-    // VULNERABILITY 4: No rate limiting
-    const hash = crypto.createHash('sha256').update(password).digest('hex');
-    const user = await db.query(
-        `SELECT * FROM users WHERE email='${email}' AND password_hash='${hash}'`
+    <span class="comment">// VULNERABILITY 4: No rate limiting</span>
+    <span class="keyword">const</span> hash = crypto.createHash(<span class="string">'sha256'</span>).update(password).digest(<span class="string">'hex'</span>);
+    <span class="keyword">const</span> user = <span class="keyword">await</span> db.query(
+        <span class="string">`SELECT * FROM users WHERE email='${email}' AND password_hash='${hash}'`</span>
     );
     
-    // VULNERABILITY 5: No session regeneration
+    <span class="comment">// VULNERABILITY 5: No session regeneration</span>
     req.session.userId = user.id;
-    res.json({ success: true });
+    res.json({ <span class="string">success</span>: <span class="keyword">true</span> });
 });</div>
             <div class="vulnerability-box" style="margin-top: 20px;">
                 <strong style="color: #c62828;">🚨 Issues:</strong> Weak hashing • SQL injection • No rate limiting • No validation • No session regeneration
@@ -1088,94 +1088,94 @@ app.post('/api/login', async (req, res) => {
         <!-- Slide 24: Feature 1 - Good Code (TypeScript) -->
         <div class="slide">
             <h2>✅ Good Code: User Registration (TypeScript)</h2>
-            <div class="code-block" style="max-height: 380px;">// SECURE - Node.js/Express/TypeScript
-import express from 'express';
-import bcrypt from 'bcrypt';
-import rateLimit from 'express-rate-limit';
-import { body, validationResult } from 'express-validator';
+            <div class="code-block" style="max-height: 380px;"><span class="comment">// SECURE - Node.js/Express/TypeScript</span>
+<span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>;
+<span class="keyword">import</span> bcrypt <span class="keyword">from</span> <span class="string">'bcrypt'</span>;
+<span class="keyword">import</span> rateLimit <span class="keyword">from</span> <span class="string">'express-rate-limit'</span>;
+<span class="keyword">import</span> { body, validationResult } <span class="keyword">from</span> <span class="string">'express-validator'</span>;
 
-// V6.3.1: Rate limiting
-const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
+<span class="comment">// V6.3.1: Rate limiting</span>
+<span class="keyword">const</span> authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, <span class="comment">// 15 minutes</span>
     max: 5
 });
 
-// V2.2.1: Input validation middleware
-const registerValidation = [
-    body('email').isEmail().normalizeEmail(),
-    body('password').isLength({ min: 8, max: 128 })
+<span class="comment">// V2.2.1: Input validation middleware</span>
+<span class="keyword">const</span> registerValidation = [
+    body(<span class="string">'email'</span>).isEmail().normalizeEmail(),
+    body(<span class="string">'password'</span>).isLength({ min: 8, max: 128 })
 ];
 
-app.post('/api/register', registerValidation, async (req, res) => {
-    // V2.2.2: Check validation results
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+app.post(<span class="string">'/api/register'</span>, registerValidation, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
+    <span class="comment">// V2.2.2: Check validation results</span>
+    <span class="keyword">const</span> errors = validationResult(req);
+    <span class="keyword">if</span> (!errors.isEmpty()) {
+        <span class="keyword">return</span> res.status(400).json({ errors: errors.array() });
     }
     
-    const { email, password } = req.body;
+    <span class="keyword">const</span> { email, password } = req.body;
     
-    // V11.4.2: Bcrypt with work factor 12
-    const saltRounds = 12;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    <span class="comment">// V11.4.2: Bcrypt with work factor 12</span>
+    <span class="keyword">const</span> saltRounds = 12;
+    <span class="keyword">const</span> passwordHash = <span class="keyword">await</span> bcrypt.hash(password, saltRounds);
     
-    // V2.2.1: Parameterized query
-    await db.query(
-        'INSERT INTO users (email, password_hash) VALUES ($1, $2)',
+    <span class="comment">// V2.2.1: Parameterized query</span>
+    <span class="keyword">await</span> db.query(
+        <span class="string">'INSERT INTO users (email, password_hash) VALUES ($1, $2)'</span>,
         [email, passwordHash]
     );
     
-    // V16.1.1: Log registration
-    logger.info(`New user registered: ${email}`);
+    <span class="comment">// V16.1.1: Log registration</span>
+    logger.info(<span class="string">`New user registered: ${email}`</span>);
     
-    res.status(201).json({ success: true });
+    res.status(201).json({ <span class="string">success</span>: <span class="keyword">true</span> });
 });</div>
         </div>
 
         <!-- Slide 25: Feature 1 - Login Good Code (TypeScript) -->
         <div class="slide">
             <h2>✅ Good Code: User Login (TypeScript)</h2>
-            <div class="code-block">app.post('/api/login', authLimiter, async (req, res) => {
-    const { email, password } = req.body;
+            <div class="code-block">app.post(<span class="string">'/api/login'</span>, authLimiter, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
+    <span class="keyword">const</span> { email, password } = req.body;
     
-    // V2.2.1: Validate input
-    if (!email || !password) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+    <span class="comment">// V2.2.1: Validate input</span>
+    <span class="keyword">if</span> (!email || !password) {
+        <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
     }
     
-    // V6.2.1: Password length check
-    if (password.length < 8 || password.length > 128) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+    <span class="comment">// V6.2.1: Password length check</span>
+    <span class="keyword">if</span> (password.length < 8 || password.length > 128) {
+        <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
     }
     
-    // V2.2.1: Parameterized query
-    const result = await db.query(
-        'SELECT id, password_hash FROM users WHERE email = $1',
+    <span class="comment">// V2.2.1: Parameterized query</span>
+    <span class="keyword">const</span> result = <span class="keyword">await</span> db.query(
+        <span class="string">'SELECT id, password_hash FROM users WHERE email = $1'</span>,
         [email]
     );
     
-    if (result.rows.length === 0) {
-        // V16.1.1: Log failed attempt
-        logger.warn(`Failed login attempt for ${email}`);
-        return res.status(401).json({ error: 'Invalid credentials' });
+    <span class="keyword">if</span> (result.rows.length === 0) {
+        <span class="comment">// V16.1.1: Log failed attempt</span>
+        logger.warn(<span class="string">`Failed login attempt for ${email}`</span>);
+        <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
     }
     
-    const user = result.rows[0];
+    <span class="keyword">const</span> user = result.rows[0];
     
-    // V11.4.2: Verify with bcrypt
-    const validPassword = await bcrypt.compare(password, user.password_hash);
+    <span class="comment">// V11.4.2: Verify with bcrypt</span>
+    <span class="keyword">const</span> validPassword = <span class="keyword">await</span> bcrypt.compare(password, user.password_hash);
     
-    if (!validPassword) {
-        logger.warn(`Failed login for ${email}`);
-        return res.status(401).json({ error: 'Invalid credentials' });
+    <span class="keyword">if</span> (!validPassword) {
+        logger.warn(<span class="string">`Failed login for ${email}`</span>);
+        <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
     }
     
-    // V7.2.4: Regenerate session
-    req.session.regenerate((err) => {
-        if (err) return res.status(500).json({ error: 'Login failed' });
+    <span class="comment">// V7.2.4: Regenerate session</span>
+    req.session.regenerate((err) <span class="keyword">=></span> {
+        <span class="keyword">if</span> (err) <span class="keyword">return</span> res.status(500).json({ error: <span class="string">'Login failed'</span> });
         req.session.userId = user.id;
-        logger.info(`Successful login: ${user.id}`);
-        res.json({ success: true });
+        logger.info(<span class="string">`Successful login: ${user.id}`</span>);
+        res.json({ <span class="string">success</span>: <span class="keyword">true</span> });
     });
 });</div>
         </div>
@@ -1246,48 +1246,48 @@ app.post('/api/register', registerValidation, async (req, res) => {
         <!-- Slide 28: Feature 2 - Bad Code (C#) -->
         <div class="slide">
             <h2>❌ Bad Code: Note Management (C#.NET)</h2>
-            <div class="code-block">// INSECURE - ASP.NET Core C#
+            <div class="code-block"><span class="comment">// INSECURE - ASP.NET Core C#</span>
 [ApiController]
-[Route("api/[controller]")]
-public class NotesController : ControllerBase
+[Route(<span class="string">"api/[controller]"</span>)]
+<span class="keyword">public class</span> NotesController : ControllerBase
 {
-    // VULNERABILITY 1: No authentication required
-    [HttpGet("{id}")]
-    public async Task&lt;IActionResult&gt; GetNote(int id)
+    <span class="comment">// VULNERABILITY 1: No authentication required</span>
+    [HttpGet(<span class="string">"{id}"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; GetNote(<span class="keyword">int</span> id)
     {
-        // VULNERABILITY 2: No authorization check (IDOR)
-        // Any user can view any note by changing the ID
-        var note = await _context.Notes.FindAsync(id);
+        <span class="comment">// VULNERABILITY 2: No authorization check (IDOR)</span>
+        <span class="comment">// Any user can view any note by changing the ID</span>
+        <span class="keyword">var</span> note = <span class="keyword">await</span> _context.Notes.FindAsync(id);
         
-        if (note == null)
-            return NotFound();
+        <span class="keyword">if</span> (note == <span class="keyword">null</span>)
+            <span class="keyword">return</span> NotFound();
         
-        return Ok(note);
+        <span class="keyword">return</span> Ok(note);
     }
     
     [HttpPost]
-    public async Task&lt;IActionResult&gt; CreateNote([FromBody] Note note)
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; CreateNote([FromBody] Note note)
     {
-        // VULNERABILITY 3: No input validation
-        // VULNERABILITY 4: No authentication check
+        <span class="comment">// VULNERABILITY 3: No input validation</span>
+        <span class="comment">// VULNERABILITY 4: No authentication check</span>
         
         _context.Notes.Add(note);
-        await _context.SaveChangesAsync();
+        <span class="keyword">await</span> _context.SaveChangesAsync();
         
-        return CreatedAtAction(nameof(GetNote), 
-            new { id = note.Id }, note);
+        <span class="keyword">return</span> CreatedAtAction(<span class="keyword">nameof</span>(GetNote), 
+            <span class="keyword">new</span> { id = note.Id }, note);
     }
     
-    [HttpDelete("{id}")]
-    public async Task&lt;IActionResult&gt; DeleteNote(int id)
+    [HttpDelete(<span class="string">"{id}"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; DeleteNote(<span class="keyword">int</span> id)
     {
-        // VULNERABILITY 5: Users can delete anyone's notes
-        var note = await _context.Notes.FindAsync(id);
+        <span class="comment">// VULNERABILITY 5: Users can delete anyone's notes</span>
+        <span class="keyword">var</span> note = <span class="keyword">await</span> _context.Notes.FindAsync(id);
         
         _context.Notes.Remove(note);
-        await _context.SaveChangesAsync();
+        <span class="keyword">await</span> _context.SaveChangesAsync();
         
-        return NoContent();
+        <span class="keyword">return</span> NoContent();
     }
 }</div>
         </div>
@@ -1295,33 +1295,33 @@ public class NotesController : ControllerBase
         <!-- Slide 29: Feature 2 - Good Code Part 1 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Note Management (C#.NET) - Part 1</h2>
-            <div class="code-block" style="max-height: 400px;">// SECURE - ASP.NET Core C#
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
+            <div class="code-block" style="max-height: 400px;"><span class="comment">// SECURE - ASP.NET Core C#</span>
+<span class="keyword">using</span> Microsoft.AspNetCore.Authorization;
+<span class="keyword">using</span> System.Security.Claims;
 
 [ApiController]
-[Route("api/[controller]")]
-[Authorize] // V8.2.1: Require authentication
-public class NotesController : ControllerBase
+[Route(<span class="string">"api/[controller]"</span>)]
+[Authorize] <span class="comment">// V8.2.1: Require authentication</span>
+<span class="keyword">public class</span> NotesController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
-    private readonly ILogger&lt;NotesController&gt; _logger;
+    <span class="keyword">private readonly</span> ApplicationDbContext _context;
+    <span class="keyword">private readonly</span> ILogger&lt;NotesController&gt; _logger;
     
-    private int GetCurrentUserId()
+    <span class="keyword">private int</span> GetCurrentUserId()
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-        return int.Parse(userIdClaim.Value);
+        <span class="keyword">var</span> userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        <span class="keyword">return int</span>.Parse(userIdClaim.Value);
     }
     
-    // V8.2.2: Get only current user's notes
+    <span class="comment">// V8.2.2: Get only current user's notes</span>
     [HttpGet]
-    public async Task&lt;IActionResult&gt; GetNotes()
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; GetNotes()
     {
-        var userId = GetCurrentUserId();
+        <span class="keyword">var</span> userId = GetCurrentUserId();
         
-        var notes = await _context.Notes
+        <span class="keyword">var</span> notes = <span class="keyword">await</span> _context.Notes
             .Where(n => n.UserId == userId)
-            .Select(n => new NoteDto 
+            .Select(n => <span class="keyword">new</span> NoteDto 
             { 
                 Id = n.Id, 
                 Title = n.Title, 
@@ -1329,26 +1329,26 @@ public class NotesController : ControllerBase
             })
             .ToListAsync();
         
-        return Ok(notes);
+        <span class="keyword">return</span> Ok(notes);
     }
     
-    [HttpGet("{id}")]
-    public async Task&lt;IActionResult&gt; GetNote(int id)
+    [HttpGet(<span class="string">"{id}"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; GetNote(<span class="keyword">int</span> id)
     {
-        var userId = GetCurrentUserId();
+        <span class="keyword">var</span> userId = GetCurrentUserId();
         
-        // V8.2.2: Ensure user can only access their own notes
-        var note = await _context.Notes
+        <span class="comment">// V8.2.2: Ensure user can only access their own notes</span>
+        <span class="keyword">var</span> note = <span class="keyword">await</span> _context.Notes
             .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
         
-        if (note == null)
+        <span class="keyword">if</span> (note == <span class="keyword">null</span>)
         {
-            // V16.1.1: Log unauthorized access attempt
-            _logger.LogWarning($"User {userId} attempted to access note {id}");
-            return NotFound();
+            <span class="comment">// V16.1.1: Log unauthorized access attempt</span>
+            _logger.LogWarning(<span class="string">$"User {userId} attempted to access note {id}"</span>);
+            <span class="keyword">return</span> NotFound();
         }
         
-        return Ok(note);
+        <span class="keyword">return</span> Ok(note);
     }</div>
         </div>
 
@@ -1356,24 +1356,24 @@ public class NotesController : ControllerBase
         <div class="slide">
             <h2>✅ Good Code: Note Management (C#.NET) - Part 2</h2>
             <div class="code-block" style="max-height: 400px;">    [HttpPost]
-    public async Task&lt;IActionResult&gt; CreateNote([FromBody] CreateNoteRequest request)
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; CreateNote([FromBody] CreateNoteRequest request)
     {
-        // V2.2.1: Validate input
-        if (string.IsNullOrWhiteSpace(request.Title) || 
+        <span class="comment">// V2.2.1: Validate input</span>
+        <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(request.Title) || 
             request.Title.Length > 200)
         {
-            return BadRequest("Invalid title");
+            <span class="keyword">return</span> BadRequest(<span class="string">"Invalid title"</span>);
         }
         
-        if (string.IsNullOrWhiteSpace(request.Content) || 
+        <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(request.Content) || 
             request.Content.Length > 10000)
         {
-            return BadRequest("Invalid content");
+            <span class="keyword">return</span> BadRequest(<span class="string">"Invalid content"</span>);
         }
         
-        var userId = GetCurrentUserId();
+        <span class="keyword">var</span> userId = GetCurrentUserId();
         
-        var note = new Note
+        <span class="keyword">var</span> note = <span class="keyword">new</span> Note
         {
             Title = request.Title,
             Content = request.Content,
@@ -1382,36 +1382,36 @@ public class NotesController : ControllerBase
         };
         
         _context.Notes.Add(note);
-        await _context.SaveChangesAsync();
+        <span class="keyword">await</span> _context.SaveChangesAsync();
         
-        // V16.1.1: Log creation
-        _logger.LogInformation($"User {userId} created note {note.Id}");
+        <span class="comment">// V16.1.1: Log creation</span>
+        _logger.LogInformation(<span class="string">$"User {userId} created note {note.Id}"</span>);
         
-        return CreatedAtAction(nameof(GetNote), 
-            new { id = note.Id }, note);
+        <span class="keyword">return</span> CreatedAtAction(<span class="keyword">nameof</span>(GetNote), 
+            <span class="keyword">new</span> { id = note.Id }, note);
     }
     
-    [HttpDelete("{id}")]
-    public async Task&lt;IActionResult&gt; DeleteNote(int id)
+    [HttpDelete(<span class="string">"{id}"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; DeleteNote(<span class="keyword">int</span> id)
     {
-        var userId = GetCurrentUserId();
+        <span class="keyword">var</span> userId = GetCurrentUserId();
         
-        // V8.2.2: Ensure user can only delete their own notes
-        var note = await _context.Notes
+        <span class="comment">// V8.2.2: Ensure user can only delete their own notes</span>
+        <span class="keyword">var</span> note = <span class="keyword">await</span> _context.Notes
             .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
         
-        if (note == null)
+        <span class="keyword">if</span> (note == <span class="keyword">null</span>)
         {
-            _logger.LogWarning($"User {userId} attempted to delete note {id}");
-            return NotFound();
+            _logger.LogWarning(<span class="string">$"User {userId} attempted to delete note {id}"</span>);
+            <span class="keyword">return</span> NotFound();
         }
         
         _context.Notes.Remove(note);
-        await _context.SaveChangesAsync();
+        <span class="keyword">await</span> _context.SaveChangesAsync();
         
-        _logger.LogInformation($"User {userId} deleted note {id}");
+        _logger.LogInformation(<span class="string">$"User {userId} deleted note {id}"</span>);
         
-        return NoContent();
+        <span class="keyword">return</span> NoContent();
     }
 }</div>
         </div>
@@ -1471,35 +1471,35 @@ public class NotesController : ControllerBase
         <!-- Slide 33: Feature 3 - Bad Code (C#) -->
         <div class="slide">
             <h2>❌ Bad Code: Profile Picture Upload (C#.NET)</h2>
-            <div class="code-block">// INSECURE - ASP.NET Core C#
+            <div class="code-block"><span class="comment">// INSECURE - ASP.NET Core C#</span>
 [ApiController]
-[Route("api/users")]
-public class UsersController : ControllerBase
+[Route(<span class="string">"api/users"</span>)]
+<span class="keyword">public class</span> UsersController : ControllerBase
 {
-    [HttpPost("profile-picture")]
-    public async Task&lt;IActionResult&gt; UploadProfilePicture(IFormFile file)
+    [HttpPost(<span class="string">"profile-picture"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; UploadProfilePicture(IFormFile file)
     {
-        // VULNERABILITY 1: No authentication check
-        // VULNERABILITY 2: No file validation
-        // VULNERABILITY 3: No size limit check
+        <span class="comment">// VULNERABILITY 1: No authentication check</span>
+        <span class="comment">// VULNERABILITY 2: No file validation</span>
+        <span class="comment">// VULNERABILITY 3: No size limit check</span>
         
-        if (file == null)
-            return BadRequest("No file uploaded");
+        <span class="keyword">if</span> (file == <span class="keyword">null</span>)
+            <span class="keyword">return</span> BadRequest(<span class="string">"No file uploaded"</span>);
         
-        // VULNERABILITY 4: Using user-provided filename (path traversal!)
-        var fileName = file.FileName;
+        <span class="comment">// VULNERABILITY 4: Using user-provided filename (path traversal!)</span>
+        <span class="keyword">var</span> fileName = file.FileName;
         
-        // VULNERABILITY 5: Storing in web-accessible directory
-        var filePath = Path.Combine("wwwroot/uploads", fileName);
+        <span class="comment">// VULNERABILITY 5: Storing in web-accessible directory</span>
+        <span class="keyword">var</span> filePath = Path.Combine(<span class="string">"wwwroot/uploads"</span>, fileName);
         
-        // VULNERABILITY 6: No path validation
-        using (var stream = new FileStream(filePath, FileMode.Create))
+        <span class="comment">// VULNERABILITY 6: No path validation</span>
+        <span class="keyword">using</span> (<span class="keyword">var</span> stream = <span class="keyword">new</span> FileStream(filePath, FileMode.Create))
         {
-            await file.CopyToAsync(stream);
+            <span class="keyword">await</span> file.CopyToAsync(stream);
         }
         
-        // VULNERABILITY 7: Returning direct file path
-        return Ok(new { fileUrl = $"/uploads/{fileName}" });
+        <span class="comment">// VULNERABILITY 7: Returning direct file path</span>
+        <span class="keyword">return</span> Ok(<span class="keyword">new</span> { fileUrl = <span class="string">$"/uploads/{fileName}"</span> });
     }
 }</div>
             <div class="vulnerability-box" style="margin-top: 20px;">
@@ -1510,142 +1510,142 @@ public class UsersController : ControllerBase
         <!-- Slide 34: Feature 3 - Good Code Part 1 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 1</h2>
-            <div class="code-block" style="max-height: 400px;">// SECURE - ASP.NET Core C#
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
+            <div class="code-block" style="max-height: 400px;"><span class="comment">// SECURE - ASP.NET Core C#</span>
+<span class="keyword">using</span> SixLabors.ImageSharp;
+<span class="keyword">using</span> SixLabors.ImageSharp.Processing;
 
 [ApiController]
-[Route("api/users")]
-[Authorize] // V8.2.1: Require authentication
-public class UsersController : ControllerBase
+[Route(<span class="string">"api/users"</span>)]
+[Authorize] <span class="comment">// V8.2.1: Require authentication</span>
+<span class="keyword">public class</span> UsersController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
-    private readonly ILogger&lt;UsersController&gt; _logger;
-    private readonly string _uploadPath;
+    <span class="keyword">private readonly</span> ApplicationDbContext _context;
+    <span class="keyword">private readonly</span> ILogger&lt;UsersController&gt; _logger;
+    <span class="keyword">private readonly string</span> _uploadPath;
     
-    // V5.1.1: Configuration
-    private const long MaxFileSize = 5 * 1024 * 1024; // 5MB
-    private readonly string[] AllowedExtensions = { ".jpg", ".jpeg", ".png" };
-    private readonly string[] AllowedMimeTypes = 
-        { "image/jpeg", "image/png" };
+    <span class="comment">// V5.1.1: Configuration</span>
+    <span class="keyword">private const long</span> MaxFileSize = 5 * 1024 * 1024; <span class="comment">// 5MB</span>
+    <span class="keyword">private readonly string</span>[] AllowedExtensions = { <span class="string">".jpg"</span>, <span class="string">".jpeg"</span>, <span class="string">".png"</span> };
+    <span class="keyword">private readonly string</span>[] AllowedMimeTypes = 
+        { <span class="string">"image/jpeg"</span>, <span class="string">"image/png"</span> };
     
-    public UsersController(
+    <span class="keyword">public</span> UsersController(
         ApplicationDbContext context, 
         IConfiguration config,
         ILogger&lt;UsersController&gt; logger)
     {
         _context = context;
         _logger = logger;
-        // V5.3.2: Store outside web root
-        _uploadPath = config["FileUpload:ProfilePicturePath"] 
-            ?? Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+        <span class="comment">// V5.3.2: Store outside web root</span>
+        _uploadPath = config[<span class="string">"FileUpload:ProfilePicturePath"</span>] 
+            ?? Path.Combine(Directory.GetCurrentDirectory(), <span class="string">"uploads"</span>);
         
         Directory.CreateDirectory(_uploadPath);
     }
     
-    private int GetCurrentUserId()
+    <span class="keyword">private int</span> GetCurrentUserId()
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-        return int.Parse(userIdClaim.Value);
+        <span class="keyword">var</span> userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        <span class="keyword">return int</span>.Parse(userIdClaim.Value);
     }</div>
         </div>
 
         <!-- Slide 35: Feature 3 - Good Code Part 2 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 2</h2>
-            <div class="code-block" style="max-height: 400px;">    [HttpPost("profile-picture")]
-    public async Task&lt;IActionResult&gt; UploadProfilePicture(IFormFile file)
+            <div class="code-block" style="max-height: 400px;">    [HttpPost(<span class="string">"profile-picture"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; UploadProfilePicture(IFormFile file)
     {
-        if (file == null || file.Length == 0)
-            return BadRequest("No file uploaded");
+        <span class="keyword">if</span> (file == <span class="keyword">null</span> || file.Length == 0)
+            <span class="keyword">return</span> BadRequest(<span class="string">"No file uploaded"</span>);
         
-        // V5.2.1: Check file size
-        if (file.Length > MaxFileSize)
+        <span class="comment">// V5.2.1: Check file size</span>
+        <span class="keyword">if</span> (file.Length > MaxFileSize)
         {
-            _logger.LogWarning("File size exceeds limit");
-            return BadRequest("File size exceeds 5MB limit");
+            _logger.LogWarning(<span class="string">"File size exceeds limit"</span>);
+            <span class="keyword">return</span> BadRequest(<span class="string">"File size exceeds 5MB limit"</span>);
         }
         
-        // V5.4.1: Validate file extension
-        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-        if (!AllowedExtensions.Contains(extension))
+        <span class="comment">// V5.4.1: Validate file extension</span>
+        <span class="keyword">var</span> extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        <span class="keyword">if</span> (!AllowedExtensions.Contains(extension))
         {
-            _logger.LogWarning($"Invalid file extension: {extension}");
-            return BadRequest("Only JPEG and PNG files are allowed");
+            _logger.LogWarning(<span class="string">$"Invalid file extension: {extension}"</span>);
+            <span class="keyword">return</span> BadRequest(<span class="string">"Only JPEG and PNG files are allowed"</span>);
         }
         
-        // V2.2.1: Validate MIME type
-        if (!AllowedMimeTypes.Contains(file.ContentType.ToLowerInvariant()))
+        <span class="comment">// V2.2.1: Validate MIME type</span>
+        <span class="keyword">if</span> (!AllowedMimeTypes.Contains(file.ContentType.ToLowerInvariant()))
         {
-            _logger.LogWarning($"Invalid MIME type: {file.ContentType}");
-            return BadRequest("Invalid file type");
+            _logger.LogWarning(<span class="string">$"Invalid MIME type: {file.ContentType}"</span>);
+            <span class="keyword">return</span> BadRequest(<span class="string">"Invalid file type"</span>);
         }
         
-        var userId = GetCurrentUserId();
+        <span class="keyword">var</span> userId = GetCurrentUserId();
         
-        // V5.3.2: Generate unique filename (don't use user input)
-        var uniqueFileName = $"{userId}_{Guid.NewGuid()}{extension}";
-        var filePath = Path.Combine(_uploadPath, uniqueFileName);
+        <span class="comment">// V5.3.2: Generate unique filename (don't use user input)</span>
+        <span class="keyword">var</span> uniqueFileName = <span class="string">$"{userId}_{Guid.NewGuid()}{extension}"</span>;
+        <span class="keyword">var</span> filePath = Path.Combine(_uploadPath, uniqueFileName);
         
-        // V5.3.2: Prevent path traversal
-        var fullPath = Path.GetFullPath(filePath);
-        if (!fullPath.StartsWith(Path.GetFullPath(_uploadPath)))
+        <span class="comment">// V5.3.2: Prevent path traversal</span>
+        <span class="keyword">var</span> fullPath = Path.GetFullPath(filePath);
+        <span class="keyword">if</span> (!fullPath.StartsWith(Path.GetFullPath(_uploadPath)))
         {
-            _logger.LogWarning($"Path traversal attempt by user {userId}");
-            return BadRequest("Invalid file path");
+            _logger.LogWarning(<span class="string">$"Path traversal attempt by user {userId}"</span>);
+            <span class="keyword">return</span> BadRequest(<span class="string">"Invalid file path"</span>);
         }</div>
         </div>
 
         <!-- Slide 36: Feature 3 - Good Code Part 3 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 3</h2>
-            <div class="code-block" style="max-height: 400px;">        try
+            <div class="code-block" style="max-height: 400px;">        <span class="keyword">try</span>
         {
-            // V5.4.1: Verify it's actually an image by loading it
-            using (var image = await Image.LoadAsync(file.OpenReadStream()))
+            <span class="comment">// V5.4.1: Verify it's actually an image by loading it</span>
+            <span class="keyword">using</span> (<span class="keyword">var</span> image = <span class="keyword">await</span> Image.LoadAsync(file.OpenReadStream()))
             {
-                // Optional: Resize if too large
-                if (image.Width > 1000 || image.Height > 1000)
+                <span class="comment">// Optional: Resize if too large</span>
+                <span class="keyword">if</span> (image.Width > 1000 || image.Height > 1000)
                 {
-                    image.Mutate(x => x.Resize(new ResizeOptions
+                    image.Mutate(x => x.Resize(<span class="keyword">new</span> ResizeOptions
                     {
-                        Size = new Size(1000, 1000),
+                        Size = <span class="keyword">new</span> Size(1000, 1000),
                         Mode = ResizeMode.Max
                     }));
                 }
                 
-                // Save the validated image
-                await image.SaveAsync(filePath);
+                <span class="comment">// Save the validated image</span>
+                <span class="keyword">await</span> image.SaveAsync(filePath);
             }
             
-            // V5.4.2: In production, scan for malware here
-            // await _malwareScanner.ScanFileAsync(filePath);
+            <span class="comment">// V5.4.2: In production, scan for malware here</span>
+            <span class="comment">// await _malwareScanner.ScanFileAsync(filePath);</span>
             
-            // Update user's profile picture reference
-            var user = await _context.Users.FindAsync(userId);
-            if (user != null)
+            <span class="comment">// Update user's profile picture reference</span>
+            <span class="keyword">var</span> user = <span class="keyword">await</span> _context.Users.FindAsync(userId);
+            <span class="keyword">if</span> (user != <span class="keyword">null</span>)
             {
-                // Delete old profile picture if exists
-                if (!string.IsNullOrEmpty(user.ProfilePicture))
+                <span class="comment">// Delete old profile picture if exists</span>
+                <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(user.ProfilePicture))
                 {
-                    var oldPath = Path.Combine(_uploadPath, user.ProfilePicture);
-                    if (System.IO.File.Exists(oldPath))
+                    <span class="keyword">var</span> oldPath = Path.Combine(_uploadPath, user.ProfilePicture);
+                    <span class="keyword">if</span> (System.IO.File.Exists(oldPath))
                         System.IO.File.Delete(oldPath);
                 }
                 
                 user.ProfilePicture = uniqueFileName;
-                await _context.SaveChangesAsync();
+                <span class="keyword">await</span> _context.SaveChangesAsync();
             }
             
-            _logger.LogInformation($"User {userId} uploaded profile picture");
+            _logger.LogInformation(<span class="string">$"User {userId} uploaded profile picture"</span>);
             
-            // V5.4.1: Return file ID, not direct path
-            return Ok(new { fileId = uniqueFileName, success = true });
+            <span class="comment">// V5.4.1: Return file ID, not direct path</span>
+            <span class="keyword">return</span> Ok(<span class="keyword">new</span> { fileId = uniqueFileName, success = <span class="keyword">true</span> });
         }
-        catch (Exception ex)
+        <span class="keyword">catch</span> (Exception ex)
         {
-            _logger.LogError(ex, "Error uploading profile picture");
-            return StatusCode(500, "Error uploading file");
+            _logger.LogError(ex, <span class="string">"Error uploading profile picture"</span>);
+            <span class="keyword">return</span> StatusCode(500, <span class="string">"Error uploading file"</span>);
         }
     }
 }</div>
