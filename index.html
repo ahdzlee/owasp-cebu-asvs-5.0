@@ -5,6 +5,251 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OWASP Cebu - ASVS v5.0 Workshop</title>
     <style>
+        :root {
+            /* Dark theme (default) */
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-mid: #1e293b;
+            --bg-gradient-end: #0f172a;
+            --overlay-blue: rgba(59, 130, 246, 0.1);
+            --overlay-purple: rgba(139, 92, 246, 0.1);
+            --grid-opacity: 0.03;
+            --grid-vignette: rgba(15, 23, 42, 0.5);
+            --grid-overall-opacity: 0.4;
+            --link-color: #93c5fd;
+            --link-border: rgba(147, 197, 253, 0.3);
+            --link-hover: #60a5fa;
+            --link-hover-border: rgba(96, 165, 250, 0.6);
+            --link-hover-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
+            --link-visited: #a78bfa;
+            --slide-bg-start: #1e293b;
+            --slide-bg-end: #0f172a;
+            --slide-border: rgba(59, 130, 246, 0.2);
+            --slide-border-width: 1px;
+            --slide-shadow-ring: rgba(59, 130, 246, 0.1);
+            --slide-shadow-main: rgba(0, 0, 0, 0.5);
+            --slide-inset: rgba(255, 255, 255, 0.05);
+            --h1-color: #60a5fa;
+            --h1-shadow: 0 0 30px rgba(96, 165, 250, 0.3);
+            --h2-color: #60a5fa;
+            --h2-border: rgba(59, 130, 246, 0.3);
+            --h2-border-width: 2px;
+            --h2-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+            --h3-color: #a78bfa;
+            --h4-color: #94a3b8;
+            --text-color: #cbd5e1;
+            --subtitle-color: #94a3b8;
+            --user-story-bg: rgba(59, 130, 246, 0.15);
+            --user-story-border: rgba(59, 130, 246, 0.2);
+            --user-story-text: #e2e8f0;
+            --vulnerability-bg: rgba(239, 68, 68, 0.1);
+            --vulnerability-border: rgba(239, 68, 68, 0.2);
+            --secure-bg: rgba(34, 197, 94, 0.1);
+            --secure-border: rgba(34, 197, 94, 0.2);
+            --asvs-bg: rgba(251, 146, 60, 0.1);
+            --asvs-border: rgba(251, 146, 60, 0.3);
+            --asvs-h4: #fb923c;
+            --code-bg: rgba(15, 23, 42, 0.8);
+            --code-text: #e2e8f0;
+            --code-border: rgba(59, 130, 246, 0.2);
+            --code-border-width: 1px;
+            --code-shadow: rgba(0, 0, 0, 0.3);
+            --comment-color: #6a9955;
+            --keyword-color: #569cd6;
+            --string-color: #ce9178;
+            --btn-bg: rgba(59, 130, 246, 0.08);
+            --btn-color: rgba(96, 165, 250, 0.7);
+            --btn-border: rgba(59, 130, 246, 0.2);
+            --btn-border-width: 1px;
+            --btn-opacity: 0.6;
+            --btn-hover-bg: rgba(59, 130, 246, 0.15);
+            --btn-hover-border: rgba(59, 130, 246, 0.4);
+            --btn-hover-color: rgba(96, 165, 250, 0.9);
+            --btn-hover-opacity: 1;
+            --btn-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+            --btn-disabled-bg: rgba(59, 130, 246, 0.05);
+            --btn-disabled-opacity: 0.2;
+            --card-bg: rgba(30, 41, 59, 0.5);
+            --card-border: rgba(59, 130, 246, 0.2);
+            --card-border-width: 1px;
+            --card-shadow: none;
+            --card-h-color: #60a5fa;
+            --card-text: #e2e8f0;
+            --badge-bg: rgba(59, 130, 246, 0.2);
+            --badge-color: #60a5fa;
+            --badge-border: rgba(59, 130, 246, 0.3);
+            --badge-danger-bg: rgba(239, 68, 68, 0.2);
+            --badge-danger-color: #f87171;
+            --badge-danger-border: rgba(239, 68, 68, 0.3);
+            --badge-success-bg: rgba(34, 197, 94, 0.2);
+            --badge-success-color: #4ade80;
+            --badge-success-border: rgba(34, 197, 94, 0.3);
+            --badge-warning-bg: rgba(251, 146, 60, 0.2);
+            --badge-warning-color: #fb923c;
+            --badge-warning-border: rgba(251, 146, 60, 0.3);
+            --highlight-bg: rgba(251, 191, 36, 0.15);
+            --highlight-border: rgba(251, 191, 36, 0.5);
+            --highlight-text: #fef3c7;
+            --checklist-check: #22c55e;
+            --timeline-bg: rgba(30, 41, 59, 0.5);
+            --timeline-border: rgba(59, 130, 246, 0.2);
+            --timeline-border-width: 1px;
+            --timeline-text: #e2e8f0;
+            --timeline-time-bg: rgba(59, 130, 246, 0.2);
+            --timeline-time-color: #60a5fa;
+            --timeline-time-border: rgba(59, 130, 246, 0.3);
+            --key-point-bg: rgba(59, 130, 246, 0.15);
+            --key-point-color: #60a5fa;
+            --key-point-border: rgba(59, 130, 246, 0.3);
+            --key-point-border-width: 1px;
+            --key-point-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+            --comparison-bad-bg: rgba(239, 68, 68, 0.1);
+            --comparison-bad-border: rgba(239, 68, 68, 0.3);
+            --comparison-good-bg: rgba(34, 197, 94, 0.1);
+            --comparison-good-border: rgba(34, 197, 94, 0.3);
+            --scroll-indicator: #64748b;
+            --selector-bg: rgba(15, 23, 42, 0.95);
+            --selector-border: rgba(59, 130, 246, 0.3);
+            --selector-border-width: 1px;
+            --selector-shadow: rgba(0, 0, 0, 0.6);
+            --selector-inset: rgba(255, 255, 255, 0.05);
+            --selector-item-color: #cbd5e1;
+            --selector-item-hover-bg: rgba(59, 130, 246, 0.15);
+            --selector-item-hover-color: #e2e8f0;
+            --selector-item-current-bg: rgba(59, 130, 246, 0.2);
+            --selector-item-current-color: #60a5fa;
+            --selector-item-current-border: #60a5fa;
+            --selector-header-bg: rgba(59, 130, 246, 0.2);
+            --selector-header-color: #60a5fa;
+            --selector-header-border: rgba(59, 130, 246, 0.3);
+            --badge-float-bg: rgba(30, 41, 59, 0.85);
+            --badge-float-shadow: rgba(0, 0, 0, 0.3);
+            --shield-opacity: 0.12;
+            --shield-shadow: rgba(59, 130, 246, 0.5);
+            --glow-opacity: 0.2;
+        }
+
+        body.light-theme {
+            --bg-gradient-start: #f8fafc;
+            --bg-gradient-mid: #e2e8f0;
+            --bg-gradient-end: #f1f5f9;
+            --overlay-blue: rgba(59, 130, 246, 0.08);
+            --overlay-purple: rgba(139, 92, 246, 0.08);
+            --grid-opacity: 0.02;
+            --grid-vignette: transparent;
+            --grid-overall-opacity: 0.5;
+            --link-color: #2563eb;
+            --link-border: rgba(37, 99, 235, 0.3);
+            --link-hover: #1d4ed8;
+            --link-hover-border: rgba(29, 78, 216, 0.6);
+            --link-hover-shadow: none;
+            --link-visited: #7c3aed;
+            --slide-bg-start: #ffffff;
+            --slide-bg-end: #f8fafc;
+            --slide-border: rgba(59, 130, 246, 0.15);
+            --slide-border-width: 2px;
+            --slide-shadow-ring: rgba(59, 130, 246, 0.08);
+            --slide-shadow-main: rgba(15, 23, 42, 0.12);
+            --slide-inset: rgba(255, 255, 255, 0.9);
+            --h1-color: #1e40af;
+            --h1-shadow: 0 2px 4px rgba(30, 64, 175, 0.1);
+            --h2-color: #1e40af;
+            --h2-border: rgba(59, 130, 246, 0.2);
+            --h2-border-width: 3px;
+            --h2-shadow: none;
+            --h3-color: #7c3aed;
+            --h4-color: #475569;
+            --text-color: #334155;
+            --subtitle-color: #64748b;
+            --user-story-bg: rgba(59, 130, 246, 0.08);
+            --user-story-border: rgba(59, 130, 246, 0.15);
+            --user-story-text: #1e293b;
+            --vulnerability-bg: rgba(239, 68, 68, 0.08);
+            --vulnerability-border: rgba(239, 68, 68, 0.15);
+            --secure-bg: rgba(34, 197, 94, 0.08);
+            --secure-border: rgba(34, 197, 94, 0.15);
+            --asvs-bg: rgba(251, 146, 60, 0.08);
+            --asvs-border: rgba(251, 146, 60, 0.2);
+            --asvs-h4: #ea580c;
+            --code-bg: #f8fafc;
+            --code-text: #1e293b;
+            --code-border: rgba(59, 130, 246, 0.15);
+            --code-border-width: 2px;
+            --code-shadow: rgba(0, 0, 0, 0.05);
+            --comment-color: #16a34a;
+            --keyword-color: #2563eb;
+            --string-color: #dc2626;
+            --btn-bg: rgba(255, 255, 255, 0.95);
+            --btn-color: #1e40af;
+            --btn-border: rgba(59, 130, 246, 0.3);
+            --btn-border-width: 2px;
+            --btn-opacity: 1;
+            --btn-hover-bg: rgba(59, 130, 246, 0.1);
+            --btn-hover-border: rgba(59, 130, 246, 0.5);
+            --btn-hover-color: #1e40af;
+            --btn-hover-opacity: 1;
+            --btn-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+            --btn-disabled-bg: rgba(255, 255, 255, 0.7);
+            --btn-disabled-opacity: 0.3;
+            --card-bg: rgba(248, 250, 252, 0.8);
+            --card-border: rgba(59, 130, 246, 0.15);
+            --card-border-width: 2px;
+            --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --card-h-color: #1e40af;
+            --card-text: #334155;
+            --badge-bg: rgba(59, 130, 246, 0.12);
+            --badge-color: #1e40af;
+            --badge-border: rgba(59, 130, 246, 0.2);
+            --badge-danger-bg: rgba(239, 68, 68, 0.12);
+            --badge-danger-color: #dc2626;
+            --badge-danger-border: rgba(239, 68, 68, 0.2);
+            --badge-success-bg: rgba(34, 197, 94, 0.12);
+            --badge-success-color: #16a34a;
+            --badge-success-border: rgba(34, 197, 94, 0.2);
+            --badge-warning-bg: rgba(251, 146, 60, 0.12);
+            --badge-warning-color: #ea580c;
+            --badge-warning-border: rgba(251, 146, 60, 0.2);
+            --highlight-bg: rgba(251, 191, 36, 0.12);
+            --highlight-border: rgba(251, 191, 36, 0.4);
+            --highlight-text: #92400e;
+            --checklist-check: #16a34a;
+            --timeline-bg: rgba(248, 250, 252, 0.8);
+            --timeline-border: rgba(59, 130, 246, 0.15);
+            --timeline-border-width: 2px;
+            --timeline-text: #334155;
+            --timeline-time-bg: rgba(59, 130, 246, 0.12);
+            --timeline-time-color: #1e40af;
+            --timeline-time-border: rgba(59, 130, 246, 0.2);
+            --key-point-bg: rgba(59, 130, 246, 0.1);
+            --key-point-color: #1e40af;
+            --key-point-border: rgba(59, 130, 246, 0.2);
+            --key-point-border-width: 2px;
+            --key-point-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+            --comparison-bad-bg: rgba(239, 68, 68, 0.08);
+            --comparison-bad-border: rgba(239, 68, 68, 0.2);
+            --comparison-good-bg: rgba(34, 197, 94, 0.08);
+            --comparison-good-border: rgba(34, 197, 94, 0.2);
+            --scroll-indicator: #94a3b8;
+            --selector-bg: rgba(255, 255, 255, 0.98);
+            --selector-border: rgba(59, 130, 246, 0.2);
+            --selector-border-width: 2px;
+            --selector-shadow: rgba(15, 23, 42, 0.15);
+            --selector-inset: transparent;
+            --selector-item-color: #334155;
+            --selector-item-hover-bg: rgba(59, 130, 246, 0.08);
+            --selector-item-hover-color: #1e293b;
+            --selector-item-current-bg: rgba(59, 130, 246, 0.12);
+            --selector-item-current-color: #1e40af;
+            --selector-item-current-border: #3b82f6;
+            --selector-header-bg: rgba(59, 130, 246, 0.12);
+            --selector-header-color: #1e40af;
+            --selector-header-border: rgba(59, 130, 246, 0.2);
+            --badge-float-bg: rgba(255, 255, 255, 0.95);
+            --badge-float-shadow: rgba(0, 0, 0, 0.1);
+            --shield-opacity: 0.1;
+            --shield-shadow: rgba(59, 130, 246, 0.3);
+            --glow-opacity: 0.15;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,10 +258,11 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
             overflow: hidden;
             height: 100vh;
             position: relative;
+            transition: background 0.3s ease;
         }
 
         body::before {
@@ -27,9 +273,10 @@
             right: 0;
             bottom: 0;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+                radial-gradient(circle at 20% 50%, var(--overlay-blue) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--overlay-purple) 0%, transparent 50%);
             pointer-events: none;
+            transition: background 0.3s ease;
         }
 
         body::after {
@@ -40,28 +287,29 @@
             right: 0;
             bottom: 0;
             background-image: 
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(59, 130, 246, 0.03) 2px, rgba(59, 130, 246, 0.03) 4px),
-                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(59, 130, 246, 0.03) 2px, rgba(59, 130, 246, 0.03) 4px),
-                radial-gradient(circle at 50% 50%, transparent 0%, rgba(15, 23, 42, 0.5) 100%);
-            opacity: 0.4;
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(59, 130, 246, var(--grid-opacity)) 2px, rgba(59, 130, 246, var(--grid-opacity)) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(59, 130, 246, var(--grid-opacity)) 2px, rgba(59, 130, 246, var(--grid-opacity)) 4px),
+                radial-gradient(circle at 50% 50%, transparent 0%, var(--grid-vignette) 100%);
+            opacity: var(--grid-overall-opacity);
             pointer-events: none;
+            transition: opacity 0.3s ease, background-image 0.3s ease;
         }
 
         a {
-            color: #93c5fd;
+            color: var(--link-color);
             text-decoration: none;
-            border-bottom: 1px solid rgba(147, 197, 253, 0.3);
+            border-bottom: 1px solid var(--link-border);
             transition: all 0.3s ease;
         }
 
         a:hover {
-            color: #60a5fa;
-            border-bottom-color: rgba(96, 165, 250, 0.6);
-            text-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
+            color: var(--link-hover);
+            border-bottom-color: var(--link-hover-border);
+            text-shadow: var(--link-hover-shadow);
         }
 
         a:visited {
-            color: #a78bfa;
+            color: var(--link-visited);
         }
 
         .presentation {
@@ -74,22 +322,23 @@
         }
 
         .slide {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: linear-gradient(135deg, var(--slide-bg-start) 0%, var(--slide-bg-end) 100%);
+            border: var(--slide-border-width) solid var(--slide-border);
             width: 90%;
             max-width: 1200px;
             height: 85vh;
             border-radius: 16px;
             box-shadow: 
-                0 0 0 1px rgba(59, 130, 246, 0.1),
-                0 20px 60px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+                0 0 0 1px var(--slide-shadow-ring),
+                0 20px 60px var(--slide-shadow-main),
+                inset 0 1px 0 var(--slide-inset);
             padding: 60px;
             display: none;
             flex-direction: column;
             position: relative;
             overflow-y: auto;
             backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
         }
 
         .slide.active {
@@ -113,44 +362,49 @@
         }
 
         h1 {
-            color: #60a5fa;
+            color: var(--h1-color);
             font-size: 3em;
             margin-bottom: 20px;
             font-weight: 700;
-            text-shadow: 0 0 30px rgba(96, 165, 250, 0.3);
+            text-shadow: var(--h1-shadow);
+            transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
         h2 {
-            color: #60a5fa;
+            color: var(--h2-color);
             font-size: 2.5em;
             margin-bottom: 30px;
-            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            border-bottom: var(--h2-border-width) solid var(--h2-border);
             padding-bottom: 15px;
             font-weight: 700;
-            text-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+            text-shadow: var(--h2-shadow);
+            transition: all 0.3s ease;
         }
 
         h3 {
-            color: #a78bfa;
+            color: var(--h3-color);
             font-size: 1.8em;
             margin-top: 25px;
             margin-bottom: 15px;
             font-weight: 600;
+            transition: color 0.3s ease;
         }
 
         h4 {
-            color: #94a3b8;
+            color: var(--h4-color);
             font-size: 1.3em;
             margin-top: 20px;
             margin-bottom: 10px;
             font-weight: 600;
+            transition: color 0.3s ease;
         }
 
         p, li {
-            color: #cbd5e1;
+            color: var(--text-color);
             font-size: 1.2em;
             line-height: 1.8;
             margin-bottom: 15px;
+            transition: color 0.3s ease;
         }
 
         ul {
@@ -159,57 +413,63 @@
         }
 
         .subtitle {
-            color: #94a3b8;
+            color: var(--subtitle-color);
             font-size: 1.5em;
             font-style: italic;
+            transition: color 0.3s ease;
         }
 
         .user-story {
-            background: rgba(59, 130, 246, 0.15);
+            background: var(--user-story-bg);
             border-left: 4px solid #3b82f6;
             padding: 20px;
             margin: 25px 0;
             border-radius: 8px;
             font-style: italic;
             font-size: 1.3em;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            color: #e2e8f0;
+            border: 1px solid var(--user-story-border);
+            color: var(--user-story-text);
+            transition: all 0.3s ease;
         }
 
         .vulnerability-box {
-            background: rgba(239, 68, 68, 0.1);
+            background: var(--vulnerability-bg);
             border-left: 4px solid #ef4444;
             padding: 20px;
             margin: 20px 0;
             border-radius: 8px;
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--vulnerability-border);
+            transition: all 0.3s ease;
         }
 
         .secure-box {
-            background: rgba(34, 197, 94, 0.1);
+            background: var(--secure-bg);
             border-left: 4px solid #22c55e;
             padding: 20px;
             margin: 20px 0;
             border-radius: 8px;
-            border: 1px solid rgba(34, 197, 94, 0.2);
+            border: 1px solid var(--secure-border);
+            transition: all 0.3s ease;
         }
 
         .asvs-mapping {
-            background: rgba(251, 146, 60, 0.1);
-            border: 1px solid rgba(251, 146, 60, 0.3);
+            background: var(--asvs-bg);
+            border: 1px solid var(--asvs-border);
             padding: 25px;
             margin: 25px 0;
             border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
         .asvs-mapping h4 {
-            color: #fb923c;
+            color: var(--asvs-h4);
             margin-top: 0;
+            transition: color 0.3s ease;
         }
 
         .code-block {
-            background: rgba(15, 23, 42, 0.8);
-            color: #e2e8f0;
+            background: var(--code-bg);
+            color: var(--code-text);
             padding: 25px;
             border-radius: 8px;
             margin: 20px 0;
@@ -220,20 +480,24 @@
             overflow-y: auto;
             white-space: pre;
             line-height: 1.6;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            border: var(--code-border-width) solid var(--code-border);
+            box-shadow: inset 0 2px 4px var(--code-shadow);
+            transition: all 0.3s ease;
         }
 
         .comment {
-            color: #6a9955;
+            color: var(--comment-color);
+            transition: color 0.3s ease;
         }
 
         .keyword {
-            color: #569cd6;
+            color: var(--keyword-color);
+            transition: color 0.3s ease;
         }
 
         .string {
-            color: #ce9178;
+            color: var(--string-color);
+            transition: color 0.3s ease;
         }
 
         .controls {
@@ -246,85 +510,88 @@
         }
 
         .btn {
-            background: rgba(59, 130, 246, 0.08);
-            color: rgba(96, 165, 250, 0.7);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: var(--btn-bg);
+            color: var(--btn-color);
+            border: var(--btn-border-width) solid var(--btn-border);
             padding: 10px 20px;
             border-radius: 8px;
             font-size: 0.9em;
             cursor: pointer;
             transition: all 0.3s;
-            font-weight: 400;
+            font-weight: 500;
             backdrop-filter: blur(10px);
-            opacity: 0.6;
+            opacity: var(--btn-opacity);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .btn:hover {
-            background: rgba(59, 130, 246, 0.15);
-            border-color: rgba(59, 130, 246, 0.4);
-            color: rgba(96, 165, 250, 0.9);
-            opacity: 1;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+            background: var(--btn-hover-bg);
+            border-color: var(--btn-hover-border);
+            color: var(--btn-hover-color);
+            opacity: var(--btn-hover-opacity);
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow);
         }
 
         .btn:disabled {
-            opacity: 0.2;
+            opacity: var(--btn-disabled-opacity);
             cursor: not-allowed;
-            background: rgba(59, 130, 246, 0.05);
+            background: var(--btn-disabled-bg);
         }
 
         .btn:disabled:hover {
             transform: none;
-            box-shadow: none;
-            background: rgba(59, 130, 246, 0.05);
-            opacity: 0.2;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            background: var(--btn-disabled-bg);
+            opacity: var(--btn-disabled-opacity);
         }
 
         .slide-number {
             position: fixed;
             bottom: 30px;
             left: 30px;
-            color: rgba(96, 165, 250, 0.7);
+            color: var(--btn-color);
             font-size: 0.9em;
-            font-weight: 400;
-            background: rgba(59, 130, 246, 0.08);
+            font-weight: 500;
+            background: var(--btn-bg);
             padding: 10px 20px;
             border-radius: 8px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: var(--btn-border-width) solid var(--btn-border);
             backdrop-filter: blur(10px);
             cursor: pointer;
             transition: all 0.3s;
             user-select: none;
-            opacity: 0.6;
+            opacity: var(--btn-opacity);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .slide-number:hover {
-            background: rgba(59, 130, 246, 0.15);
-            border-color: rgba(59, 130, 246, 0.4);
-            color: rgba(96, 165, 250, 0.9);
-            opacity: 1;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+            background: var(--btn-hover-bg);
+            border-color: var(--btn-hover-border);
+            color: var(--btn-hover-color);
+            opacity: var(--btn-hover-opacity);
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow);
         }
 
         .slide-selector {
             position: fixed;
             bottom: 70px;
             left: 30px;
-            background: rgba(15, 23, 42, 0.95);
+            background: var(--selector-bg);
             backdrop-filter: blur(20px);
             border-radius: 10px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border: var(--selector-border-width) solid var(--selector-border);
             box-shadow: 
-                0 0 0 1px rgba(59, 130, 246, 0.1),
-                0 8px 32px rgba(0, 0, 0, 0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+                0 0 0 1px var(--slide-shadow-ring),
+                0 8px 32px var(--selector-shadow),
+                inset 0 1px 0 var(--selector-inset);
             max-height: 400px;
             overflow-y: auto;
             display: none;
             z-index: 1001;
             min-width: 280px;
+            transition: all 0.3s ease;
         }
 
         .slide-selector.active {
@@ -348,21 +615,21 @@
             border-bottom: 1px solid rgba(59, 130, 246, 0.1);
             cursor: pointer;
             transition: all 0.2s;
-            color: #cbd5e1;
+            color: var(--selector-item-color);
             font-size: 0.85em;
         }
 
         .slide-selector-item:hover {
-            background: rgba(59, 130, 246, 0.15);
+            background: var(--selector-item-hover-bg);
             padding-left: 20px;
-            color: #e2e8f0;
+            color: var(--selector-item-hover-color);
         }
 
         .slide-selector-item.current {
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
+            background: var(--selector-item-current-bg);
+            color: var(--selector-item-current-color);
             font-weight: 600;
-            border-left: 3px solid #60a5fa;
+            border-left: 3px solid var(--selector-item-current-border);
         }
 
         .slide-selector-item:last-child {
@@ -371,8 +638,8 @@
 
         .slide-selector-header {
             padding: 12px 16px;
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
+            background: var(--selector-header-bg);
+            color: var(--selector-header-color);
             font-weight: 600;
             font-size: 0.85em;
             border-radius: 10px 10px 0 0;
@@ -380,7 +647,8 @@
             top: 0;
             z-index: 1;
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+            border-bottom: var(--selector-border-width) solid var(--selector-header-border);
+            transition: all 0.3s ease;
         }
 
         .grid-2 {
@@ -391,65 +659,72 @@
         }
 
         .card {
-            background: rgba(30, 41, 59, 0.5);
+            background: var(--card-bg);
             padding: 25px;
             border-radius: 10px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: var(--card-border-width) solid var(--card-border);
             backdrop-filter: blur(10px);
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
         }
 
         .card h3,
         .card h4 {
-            color: #60a5fa;
+            color: var(--card-h-color);
+            transition: color 0.3s ease;
         }
 
         .card p,
         .card li {
-            color: #e2e8f0;
+            color: var(--card-text);
+            transition: color 0.3s ease;
         }
 
         .badge {
             display: inline-block;
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
+            background: var(--badge-bg);
+            color: var(--badge-color);
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.9em;
             margin-right: 10px;
             margin-bottom: 10px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border: 1px solid var(--badge-border);
+            transition: all 0.3s ease;
         }
 
         .badge-danger {
-            background: rgba(239, 68, 68, 0.2);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: var(--badge-danger-bg);
+            color: var(--badge-danger-color);
+            border: 1px solid var(--badge-danger-border);
         }
 
         .badge-success {
-            background: rgba(34, 197, 94, 0.2);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.3);
+            background: var(--badge-success-bg);
+            color: var(--badge-success-color);
+            border: 1px solid var(--badge-success-border);
         }
 
         .badge-warning {
-            background: rgba(251, 146, 60, 0.2);
-            color: #fb923c;
-            border: 1px solid rgba(251, 146, 60, 0.3);
+            background: var(--badge-warning-bg);
+            color: var(--badge-warning-color);
+            border: 1px solid var(--badge-warning-border);
         }
 
         .highlight-box {
-            background: rgba(251, 191, 36, 0.15);
-            border: 2px dashed rgba(251, 191, 36, 0.5);
+            background: var(--highlight-bg);
+            border: 2px dashed var(--highlight-border);
             padding: 30px;
             border-radius: 10px;
             margin: 25px 0;
             text-align: center;
+            transition: all 0.3s ease;
         }
 
         .highlight-box p,
         .highlight-box strong {
-            color: #fef3c7;
+            color: var(--highlight-text);
+            transition: color 0.3s ease;
         }
 
         .checklist {
@@ -459,18 +734,20 @@
 
         .checklist li:before {
             content: "✓ ";
-            color: #22c55e;
+            color: var(--checklist-check);
             font-weight: bold;
             font-size: 1.4em;
             margin-right: 10px;
+            transition: color 0.3s ease;
         }
 
         .timeline {
-            background: rgba(30, 41, 59, 0.5);
+            background: var(--timeline-bg);
             padding: 20px;
             border-radius: 10px;
             margin: 20px 0;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: var(--timeline-border-width) solid var(--timeline-border);
+            transition: all 0.3s ease;
         }
 
         .timeline-item {
@@ -480,32 +757,35 @@
         }
 
         .timeline-item div {
-            color: #e2e8f0;
+            color: var(--timeline-text);
+            transition: color 0.3s ease;
         }
 
         .timeline-time {
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
+            background: var(--timeline-time-bg);
+            color: var(--timeline-time-color);
             padding: 8px 16px;
             border-radius: 20px;
             min-width: 80px;
             text-align: center;
             font-weight: bold;
             margin-right: 20px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border: 1px solid var(--timeline-time-border);
+            transition: all 0.3s ease;
         }
 
         .key-point {
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
+            background: var(--key-point-bg);
+            color: var(--key-point-color);
             padding: 30px;
             border-radius: 15px;
             margin: 20px 0;
             font-size: 1.3em;
             text-align: center;
             font-weight: bold;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+            border: var(--key-point-border-width) solid var(--key-point-border);
+            box-shadow: var(--key-point-shadow);
+            transition: all 0.3s ease;
         }
 
         .emoji {
@@ -521,17 +801,19 @@
         }
 
         .comparison-bad {
-            background: rgba(239, 68, 68, 0.1);
+            background: var(--comparison-bad-bg);
             padding: 20px;
             border-radius: 10px;
-            border: 2px solid rgba(239, 68, 68, 0.3);
+            border: 2px solid var(--comparison-bad-border);
+            transition: all 0.3s ease;
         }
 
         .comparison-good {
-            background: rgba(34, 197, 94, 0.1);
+            background: var(--comparison-good-bg);
             padding: 20px;
             border-radius: 10px;
-            border: 2px solid rgba(34, 197, 94, 0.3);
+            border: 2px solid var(--comparison-good-border);
+            transition: all 0.3s ease;
         }
 
         .comparison h4 {
@@ -542,13 +824,55 @@
             position: absolute;
             bottom: 10px;
             right: 10px;
-            color: #64748b;
+            color: var(--scroll-indicator);
             font-size: 0.9em;
             font-style: italic;
+            transition: color 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--btn-bg);
+            color: var(--btn-color);
+            border: var(--btn-border-width) solid var(--btn-border);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            opacity: var(--btn-opacity);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .theme-toggle:hover {
+            background: var(--btn-hover-bg);
+            border-color: var(--btn-hover-border);
+            color: var(--btn-hover-color);
+            opacity: var(--btn-hover-opacity);
+            transform: translateY(-2px);
+            box-shadow: var(--btn-shadow);
+        }
+
+        .theme-icon {
+            font-size: 1.2em;
         }
     </style>
 </head>
 <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <span class="theme-icon" id="themeIcon">☀️</span>
+        <span id="themeText">Light Mode</span>
+    </button>
+
     <div class="presentation">
         <!-- Slide 1: Title -->
         <div class="slide active">
@@ -2468,7 +2792,75 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             }
         });
 
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            
+            body.classList.toggle('light-theme');
+            
+            const isLight = body.classList.contains('light-theme');
+            
+            if (isLight) {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+            
+            // Update inline styled elements
+            updateInlineStyles(isLight);
+        }
+        
+        // Update inline styled elements based on theme
+        function updateInlineStyles(isLight) {
+            // Update OWASP logo filter
+            const owaspLogo = document.querySelector('img[alt="OWASP Logo"]');
+            if (owaspLogo) {
+                owaspLogo.style.filter = isLight ? 'opacity(0.85)' : 'brightness(0) invert(1) opacity(0.9)';
+            }
+            
+            // Update shield emoji opacity
+            const shieldEmoji = document.querySelector('[style*="font-size: 200px"]');
+            if (shieldEmoji) {
+                const currentStyle = shieldEmoji.getAttribute('style');
+                const newOpacity = isLight ? '0.1' : '0.12';
+                const newShadow = isLight ? 'rgba(59, 130, 246, 0.3)' : 'rgba(59, 130, 246, 0.5)';
+                shieldEmoji.setAttribute('style', currentStyle.replace(/opacity: [0-9.]+/, `opacity: ${newOpacity}`).replace(/drop-shadow\([^)]+\)/, `drop-shadow(0 0 30px ${newShadow})`));
+            }
+            
+            // Update background glow
+            const bgGlow = document.querySelector('[style*="radial-gradient(circle, rgba(59, 130, 246"]');
+            if (bgGlow) {
+                const glowOpacity = isLight ? '0.15' : '0.2';
+                const currentStyle = bgGlow.getAttribute('style');
+                bgGlow.setAttribute('style', currentStyle.replace(/rgba\(59, 130, 246, [0-9.]+\)/, `rgba(59, 130, 246, ${glowOpacity})`));
+            }
+        }
+
+        // Load saved theme preference
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            
+            if (savedTheme === 'light') {
+                body.classList.add('light-theme');
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+                updateInlineStyles(true);
+            } else {
+                updateInlineStyles(false);
+            }
+        }
+
         // Initialize
+        loadTheme();
         initSlideSelector();
         showSlide(0);
     </script>
