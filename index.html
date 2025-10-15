@@ -2715,6 +2715,9 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
             
             updateSlideSelector();
+            
+            // Update hash without triggering page scroll
+            history.replaceState(null, null, `#slide-${currentSlide + 1}`);
         }
 
         function toggleSlideSelector() {
@@ -2792,160 +2795,19 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             }
         });
 
-        // Theme toggle functionality
+        // Theme toggle functionality with page refresh
         function toggleTheme() {
-            const body = document.body;
-            const themeIcon = document.getElementById('themeIcon');
-            const themeText = document.getElementById('themeText');
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            body.classList.toggle('light-theme');
+            // Save new theme
+            localStorage.setItem('theme', newTheme);
             
-            const isLight = body.classList.contains('light-theme');
+            // Save current slide position
+            window.location.hash = `slide-${currentSlide + 1}`;
             
-            if (isLight) {
-                themeIcon.textContent = '🌙';
-                themeText.textContent = 'Dark Mode';
-                localStorage.setItem('theme', 'light');
-            } else {
-                themeIcon.textContent = '☀️';
-                themeText.textContent = 'Light Mode';
-                localStorage.setItem('theme', 'dark');
-            }
-            
-            // Update inline styled elements
-            updateInlineStyles(isLight);
-        }
-        
-        // Update inline styled elements based on theme
-        function updateInlineStyles(isLight) {
-            // Update OWASP logo filter
-            const owaspLogo = document.querySelector('img[alt="OWASP Logo"]');
-            if (owaspLogo) {
-                owaspLogo.style.filter = isLight ? 'opacity(0.85)' : 'brightness(0) invert(1) opacity(0.9)';
-            }
-            
-            // Update shield emoji opacity
-            const shieldEmoji = document.querySelector('[style*="font-size: 200px"]');
-            if (shieldEmoji) {
-                const currentStyle = shieldEmoji.getAttribute('style');
-                const newOpacity = isLight ? '0.1' : '0.12';
-                const newShadow = isLight ? 'rgba(59, 130, 246, 0.3)' : 'rgba(59, 130, 246, 0.5)';
-                shieldEmoji.setAttribute('style', currentStyle.replace(/opacity: [0-9.]+/, `opacity: ${newOpacity}`).replace(/drop-shadow\([^)]+\)/, `drop-shadow(0 0 30px ${newShadow})`));
-            }
-            
-            // Update background glow
-            const bgGlow = document.querySelector('[style*="radial-gradient(circle, rgba(59, 130, 246"]');
-            if (bgGlow) {
-                const glowOpacity = isLight ? '0.15' : '0.2';
-                const currentStyle = bgGlow.getAttribute('style');
-                bgGlow.setAttribute('style', currentStyle.replace(/rgba\(59, 130, 246, [0-9.]+\)/, `rgba(59, 130, 246, ${glowOpacity})`));
-            }
-            
-            // Update all floating ASVS chapter badges
-            const badges = document.querySelectorAll('[style*="animation: float"]');
-            badges.forEach(badge => {
-                const style = badge.getAttribute('style');
-                
-                if (isLight) {
-                    // Light theme: white background with colored borders and text
-                    const newStyle = style
-                        .replace(/background: rgba\(30, 41, 59, 0\.85\)/, 'background: rgba(255, 255, 255, 0.95)')
-                        .replace(/border: 1px solid rgba\(59, 130, 246, 0\.4\)/, 'border: 2px solid rgba(59, 130, 246, 0.3)')
-                        .replace(/border: 1px solid rgba\(139, 92, 246, 0\.4\)/, 'border: 2px solid rgba(139, 92, 246, 0.3)')
-                        .replace(/border: 1px solid rgba\(34, 197, 94, 0\.4\)/, 'border: 2px solid rgba(34, 197, 94, 0.3)')
-                        .replace(/border: 1px solid rgba\(251, 146, 60, 0\.4\)/, 'border: 2px solid rgba(251, 146, 60, 0.3)')
-                        .replace(/border: 1px solid rgba\(236, 72, 153, 0\.4\)/, 'border: 2px solid rgba(236, 72, 153, 0.3)')
-                        .replace(/color: #60a5fa/, 'color: #1e40af')
-                        .replace(/color: #a78bfa/, 'color: #7c3aed')
-                        .replace(/color: #4ade80/, 'color: #16a34a')
-                        .replace(/color: #fb923c/, 'color: #ea580c')
-                        .replace(/color: #ec4899/, 'color: #db2777')
-                        .replace(/box-shadow: 0 4px 12px rgba\(0,0,0,0\.3\)/, 'box-shadow: 0 4px 12px rgba(0,0,0,0.1)');
-                    badge.setAttribute('style', newStyle);
-                } else {
-                    // Dark theme: restore original dark colors
-                    const newStyle = style
-                        .replace(/background: rgba\(255, 255, 255, 0\.95\)/, 'background: rgba(30, 41, 59, 0.85)')
-                        .replace(/border: 2px solid rgba\(59, 130, 246, 0\.3\)/, 'border: 1px solid rgba(59, 130, 246, 0.4)')
-                        .replace(/border: 2px solid rgba\(139, 92, 246, 0\.3\)/, 'border: 1px solid rgba(139, 92, 246, 0.4)')
-                        .replace(/border: 2px solid rgba\(34, 197, 94, 0\.3\)/, 'border: 1px solid rgba(34, 197, 94, 0.4)')
-                        .replace(/border: 2px solid rgba\(251, 146, 60, 0\.3\)/, 'border: 1px solid rgba(251, 146, 60, 0.4)')
-                        .replace(/border: 2px solid rgba\(236, 72, 153, 0\.3\)/, 'border: 1px solid rgba(236, 72, 153, 0.4)')
-                        .replace(/color: #1e40af/, 'color: #60a5fa')
-                        .replace(/color: #7c3aed/, 'color: #a78bfa')
-                        .replace(/color: #16a34a/, 'color: #4ade80')
-                        .replace(/color: #ea580c/, 'color: #fb923c')
-                        .replace(/color: #db2777/, 'color: #ec4899')
-                        .replace(/box-shadow: 0 4px 12px rgba\(0,0,0,0\.1\)/, 'box-shadow: 0 4px 12px rgba(0,0,0,0.3)');
-                    badge.setAttribute('style', newStyle);
-                }
-            });
-            
-            // Update Slide 2: Speaker section - LinkedIn and CEH badges
-            const linkedinBadge = document.querySelector('a[href*="linkedin.com"] > div');
-            if (linkedinBadge) {
-                if (isLight) {
-                    linkedinBadge.style.background = 'rgba(248, 250, 252, 0.95)';
-                    linkedinBadge.style.border = '2px solid rgba(10, 102, 194, 0.3)';
-                } else {
-                    linkedinBadge.style.background = 'rgba(30, 41, 59, 0.8)';
-                    linkedinBadge.style.border = '2px solid rgba(10, 102, 194, 0.6)';
-                }
-            }
-            
-            const cehBadge = document.querySelector('a[href*="eccouncil.org"] > div');
-            if (cehBadge) {
-                if (isLight) {
-                    cehBadge.style.background = 'rgba(248, 250, 252, 0.95)';
-                    cehBadge.style.border = '2px solid rgba(239, 68, 68, 0.3)';
-                } else {
-                    cehBadge.style.background = 'rgba(30, 41, 59, 0.8)';
-                    cehBadge.style.border = '2px solid rgba(239, 68, 68, 0.4)';
-                }
-            }
-            
-            // Update Professional Background box
-            const profBackground = document.querySelector('div[style*="background: rgba(30, 41, 59, 0.6)"]');
-            if (profBackground) {
-                if (isLight) {
-                    profBackground.style.background = 'rgba(248, 250, 252, 0.8)';
-                    profBackground.style.border = '2px solid rgba(59, 130, 246, 0.2)';
-                } else {
-                    profBackground.style.background = 'rgba(30, 41, 59, 0.6)';
-                    profBackground.style.border = '1px solid rgba(59, 130, 246, 0.3)';
-                }
-            }
-            
-            // Update Professional Background heading
-            const profHeading = document.querySelector('h3[style*="color: #60a5fa"]');
-            if (profHeading) {
-                profHeading.style.color = isLight ? '#1e40af' : '#60a5fa';
-            }
-            
-            // Update all qualification titles and subtitles
-            const qualTitles = document.querySelectorAll('div[style*="color: #e2e8f0"]');
-            qualTitles.forEach(title => {
-                title.style.color = isLight ? '#1e293b' : '#e2e8f0';
-            });
-            
-            const qualSubtitles = document.querySelectorAll('div[style*="color: #94a3b8"]');
-            qualSubtitles.forEach(subtitle => {
-                subtitle.style.color = isLight ? '#64748b' : '#94a3b8';
-            });
-            
-            // Update quote box
-            const quoteBox = document.querySelector('div[style*="border-left: 4px solid #60a5fa"]');
-            if (quoteBox) {
-                if (isLight) {
-                    quoteBox.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)';
-                    quoteBox.style.borderLeft = '4px solid #3b82f6';
-                    quoteBox.style.color = '#475569';
-                } else {
-                    quoteBox.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)';
-                    quoteBox.style.borderLeft = '4px solid #60a5fa';
-                    quoteBox.style.color = '#cbd5e1';
-                }
-            }
+            // Reload page to apply theme consistently
+            window.location.reload();
         }
 
         // Load saved theme preference
@@ -2959,16 +2821,26 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 body.classList.add('light-theme');
                 themeIcon.textContent = '🌙';
                 themeText.textContent = 'Dark Mode';
-                updateInlineStyles(true);
-            } else {
-                updateInlineStyles(false);
             }
+        }
+        
+        // Restore slide position from hash
+        function restoreSlideFromHash() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#slide-')) {
+                const slideNum = parseInt(hash.replace('#slide-', '')) - 1;
+                if (slideNum >= 0 && slideNum < totalSlides) {
+                    return slideNum;
+                }
+            }
+            return 0;
         }
 
         // Initialize
         loadTheme();
         initSlideSelector();
-        showSlide(0);
+        const initialSlide = restoreSlideFromHash();
+        showSlide(initialSlide);
     </script>
 </body>
 </html>
