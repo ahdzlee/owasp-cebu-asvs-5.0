@@ -2880,6 +2880,72 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     badge.setAttribute('style', newStyle);
                 }
             });
+            
+            // Update Slide 2: Speaker section - LinkedIn and CEH badges
+            const linkedinBadge = document.querySelector('a[href*="linkedin.com"] > div');
+            if (linkedinBadge) {
+                if (isLight) {
+                    linkedinBadge.style.background = 'rgba(248, 250, 252, 0.95)';
+                    linkedinBadge.style.border = '2px solid rgba(10, 102, 194, 0.3)';
+                } else {
+                    linkedinBadge.style.background = 'rgba(30, 41, 59, 0.8)';
+                    linkedinBadge.style.border = '2px solid rgba(10, 102, 194, 0.6)';
+                }
+            }
+            
+            const cehBadge = document.querySelector('a[href*="eccouncil.org"] > div');
+            if (cehBadge) {
+                if (isLight) {
+                    cehBadge.style.background = 'rgba(248, 250, 252, 0.95)';
+                    cehBadge.style.border = '2px solid rgba(239, 68, 68, 0.3)';
+                } else {
+                    cehBadge.style.background = 'rgba(30, 41, 59, 0.8)';
+                    cehBadge.style.border = '2px solid rgba(239, 68, 68, 0.4)';
+                }
+            }
+            
+            // Update Professional Background box
+            const profBackground = document.querySelector('div[style*="background: rgba(30, 41, 59, 0.6)"]');
+            if (profBackground) {
+                if (isLight) {
+                    profBackground.style.background = 'rgba(248, 250, 252, 0.8)';
+                    profBackground.style.border = '2px solid rgba(59, 130, 246, 0.2)';
+                } else {
+                    profBackground.style.background = 'rgba(30, 41, 59, 0.6)';
+                    profBackground.style.border = '1px solid rgba(59, 130, 246, 0.3)';
+                }
+            }
+            
+            // Update Professional Background heading
+            const profHeading = document.querySelector('h3[style*="color: #60a5fa"]');
+            if (profHeading) {
+                profHeading.style.color = isLight ? '#1e40af' : '#60a5fa';
+            }
+            
+            // Update all qualification titles and subtitles
+            const qualTitles = document.querySelectorAll('div[style*="color: #e2e8f0"]');
+            qualTitles.forEach(title => {
+                title.style.color = isLight ? '#1e293b' : '#e2e8f0';
+            });
+            
+            const qualSubtitles = document.querySelectorAll('div[style*="color: #94a3b8"]');
+            qualSubtitles.forEach(subtitle => {
+                subtitle.style.color = isLight ? '#64748b' : '#94a3b8';
+            });
+            
+            // Update quote box
+            const quoteBox = document.querySelector('div[style*="border-left: 4px solid #60a5fa"]');
+            if (quoteBox) {
+                if (isLight) {
+                    quoteBox.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%)';
+                    quoteBox.style.borderLeft = '4px solid #3b82f6';
+                    quoteBox.style.color = '#475569';
+                } else {
+                    quoteBox.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)';
+                    quoteBox.style.borderLeft = '4px solid #60a5fa';
+                    quoteBox.style.color = '#cbd5e1';
+                }
+            }
         }
 
         // Load saved theme preference
