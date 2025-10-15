@@ -217,6 +217,78 @@
             padding: 10px 20px;
             border-radius: 25px;
             backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .slide-number:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .slide-selector {
+            position: fixed;
+            bottom: 80px;
+            left: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1001;
+            min-width: 300px;
+        }
+
+        .slide-selector.active {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-selector-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .slide-selector-item:hover {
+            background: #f5f5f5;
+        }
+
+        .slide-selector-item.current {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .slide-selector-item:last-child {
+            border-bottom: none;
+        }
+
+        .slide-selector-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
         .grid-2 {
@@ -949,7 +1021,789 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
             </div>
         </div>
 
-        <!-- Slide 20: Key Takeaways -->
+        <!-- Slide 20: Take-Home Assignment Intro -->
+        <div class="slide">
+            <h2>🏠 Take-Home Assignment</h2>
+            <div style="display: flex; flex-direction: column; justify-content: center; height: 80%;">
+                <div class="highlight-box">
+                    <h3 style="margin: 0; color: #333; font-size: 2em;">Phoenix Notes Application</h3>
+                    <p style="font-size: 1.3em; margin-top: 20px;">A practical exercise to apply ASVS v5.0 to a complete application</p>
+                </div>
+
+                <div class="card" style="margin-top: 40px; padding: 35px;">
+                    <h3 style="margin-top: 0; color: #667eea;">Application Overview</h3>
+                    <p style="font-size: 1.2em; line-height: 1.8;">
+                        Phoenix Notes is a web application that allows users to register, log in, and manage personal notes with profile pictures.
+                    </p>
+                </div>
+
+                <div class="grid-2" style="margin-top: 30px;">
+                    <div class="card">
+                        <h4 style="margin-top: 0;">📝 Features</h4>
+                        <ul style="font-size: 1em;">
+                            <li>User Registration & Login</li>
+                            <li>Note Management (CRUD)</li>
+                            <li>Profile Picture Upload</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4 style="margin-top: 0;">💻 Technologies</h4>
+                        <ul style="font-size: 1em;">
+                            <li>TypeScript (Auth)</li>
+                            <li>C#.NET (Notes & Upload)</li>
+                            <li>RESTful API with JSON</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21: Feature 1 - User Registration -->
+        <div class="slide">
+            <h2>Feature 1: User Registration & Login</h2>
+            
+            <div class="user-story">
+                <strong>User Stories:</strong><br>
+                • As a new user, I want to create an account with my email and password<br>
+                • As a registered user, I want to log in with my email and password<br>
+                • As a logged-in user, I want to be able to log out
+            </div>
+
+            <h3 style="margin-top: 30px;">🎯 Your Task:</h3>
+            <div style="background: #fff9e6; padding: 25px; border-radius: 10px; border: 2px dashed #ffc107; margin-top: 20px;">
+                <p style="font-size: 1.2em; margin: 0;">
+                    1. Identify security risks in the registration and login process<br>
+                    2. Map relevant ASVS v5.0 controls<br>
+                    3. Review the code examples and identify vulnerabilities<br>
+                    4. Understand the secure implementation
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 22: Feature 1 - ASVS Mapping -->
+        <div class="slide">
+            <h2>Feature 1: ASVS v5.0 Mapping</h2>
+            
+            <div class="asvs-mapping">
+                <h4>V6: Authentication</h4>
+                <ul>
+                    <li><strong>V6.2.1</strong> - Password minimum 8 characters (15+ recommended)</li>
+                    <li><strong>V6.2.5</strong> - No restrictions on password composition</li>
+                    <li><strong>V6.3.1</strong> - Brute force and credential stuffing prevention</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V11: Cryptography</h4>
+                <ul>
+                    <li><strong>V11.4.2</strong> - Passwords stored with approved KDF (bcrypt, Argon2id, scrypt)</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V7: Session Management</h4>
+                <ul>
+                    <li><strong>V7.2.4</strong> - Generate new session token on authentication</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V2: Validation & V16: Logging</h4>
+                <ul>
+                    <li><strong>V2.2.1, V2.2.2</strong> - Input validation at trusted service layer</li>
+                    <li><strong>V16.1.1</strong> - Log authentication events</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 23: Feature 1 - Bad Code (TypeScript) -->
+        <div class="slide">
+            <h2>❌ Bad Code: User Registration (TypeScript)</h2>
+            <div class="code-block"><span class="comment">// INSECURE - Node.js/Express/TypeScript</span>
+<span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>;
+<span class="keyword">import</span> crypto <span class="keyword">from</span> <span class="string">'crypto'</span>;
+
+app.post(<span class="string">'/api/register'</span>, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
+    <span class="keyword">const</span> { email, password } = req.body;
+    
+    <span class="comment">// VULNERABILITY 1: No password validation</span>
+    <span class="comment">// VULNERABILITY 2: Weak hashing (SHA256)</span>
+    <span class="keyword">const</span> passwordHash = crypto.createHash(<span class="string">'sha256'</span>)
+        .update(password).digest(<span class="string">'hex'</span>);
+    
+    <span class="comment">// VULNERABILITY 3: SQL Injection</span>
+    <span class="keyword">const</span> query = <span class="string">`INSERT INTO users (email, password_hash) 
+                   VALUES ('${email}', '${passwordHash}')`</span>;
+    <span class="keyword">await</span> db.query(query);
+    
+    res.json({ <span class="string">success</span>: <span class="keyword">true</span> });
+});
+
+app.post(<span class="string">'/api/login'</span>, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
+    <span class="keyword">const</span> { email, password } = req.body;
+    
+    <span class="comment">// VULNERABILITY 4: No rate limiting</span>
+    <span class="keyword">const</span> hash = crypto.createHash(<span class="string">'sha256'</span>).update(password).digest(<span class="string">'hex'</span>);
+    <span class="keyword">const</span> user = <span class="keyword">await</span> db.query(
+        <span class="string">`SELECT * FROM users WHERE email='${email}' AND password_hash='${hash}'`</span>
+    );
+    
+    <span class="comment">// VULNERABILITY 5: No session regeneration</span>
+    req.session.userId = user.id;
+    res.json({ <span class="string">success</span>: <span class="keyword">true</span> });
+});</div>
+            <div class="vulnerability-box" style="margin-top: 20px;">
+                <strong style="color: #c62828;">🚨 Issues:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Weak hashing</li>
+                    <li>SQL injection</li>
+                    <li>No rate limiting</li>
+                    <li>No validation</li>
+                    <li>No session regeneration</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 24: Feature 1 - Good Code (TypeScript) -->
+        <div class="slide">
+            <h2>✅ Good Code: User Registration (TypeScript)</h2>
+            <div class="code-block" style="max-height: 380px;"><span class="comment">// SECURE - Node.js/Express/TypeScript</span>
+<span class="keyword">import</span> express <span class="keyword">from</span> <span class="string">'express'</span>;
+<span class="keyword">import</span> bcrypt <span class="keyword">from</span> <span class="string">'bcrypt'</span>;
+<span class="keyword">import</span> rateLimit <span class="keyword">from</span> <span class="string">'express-rate-limit'</span>;
+<span class="keyword">import</span> { body, validationResult } <span class="keyword">from</span> <span class="string">'express-validator'</span>;
+
+<span class="comment">// V6.3.1: Rate limiting</span>
+<span class="keyword">const</span> authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, <span class="comment">// 15 minutes</span>
+    max: 5
+});
+
+<span class="comment">// V2.2.1: Input validation middleware</span>
+<span class="keyword">const</span> registerValidation = [
+    body(<span class="string">'email'</span>).isEmail().normalizeEmail(),
+    body(<span class="string">'password'</span>).isLength({ min: 8, max: 128 })
+];
+
+app.post(<span class="string">'/api/register'</span>, registerValidation, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
+    <span class="comment">// V2.2.2: Check validation results</span>
+    <span class="keyword">const</span> errors = validationResult(req);
+    <span class="keyword">if</span> (!errors.isEmpty()) {
+        <span class="keyword">return</span> res.status(400).json({ errors: errors.array() });
+    }
+    
+    <span class="keyword">const</span> { email, password } = req.body;
+    
+    <span class="comment">// V11.4.2: Bcrypt with work factor 12</span>
+    <span class="keyword">const</span> saltRounds = 12;
+    <span class="keyword">const</span> passwordHash = <span class="keyword">await</span> bcrypt.hash(password, saltRounds);
+    
+    <span class="comment">// V2.2.1: Parameterized query</span>
+    <span class="keyword">await</span> db.query(
+        <span class="string">'INSERT INTO users (email, password_hash) VALUES ($1, $2)'</span>,
+        [email, passwordHash]
+    );
+    
+    <span class="comment">// V16.1.1: Log registration</span>
+    logger.info(<span class="string">`New user registered: ${email}`</span>);
+    
+    res.status(201).json({ <span class="string">success</span>: <span class="keyword">true</span> });
+});</div>
+        </div>
+
+        <!-- Slide 25: Feature 1 - Login Good Code (TypeScript) -->
+        <div class="slide">
+            <h2>✅ Good Code: User Login (TypeScript)</h2>
+            <div class="code-block">app.post(<span class="string">'/api/login'</span>, authLimiter, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
+    <span class="keyword">const</span> { email, password } = req.body;
+    
+    <span class="comment">// V2.2.1: Validate input</span>
+    <span class="keyword">if</span> (!email || !password) {
+        <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
+    }
+    
+    <span class="comment">// V6.2.1: Password length check</span>
+    <span class="keyword">if</span> (password.length < 8 || password.length > 128) {
+        <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
+    }
+    
+    <span class="comment">// V2.2.1: Parameterized query</span>
+    <span class="keyword">const</span> result = <span class="keyword">await</span> db.query(
+        <span class="string">'SELECT id, password_hash FROM users WHERE email = $1'</span>,
+        [email]
+    );
+    
+    <span class="keyword">if</span> (result.rows.length === 0) {
+        <span class="comment">// V16.1.1: Log failed attempt</span>
+        logger.warn(<span class="string">`Failed login attempt for ${email}`</span>);
+        <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
+    }
+    
+    <span class="keyword">const</span> user = result.rows[0];
+    
+    <span class="comment">// V11.4.2: Verify with bcrypt</span>
+    <span class="keyword">const</span> validPassword = <span class="keyword">await</span> bcrypt.compare(password, user.password_hash);
+    
+    <span class="keyword">if</span> (!validPassword) {
+        logger.warn(<span class="string">`Failed login for ${email}`</span>);
+        <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
+    }
+    
+    <span class="comment">// V7.2.4: Regenerate session</span>
+    req.session.regenerate((err) <span class="keyword">=></span> {
+        <span class="keyword">if</span> (err) <span class="keyword">return</span> res.status(500).json({ error: <span class="string">'Login failed'</span> });
+        req.session.userId = user.id;
+        logger.info(<span class="string">`Successful login: ${user.id}`</span>);
+        res.json({ <span class="string">success</span>: <span class="keyword">true</span> });
+    });
+});</div>
+        </div>
+
+        <!-- Slide 26: Feature 2 - Note Management -->
+        <div class="slide">
+            <h2>Feature 2: Note Management</h2>
+            
+            <div class="user-story">
+                <strong>User Stories:</strong><br>
+                • As a logged-in user, I want to create a new note with title and content<br>
+                • As a logged-in user, I want to view a list of all my notes<br>
+                • As a logged-in user, I want to view a single note I created<br>
+                • As a logged-in user, I want to delete a note I created
+            </div>
+
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 25px 0; font-family: monospace;">
+                <strong>API Endpoints:</strong><br>
+                POST /api/notes - Create note<br>
+                GET /api/notes - List all user's notes<br>
+                GET /api/notes/{id} - Get single note<br>
+                DELETE /api/notes/{id} - Delete note
+            </div>
+
+            <h3 style="margin-top: 30px;">🎯 Your Task:</h3>
+            <div style="background: #fff9e6; padding: 25px; border-radius: 10px; border: 2px dashed #ffc107;">
+                <p style="font-size: 1.2em; margin: 0;">
+                    Focus on: Authorization (IDOR), Input validation, Access control
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 27: Feature 2 - ASVS Mapping -->
+        <div class="slide">
+            <h2>Feature 2: ASVS v5.0 Mapping</h2>
+            
+            <div class="asvs-mapping">
+                <h4>V8: Authorization (Critical!)</h4>
+                <ul>
+                    <li><strong>V8.2.1</strong> - Function-level access control (must be authenticated)</li>
+                    <li><strong>V8.2.2</strong> - Data-specific access control - users can only access their own notes (IDOR prevention)</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V2: Validation and Business Logic</h4>
+                <ul>
+                    <li><strong>V2.2.1</strong> - Validate note title and content input</li>
+                    <li><strong>V2.2.2</strong> - Server-side input validation</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V14: Data Protection</h4>
+                <ul>
+                    <li><strong>V14.2.1</strong> - Don't expose sensitive data in URLs</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V16: Logging</h4>
+                <ul>
+                    <li><strong>V16.1.1</strong> - Log security events (failed access attempts)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 28: Feature 2 - Bad Code (C#) -->
+        <div class="slide">
+            <h2>❌ Bad Code: Note Management (C#.NET)</h2>
+            <div class="code-block"><span class="comment">// INSECURE - ASP.NET Core C#</span>
+[ApiController]
+[Route(<span class="string">"api/[controller]"</span>)]
+<span class="keyword">public class</span> NotesController : ControllerBase
+{
+    <span class="comment">// VULNERABILITY 1: No authentication required</span>
+    [HttpGet(<span class="string">"{id}"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; GetNote(<span class="keyword">int</span> id)
+    {
+        <span class="comment">// VULNERABILITY 2: No authorization check (IDOR)</span>
+        <span class="comment">// Any user can view any note by changing the ID</span>
+        <span class="keyword">var</span> note = <span class="keyword">await</span> _context.Notes.FindAsync(id);
+        
+        <span class="keyword">if</span> (note == <span class="keyword">null</span>)
+            <span class="keyword">return</span> NotFound();
+        
+        <span class="keyword">return</span> Ok(note);
+    }
+    
+    [HttpPost]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; CreateNote([FromBody] Note note)
+    {
+        <span class="comment">// VULNERABILITY 3: No input validation</span>
+        <span class="comment">// VULNERABILITY 4: No authentication check</span>
+        
+        _context.Notes.Add(note);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+        
+        <span class="keyword">return</span> CreatedAtAction(<span class="keyword">nameof</span>(GetNote), 
+            <span class="keyword">new</span> { id = note.Id }, note);
+    }
+    
+    [HttpDelete(<span class="string">"{id}"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; DeleteNote(<span class="keyword">int</span> id)
+    {
+        <span class="comment">// VULNERABILITY 5: Users can delete anyone's notes</span>
+        <span class="keyword">var</span> note = <span class="keyword">await</span> _context.Notes.FindAsync(id);
+        
+        _context.Notes.Remove(note);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+        
+        <span class="keyword">return</span> NoContent();
+    }
+}</div>
+        </div>
+
+        <!-- Slide 29: Feature 2 - Good Code Part 1 (C#) -->
+        <div class="slide">
+            <h2>✅ Good Code: Note Management (C#.NET) - Part 1</h2>
+            <div class="code-block" style="max-height: 400px;"><span class="comment">// SECURE - ASP.NET Core C#</span>
+<span class="keyword">using</span> Microsoft.AspNetCore.Authorization;
+<span class="keyword">using</span> System.Security.Claims;
+
+[ApiController]
+[Route(<span class="string">"api/[controller]"</span>)]
+[Authorize] <span class="comment">// V8.2.1: Require authentication</span>
+<span class="keyword">public class</span> NotesController : ControllerBase
+{
+    <span class="keyword">private readonly</span> ApplicationDbContext _context;
+    <span class="keyword">private readonly</span> ILogger&lt;NotesController&gt; _logger;
+    
+    <span class="keyword">private int</span> GetCurrentUserId()
+    {
+        <span class="keyword">var</span> userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        <span class="keyword">return int</span>.Parse(userIdClaim.Value);
+    }
+    
+    <span class="comment">// V8.2.2: Get only current user's notes</span>
+    [HttpGet]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; GetNotes()
+    {
+        <span class="keyword">var</span> userId = GetCurrentUserId();
+        
+        <span class="keyword">var</span> notes = <span class="keyword">await</span> _context.Notes
+            .Where(n => n.UserId == userId)
+            .Select(n => <span class="keyword">new</span> NoteDto 
+            { 
+                Id = n.Id, 
+                Title = n.Title, 
+                CreatedAt = n.CreatedAt 
+            })
+            .ToListAsync();
+        
+        <span class="keyword">return</span> Ok(notes);
+    }
+    
+    [HttpGet(<span class="string">"{id}"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; GetNote(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> userId = GetCurrentUserId();
+        
+        <span class="comment">// V8.2.2: Ensure user can only access their own notes</span>
+        <span class="keyword">var</span> note = <span class="keyword">await</span> _context.Notes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
+        
+        <span class="keyword">if</span> (note == <span class="keyword">null</span>)
+        {
+            <span class="comment">// V16.1.1: Log unauthorized access attempt</span>
+            _logger.LogWarning(<span class="string">$"User {userId} attempted to access note {id}"</span>);
+            <span class="keyword">return</span> NotFound();
+        }
+        
+        <span class="keyword">return</span> Ok(note);
+    }</div>
+        </div>
+
+        <!-- Slide 30: Feature 2 - Good Code Part 2 (C#) -->
+        <div class="slide">
+            <h2>✅ Good Code: Note Management (C#.NET) - Part 2</h2>
+            <div class="code-block" style="max-height: 400px;">    [HttpPost]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; CreateNote([FromBody] CreateNoteRequest request)
+    {
+        <span class="comment">// V2.2.1: Validate input</span>
+        <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(request.Title) || 
+            request.Title.Length > 200)
+        {
+            <span class="keyword">return</span> BadRequest(<span class="string">"Invalid title"</span>);
+        }
+        
+        <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(request.Content) || 
+            request.Content.Length > 10000)
+        {
+            <span class="keyword">return</span> BadRequest(<span class="string">"Invalid content"</span>);
+        }
+        
+        <span class="keyword">var</span> userId = GetCurrentUserId();
+        
+        <span class="keyword">var</span> note = <span class="keyword">new</span> Note
+        {
+            Title = request.Title,
+            Content = request.Content,
+            UserId = userId,
+            CreatedAt = DateTime.UtcNow
+        };
+        
+        _context.Notes.Add(note);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+        
+        <span class="comment">// V16.1.1: Log creation</span>
+        _logger.LogInformation(<span class="string">$"User {userId} created note {note.Id}"</span>);
+        
+        <span class="keyword">return</span> CreatedAtAction(<span class="keyword">nameof</span>(GetNote), 
+            <span class="keyword">new</span> { id = note.Id }, note);
+    }
+    
+    [HttpDelete(<span class="string">"{id}"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; DeleteNote(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> userId = GetCurrentUserId();
+        
+        <span class="comment">// V8.2.2: Ensure user can only delete their own notes</span>
+        <span class="keyword">var</span> note = <span class="keyword">await</span> _context.Notes
+            .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
+        
+        <span class="keyword">if</span> (note == <span class="keyword">null</span>)
+        {
+            _logger.LogWarning(<span class="string">$"User {userId} attempted to delete note {id}"</span>);
+            <span class="keyword">return</span> NotFound();
+        }
+        
+        _context.Notes.Remove(note);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+        
+        _logger.LogInformation(<span class="string">$"User {userId} deleted note {id}"</span>);
+        
+        <span class="keyword">return</span> NoContent();
+    }
+}</div>
+        </div>
+
+        <!-- Slide 31: Feature 3 - Profile Picture Upload -->
+        <div class="slide">
+            <h2>Feature 3: Profile Picture Upload</h2>
+            
+            <div class="user-story">
+                <strong>User Story:</strong><br>
+                As a logged-in user, I want to upload a profile picture (JPEG or PNG) so I can personalize my account. The application should store the uploaded picture and display it in my profile area.
+            </div>
+
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 25px 0; font-family: monospace;">
+                <strong>API Endpoint:</strong><br>
+                POST /api/users/profile-picture
+            </div>
+
+            <h3 style="margin-top: 30px;">🎯 Your Task:</h3>
+            <div style="background: #fff9e6; padding: 25px; border-radius: 10px; border: 2px dashed #ffc107;">
+                <p style="font-size: 1.2em; margin: 0;">
+                    Focus on: File type validation, Size limits, Path traversal, Storage location
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 32: Feature 3 - ASVS Mapping -->
+        <div class="slide">
+            <h2>Feature 3: ASVS v5.0 Mapping</h2>
+            
+            <div class="asvs-mapping">
+                <h4>V5: File Handling</h4>
+                <ul>
+                    <li><strong>V5.1.1</strong> - Document permitted file types and maximum size</li>
+                    <li><strong>V5.2.1</strong> - Enforce file size limits to prevent DoS</li>
+                    <li><strong>V5.3.2</strong> - Use internally generated filenames to prevent path traversal</li>
+                    <li><strong>V5.4.1</strong> - Validate user-submitted filenames</li>
+                    <li><strong>V5.4.2</strong> - Scan files for malware (production requirement)</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V2: Validation</h4>
+                <ul>
+                    <li><strong>V2.2.1</strong> - Validate file metadata and type</li>
+                </ul>
+            </div>
+
+            <div class="asvs-mapping">
+                <h4>V8: Authorization</h4>
+                <ul>
+                    <li><strong>V8.2.1</strong> - Require authentication for file upload</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 33: Feature 3 - Bad Code (C#) -->
+        <div class="slide">
+            <h2>❌ Bad Code: Profile Picture Upload (C#.NET)</h2>
+            <div class="code-block"><span class="comment">// INSECURE - ASP.NET Core C#</span>
+[ApiController]
+[Route(<span class="string">"api/users"</span>)]
+<span class="keyword">public class</span> UsersController : ControllerBase
+{
+    [HttpPost(<span class="string">"profile-picture"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; UploadProfilePicture(IFormFile file)
+    {
+        <span class="comment">// VULNERABILITY 1: No authentication check</span>
+        <span class="comment">// VULNERABILITY 2: No file validation</span>
+        <span class="comment">// VULNERABILITY 3: No size limit check</span>
+        
+        <span class="keyword">if</span> (file == <span class="keyword">null</span>)
+            <span class="keyword">return</span> BadRequest(<span class="string">"No file uploaded"</span>);
+        
+        <span class="comment">// VULNERABILITY 4: Using user-provided filename (path traversal!)</span>
+        <span class="keyword">var</span> fileName = file.FileName;
+        
+        <span class="comment">// VULNERABILITY 5: Storing in web-accessible directory</span>
+        <span class="keyword">var</span> filePath = Path.Combine(<span class="string">"wwwroot/uploads"</span>, fileName);
+        
+        <span class="comment">// VULNERABILITY 6: No path validation</span>
+        <span class="keyword">using</span> (<span class="keyword">var</span> stream = <span class="keyword">new</span> FileStream(filePath, FileMode.Create))
+        {
+            <span class="keyword">await</span> file.CopyToAsync(stream);
+        }
+        
+        <span class="comment">// VULNERABILITY 7: Returning direct file path</span>
+        <span class="keyword">return</span> Ok(<span class="keyword">new</span> { fileUrl = <span class="string">$"/uploads/{fileName}"</span> });
+    }
+}</div>
+            <div class="vulnerability-box" style="margin-top: 20px;">
+                <strong style="color: #c62828;">🚨 Critical Issues:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Path traversal</li>
+                    <li>No validation</li>
+                    <li>Web-accessible storage</li>
+                    <li>No authentication</li>
+                    <li>No size limits</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 34: Feature 3 - Good Code Part 1 (C#) -->
+        <div class="slide">
+            <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 1</h2>
+            <div class="code-block" style="max-height: 400px;"><span class="comment">// SECURE - ASP.NET Core C#</span>
+<span class="keyword">using</span> SixLabors.ImageSharp;
+<span class="keyword">using</span> SixLabors.ImageSharp.Processing;
+
+[ApiController]
+[Route(<span class="string">"api/users"</span>)]
+[Authorize] <span class="comment">// V8.2.1: Require authentication</span>
+<span class="keyword">public class</span> UsersController : ControllerBase
+{
+    <span class="keyword">private readonly</span> ApplicationDbContext _context;
+    <span class="keyword">private readonly</span> ILogger&lt;UsersController&gt; _logger;
+    <span class="keyword">private readonly string</span> _uploadPath;
+    
+    <span class="comment">// V5.1.1: Configuration</span>
+    <span class="keyword">private const long</span> MaxFileSize = 5 * 1024 * 1024; <span class="comment">// 5MB</span>
+    <span class="keyword">private readonly string</span>[] AllowedExtensions = { <span class="string">".jpg"</span>, <span class="string">".jpeg"</span>, <span class="string">".png"</span> };
+    <span class="keyword">private readonly string</span>[] AllowedMimeTypes = 
+        { <span class="string">"image/jpeg"</span>, <span class="string">"image/png"</span> };
+    
+    <span class="keyword">public</span> UsersController(
+        ApplicationDbContext context, 
+        IConfiguration config,
+        ILogger&lt;UsersController&gt; logger)
+    {
+        _context = context;
+        _logger = logger;
+        <span class="comment">// V5.3.2: Store outside web root</span>
+        _uploadPath = config[<span class="string">"FileUpload:ProfilePicturePath"</span>] 
+            ?? Path.Combine(Directory.GetCurrentDirectory(), <span class="string">"uploads"</span>);
+        
+        Directory.CreateDirectory(_uploadPath);
+    }
+    
+    <span class="keyword">private int</span> GetCurrentUserId()
+    {
+        <span class="keyword">var</span> userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        <span class="keyword">return int</span>.Parse(userIdClaim.Value);
+    }</div>
+        </div>
+
+        <!-- Slide 35: Feature 3 - Good Code Part 2 (C#) -->
+        <div class="slide">
+            <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 2</h2>
+            <div class="code-block" style="max-height: 400px;">    [HttpPost(<span class="string">"profile-picture"</span>)]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; UploadProfilePicture(IFormFile file)
+    {
+        <span class="keyword">if</span> (file == <span class="keyword">null</span> || file.Length == 0)
+            <span class="keyword">return</span> BadRequest(<span class="string">"No file uploaded"</span>);
+        
+        <span class="comment">// V5.2.1: Check file size</span>
+        <span class="keyword">if</span> (file.Length > MaxFileSize)
+        {
+            _logger.LogWarning(<span class="string">"File size exceeds limit"</span>);
+            <span class="keyword">return</span> BadRequest(<span class="string">"File size exceeds 5MB limit"</span>);
+        }
+        
+        <span class="comment">// V5.4.1: Validate file extension</span>
+        <span class="keyword">var</span> extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        <span class="keyword">if</span> (!AllowedExtensions.Contains(extension))
+        {
+            _logger.LogWarning(<span class="string">$"Invalid file extension: {extension}"</span>);
+            <span class="keyword">return</span> BadRequest(<span class="string">"Only JPEG and PNG files are allowed"</span>);
+        }
+        
+        <span class="comment">// V2.2.1: Validate MIME type</span>
+        <span class="keyword">if</span> (!AllowedMimeTypes.Contains(file.ContentType.ToLowerInvariant()))
+        {
+            _logger.LogWarning(<span class="string">$"Invalid MIME type: {file.ContentType}"</span>);
+            <span class="keyword">return</span> BadRequest(<span class="string">"Invalid file type"</span>);
+        }
+        
+        <span class="keyword">var</span> userId = GetCurrentUserId();
+        
+        <span class="comment">// V5.3.2: Generate unique filename (don't use user input)</span>
+        <span class="keyword">var</span> uniqueFileName = <span class="string">$"{userId}_{Guid.NewGuid()}{extension}"</span>;
+        <span class="keyword">var</span> filePath = Path.Combine(_uploadPath, uniqueFileName);
+        
+        <span class="comment">// V5.3.2: Prevent path traversal</span>
+        <span class="keyword">var</span> fullPath = Path.GetFullPath(filePath);
+        <span class="keyword">if</span> (!fullPath.StartsWith(Path.GetFullPath(_uploadPath)))
+        {
+            _logger.LogWarning(<span class="string">$"Path traversal attempt by user {userId}"</span>);
+            <span class="keyword">return</span> BadRequest(<span class="string">"Invalid file path"</span>);
+        }</div>
+        </div>
+
+        <!-- Slide 36: Feature 3 - Good Code Part 3 (C#) -->
+        <div class="slide">
+            <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 3</h2>
+            <div class="code-block" style="max-height: 400px;">        <span class="keyword">try</span>
+        {
+            <span class="comment">// V5.4.1: Verify it's actually an image by loading it</span>
+            <span class="keyword">using</span> (<span class="keyword">var</span> image = <span class="keyword">await</span> Image.LoadAsync(file.OpenReadStream()))
+            {
+                <span class="comment">// Optional: Resize if too large</span>
+                <span class="keyword">if</span> (image.Width > 1000 || image.Height > 1000)
+                {
+                    image.Mutate(x => x.Resize(<span class="keyword">new</span> ResizeOptions
+                    {
+                        Size = <span class="keyword">new</span> Size(1000, 1000),
+                        Mode = ResizeMode.Max
+                    }));
+                }
+                
+                <span class="comment">// Save the validated image</span>
+                <span class="keyword">await</span> image.SaveAsync(filePath);
+            }
+            
+            <span class="comment">// V5.4.2: In production, scan for malware here</span>
+            <span class="comment">// await _malwareScanner.ScanFileAsync(filePath);</span>
+            
+            <span class="comment">// Update user's profile picture reference</span>
+            <span class="keyword">var</span> user = <span class="keyword">await</span> _context.Users.FindAsync(userId);
+            <span class="keyword">if</span> (user != <span class="keyword">null</span>)
+            {
+                <span class="comment">// Delete old profile picture if exists</span>
+                <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(user.ProfilePicture))
+                {
+                    <span class="keyword">var</span> oldPath = Path.Combine(_uploadPath, user.ProfilePicture);
+                    <span class="keyword">if</span> (System.IO.File.Exists(oldPath))
+                        System.IO.File.Delete(oldPath);
+                }
+                
+                user.ProfilePicture = uniqueFileName;
+                <span class="keyword">await</span> _context.SaveChangesAsync();
+            }
+            
+            _logger.LogInformation(<span class="string">$"User {userId} uploaded profile picture"</span>);
+            
+            <span class="comment">// V5.4.1: Return file ID, not direct path</span>
+            <span class="keyword">return</span> Ok(<span class="keyword">new</span> { fileId = uniqueFileName, success = <span class="keyword">true</span> });
+        }
+        <span class="keyword">catch</span> (Exception ex)
+        {
+            _logger.LogError(ex, <span class="string">"Error uploading profile picture"</span>);
+            <span class="keyword">return</span> StatusCode(500, <span class="string">"Error uploading file"</span>);
+        }
+    }
+}</div>
+        </div>
+
+        <!-- Slide 37: Assignment Summary -->
+        <div class="slide">
+            <h2>📝 Assignment Summary</h2>
+            
+            <div class="card" style="margin: 30px 0; padding: 30px;">
+                <h3 style="margin-top: 0; color: #667eea;">What You've Learned</h3>
+                <div class="grid-2" style="margin-top: 25px;">
+                    <div>
+                        <h4>Feature 1: Authentication</h4>
+                        <ul style="font-size: 0.95em;">
+                            <li>Password hashing with bcrypt</li>
+                            <li>Rate limiting</li>
+                            <li>Session regeneration</li>
+                            <li>Input validation</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Feature 2: Note Management</h4>
+                        <ul style="font-size: 0.95em;">
+                            <li>IDOR prevention</li>
+                            <li>Authorization checks</li>
+                            <li>Data access control</li>
+                            <li>Security logging</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <h4>Feature 3: File Upload</h4>
+                    <ul style="font-size: 0.95em;">
+                        <li>File type validation</li>
+                        <li>Path traversal prevention</li>
+                        <li>Size limits and storage security</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-point" style="margin-top: 30px;">
+                <span class="emoji">💡</span>
+                Practice by implementing these features in your own projects!
+            </div>
+        </div>
+
+        <!-- Slide 38: Next Steps -->
+        <div class="slide">
+            <h2>🚀 Next Steps for Phoenix Notes</h2>
+            
+            <div style="background: #f0f4ff; padding: 30px; border-radius: 15px; margin: 30px 0;">
+                <h3 style="margin-top: 0; color: #667eea;">Contact & Follow-Up</h3>
+                <p style="font-size: 1.2em; line-height: 1.8;">
+                    If you have questions about implementing these security controls or want to discuss your solutions, feel free to reach out!
+                </p>
+            </div>
+
+            <div class="card" style="padding: 30px; margin-top: 30px;">
+                <h4 style="margin-top: 0;">Additional Practice Ideas:</h4>
+                <ul style="font-size: 1.1em; line-height: 2;">
+                    <li>Add multi-factor authentication (V6.3.3)</li>
+                    <li>Implement note sharing between users (V8 controls)</li>
+                    <li>Add password reset functionality (V6.4.3)</li>
+                    <li>Implement audit logging (V16 controls)</li>
+                    <li>Add API rate limiting per user (V6.3.1)</li>
+                    <li>Implement note encryption at rest (V11 controls)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 39: Key Takeaways -->
         <div class="slide">
             <h2>🎓 Key Takeaways</h2>
             
@@ -986,7 +1840,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
             </div>
         </div>
 
-        <!-- Slide 21: Security Checklist -->
+        <!-- Slide 40: Security Checklist -->
         <div class="slide">
             <h2>📋 Security Checklist for New Features</h2>
             
@@ -1009,7 +1863,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
             </div>
         </div>
 
-        <!-- Slide 22: Common Vulnerabilities Mapped -->
+        <!-- Slide 41: Common Vulnerabilities Mapped -->
         <div class="slide">
             <h2>OWASP Top 10 ↔️ ASVS v5.0</h2>
             
@@ -1041,7 +1895,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
             </div>
         </div>
 
-        <!-- Slide 23: Resources -->
+        <!-- Slide 42: Resources -->
         <div class="slide">
             <h2>📚 Resources & Next Steps</h2>
             
@@ -1074,7 +1928,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
             </div>
         </div>
 
-        <!-- Slide 24: Thank You -->
+        <!-- Slide 43: Thank You -->
         <div class="slide">
             <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center;">
                 <h1 style="font-size: 4em; margin-bottom: 30px;">Thank You! 🎉</h1>
@@ -1095,7 +1949,12 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
         </div>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 24</div>
+    <div class="slide-number" id="slideNumber" onclick="toggleSlideSelector()">1 / 43 📋</div>
+    
+    <div class="slide-selector" id="slideSelector">
+        <div class="slide-selector-header">Jump to Slide</div>
+        <div id="slideSelectorList"></div>
+    </div>
 
     <div class="controls">
         <button class="btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
@@ -1112,10 +1971,52 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
             currentSlide = (n + totalSlides) % totalSlides;
             slides[currentSlide].classList.add('active');
             
-            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides} 📋`;
             
             document.getElementById('prevBtn').disabled = currentSlide === 0;
             document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            
+            updateSlideSelector();
+        }
+
+        function toggleSlideSelector() {
+            const selector = document.getElementById('slideSelector');
+            selector.classList.toggle('active');
+        }
+
+        function jumpToSlide(index) {
+            showSlide(index);
+            document.getElementById('slideSelector').classList.remove('active');
+        }
+
+        function updateSlideSelector() {
+            const items = document.querySelectorAll('.slide-selector-item');
+            items.forEach((item, index) => {
+                if (index === currentSlide) {
+                    item.classList.add('current');
+                } else {
+                    item.classList.remove('current');
+                }
+            });
+        }
+
+        function initSlideSelector() {
+            const list = document.getElementById('slideSelectorList');
+            const slideTitles = [];
+            
+            slides.forEach((slide, index) => {
+                const h2 = slide.querySelector('h2');
+                const title = h2 ? h2.textContent : `Slide ${index + 1}`;
+                slideTitles.push(title);
+                
+                const item = document.createElement('div');
+                item.className = 'slide-selector-item';
+                item.textContent = `${index + 1}. ${title}`;
+                item.onclick = () => jumpToSlide(index);
+                list.appendChild(item);
+            });
+            
+            updateSlideSelector();
         }
 
         function changeSlide(direction) {
@@ -1131,7 +2032,17 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
             }
         });
 
+        // Close slide selector when clicking outside
+        document.addEventListener('click', (e) => {
+            const selector = document.getElementById('slideSelector');
+            const slideNumber = document.getElementById('slideNumber');
+            if (!selector.contains(e.target) && !slideNumber.contains(e.target)) {
+                selector.classList.remove('active');
+            }
+        });
+
         // Initialize
+        initSlideSelector();
         showSlide(0);
     </script>
 </body>
