@@ -217,6 +217,78 @@
             padding: 10px 20px;
             border-radius: 25px;
             backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .slide-number:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .slide-selector {
+            position: fixed;
+            bottom: 80px;
+            left: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1001;
+            min-width: 300px;
+        }
+
+        .slide-selector.active {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-selector-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .slide-selector-item:hover {
+            background: #f5f5f5;
+        }
+
+        .slide-selector-item.current {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .slide-selector-item:last-child {
+            border-bottom: none;
+        }
+
+        .slide-selector-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            border-radius: 10px 10px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
         .grid-2 {
@@ -1877,7 +1949,12 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         </div>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 43</div>
+    <div class="slide-number" id="slideNumber" onclick="toggleSlideSelector()">1 / 43 📋</div>
+    
+    <div class="slide-selector" id="slideSelector">
+        <div class="slide-selector-header">Jump to Slide</div>
+        <div id="slideSelectorList"></div>
+    </div>
 
     <div class="controls">
         <button class="btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
@@ -1894,10 +1971,52 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             currentSlide = (n + totalSlides) % totalSlides;
             slides[currentSlide].classList.add('active');
             
-            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides} 📋`;
             
             document.getElementById('prevBtn').disabled = currentSlide === 0;
             document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            
+            updateSlideSelector();
+        }
+
+        function toggleSlideSelector() {
+            const selector = document.getElementById('slideSelector');
+            selector.classList.toggle('active');
+        }
+
+        function jumpToSlide(index) {
+            showSlide(index);
+            document.getElementById('slideSelector').classList.remove('active');
+        }
+
+        function updateSlideSelector() {
+            const items = document.querySelectorAll('.slide-selector-item');
+            items.forEach((item, index) => {
+                if (index === currentSlide) {
+                    item.classList.add('current');
+                } else {
+                    item.classList.remove('current');
+                }
+            });
+        }
+
+        function initSlideSelector() {
+            const list = document.getElementById('slideSelectorList');
+            const slideTitles = [];
+            
+            slides.forEach((slide, index) => {
+                const h2 = slide.querySelector('h2');
+                const title = h2 ? h2.textContent : `Slide ${index + 1}`;
+                slideTitles.push(title);
+                
+                const item = document.createElement('div');
+                item.className = 'slide-selector-item';
+                item.textContent = `${index + 1}. ${title}`;
+                item.onclick = () => jumpToSlide(index);
+                list.appendChild(item);
+            });
+            
+            updateSlideSelector();
         }
 
         function changeSlide(direction) {
@@ -1913,7 +2032,17 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             }
         });
 
+        // Close slide selector when clicking outside
+        document.addEventListener('click', (e) => {
+            const selector = document.getElementById('slideSelector');
+            const slideNumber = document.getElementById('slideNumber');
+            if (!selector.contains(e.target) && !slideNumber.contains(e.target)) {
+                selector.classList.remove('active');
+            }
+        });
+
         // Initialize
+        initSlideSelector();
         showSlide(0);
     </script>
 </body>
