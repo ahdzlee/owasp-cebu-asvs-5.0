@@ -1081,7 +1081,14 @@ app.post(<span class="string">'/api/login'</span>, <span class="keyword">async</
     res.json({ <span class="string">success</span>: <span class="keyword">true</span> });
 });</div>
             <div class="vulnerability-box" style="margin-top: 20px;">
-                <strong style="color: #c62828;">🚨 Issues:</strong> Weak hashing • SQL injection • No rate limiting • No validation • No session regeneration
+                <strong style="color: #c62828;">🚨 Issues:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Weak hashing</li>
+                    <li>SQL injection</li>
+                    <li>No rate limiting</li>
+                    <li>No validation</li>
+                    <li>No session regeneration</li>
+                </ul>
             </div>
         </div>
 
@@ -1503,7 +1510,14 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
     }
 }</div>
             <div class="vulnerability-box" style="margin-top: 20px;">
-                <strong style="color: #c62828;">🚨 Critical Issues:</strong> Path traversal • No validation • Web-accessible storage • No authentication • No size limits
+                <strong style="color: #c62828;">🚨 Critical Issues:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Path traversal</li>
+                    <li>No validation</li>
+                    <li>Web-accessible storage</li>
+                    <li>No authentication</li>
+                    <li>No size limits</li>
+                </ul>
             </div>
         </div>
 
