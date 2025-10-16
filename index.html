@@ -2126,7 +2126,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
         <!-- Slide 17: Scenario 3 - Good Code Part 2 -->
         <div class="slide">
             <h2>✅ Good Code: Secure Upload (Part 2)</h2>
-            <div class="code-block" style="max-height: 400px;">    <span class="comment"># V5.3.2: Generate unique filename (don't use original)</span>
+            <div class="code-block" style="max-height: 650px;">    <span class="comment"># V5.3.2: Generate unique filename (don't use original)</span>
     file_extension = os.path.splitext(secure_filename(file.filename))[1]
     unique_filename = <span class="string">f"{uuid.uuid4()}{file_extension}"</span>
     
@@ -2399,7 +2399,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 25: Feature 1 - Login Good Code (TypeScript) -->
         <div class="slide">
             <h2>✅ Good Code: User Login (TypeScript)</h2>
-            <div class="code-block" style="max-height: 700px;">app.post(<span class="string">'/api/login'</span>, authLimiter, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
+            <div class="code-block" style="max-height: 750px;">app.post(<span class="string">'/api/login'</span>, authLimiter, <span class="keyword">async</span> (req, res) <span class="keyword">=></span> {
     <span class="keyword">const</span> { email, password } = req.body;
     
     <span class="comment">// V2.2.1: Validate input</span>
@@ -2628,7 +2628,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 30: Feature 2 - Good Code Part 2 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Note Management (C#.NET) - Part 2</h2>
-            <div class="code-block" style="max-height: 700px;">    [HttpPost]
+            <div class="code-block" style="max-height: 750px;">    [HttpPost]
     <span class="keyword">public async</span> Task&lt;IActionResult&gt; CreateNote([FromBody] CreateNoteRequest request)
     {
         <span class="comment">// V2.2.1: Validate input</span>
@@ -2833,7 +2833,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 35: Feature 3 - Good Code Part 2 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 2</h2>
-            <div class="code-block" style="max-height: 700px;">    [HttpPost(<span class="string">"profile-picture"</span>)]
+            <div class="code-block" style="max-height: 750px;">    [HttpPost(<span class="string">"profile-picture"</span>)]
     <span class="keyword">public async</span> Task&lt;IActionResult&gt; UploadProfilePicture(IFormFile file)
     {
         <span class="keyword">if</span> (file == <span class="keyword">null</span> || file.Length == 0)
@@ -2879,7 +2879,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <!-- Slide 36: Feature 3 - Good Code Part 3 (C#) -->
         <div class="slide">
             <h2>✅ Good Code: Profile Picture Upload (C#.NET) - Part 3</h2>
-            <div class="code-block" style="max-height: 700px;">        <span class="keyword">try</span>
+            <div class="code-block" style="max-height: 750px;">        <span class="keyword">try</span>
         {
             <span class="comment">// V5.4.1: Verify it's actually an image by loading it</span>
             <span class="keyword">using</span> (<span class="keyword">var</span> image = <span class="keyword">await</span> Image.LoadAsync(file.OpenReadStream()))
@@ -2967,7 +2967,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 </div>
             </div>
 
-            <div class="key-point" style="margin-top: 30px;">
+            <div class="key-point" style="margin-top: 30px; padding: 18px;">
                 <span class="emoji">💡</span>
                 Practice by implementing these features in your own projects!
             </div>
@@ -3039,7 +3039,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             <h2>📋 Security Checklist for New Features</h2>
             
             <div class="checklist-box hover-lift">
-                <ul class="checklist" style="font-size: 1.2em;">
+                <ul class="checklist" style="font-size: 1.05em; line-height: 1.6;">
                     <li>Is authentication required? → Check <strong>V6</strong></li>
                     <li>Can users access others' data? → Check <strong>V8.2.2</strong> (IDOR)</li>
                     <li>Does it accept user input? → Check <strong>V2</strong> (validation)</li>
