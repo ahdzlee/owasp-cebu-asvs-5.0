@@ -334,15 +334,15 @@
         .slide {
             background: linear-gradient(135deg, var(--slide-bg-start) 0%, var(--slide-bg-end) 100%);
             border: var(--slide-border-width) solid var(--slide-border);
-            width: 90%;
-            max-width: 1200px;
-            height: 85vh;
+            width: 95%;
+            max-width: 1400px;
+            height: 88vh;
             border-radius: 16px;
             box-shadow: 
                 0 0 0 1px var(--slide-shadow-ring),
                 0 20px 60px var(--slide-shadow-main),
                 inset 0 1px 0 var(--slide-inset);
-            padding: 60px;
+            padding: 50px 70px;
             display: none;
             flex-direction: column;
             position: relative;
@@ -535,6 +535,17 @@
                         inset 0 -1px 0 rgba(0, 0, 0, 0.05);
             backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
             -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+        }
+
+        .nav-btn {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            font-size: 1.3em;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn:hover {
@@ -901,23 +912,70 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            background: var(--btn-bg);
-            padding: 8px 16px;
-            border-radius: 10px;
-            border: var(--btn-border-width) solid var(--btn-border);
             z-index: 1001;
-            opacity: var(--btn-opacity);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 
-                        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
-            -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
             transition: all 0.3s ease;
         }
 
         .owasp-branding:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .workshop-title {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--btn-color);
+            z-index: 1001;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .agenda-item {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .agenda-item:hover {
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .agenda-item:hover .agenda-icon {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .agenda-icon {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .chapter-card {
+            cursor: pointer;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .chapter-card:hover .badge {
+            transform: scale(1.15) rotate(-5deg);
+        }
+
+        .chapter-card .badge {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
         }
 
         .owasp-branding img {
@@ -1247,6 +1305,9 @@
         <span class="owasp-branding-text">Cebu Chapter</span>
     </div>
 
+    <!-- Workshop Title -->
+    <div class="workshop-title">FORTIFY: Secure Development Fundamentals</div>
+
     <!-- Theme Toggle Button -->
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
         <span id="themeIcon">☀️</span>
@@ -1280,9 +1341,6 @@
                     <div style="display: flex; gap: 20px; align-items: center;">
                         <span style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 12px 24px; border-radius: 8px; font-size: 1em; border: 1px solid rgba(59, 130, 246, 0.3);">
                             🎯 Interactive Workshop
-                        </span>
-                        <span style="color: #64748b; font-size: 1.1em;">
-                            60 Minutes
                         </span>
                     </div>
                 </div>
@@ -1494,7 +1552,7 @@
                     <!-- Name would go here if needed -->
                     
                     <!-- Qualifications List -->
-                    <div class="prof-background-box">
+                    <div class="prof-background-box hover-lift">
                         <h3 style="margin-top: 0; margin-bottom: 25px; color: var(--card-h-color); font-size: 1.3em; transition: color 0.3s ease;">
                             <span style="margin-right: 10px;">🎓</span>Professional Background
                         </h3>
@@ -1547,7 +1605,7 @@
                     </div>
                     
                     <!-- Quote or Tagline -->
-                    <div class="quote-box">
+                    <div class="quote-box hover-lift">
                         "You don't add security to your code. You build it secure from the start. Today, you learned how."
                     </div>
                 </div>
@@ -1556,30 +1614,38 @@
 
         <!-- Slide 3: Agenda -->
         <div class="slide">
-            <h2>Workshop Agenda</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-time">5 min</div>
-                    <div>Introduction to OWASP ASVS v5.0</div>
+            <h2 style="margin-bottom: 25px;">Workshop Agenda</h2>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 20px;">
+                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #60a5fa;">
+                    <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">📚</div>
+                    <div style="flex: 1; font-size: 1.1em; color: var(--card-text);">Introduction to OWASP ASVS v5.0</div>
                 </div>
-                <div class="timeline-item">
-                    <div class="timeline-time">15 min</div>
-                    <div><strong>Scenario 1:</strong> User Authentication & Login</div>
+                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #a78bfa;">
+                    <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(139, 92, 246, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">🔐</div>
+                    <div style="flex: 1; font-size: 1.1em; color: var(--card-text);"><strong>Scenario 1:</strong> User Authentication & Login</div>
                 </div>
-                <div class="timeline-item">
-                    <div class="timeline-time">15 min</div>
-                    <div><strong>Scenario 2:</strong> API Security & Access Control</div>
+                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #10b981;">
+                    <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">🛡️</div>
+                    <div style="flex: 1; font-size: 1.1em; color: var(--card-text);"><strong>Scenario 2:</strong> API Security & Access Control</div>
                 </div>
-                <div class="timeline-item">
-                    <div class="timeline-time">15 min</div>
-                    <div><strong>Scenario 3:</strong> File Upload Security</div>
+                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #f59e0b;">
+                    <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(245, 158, 11, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">📁</div>
+                    <div style="flex: 1; font-size: 1.1em; color: var(--card-text);"><strong>Scenario 3:</strong> File Upload Security</div>
                 </div>
-                <div class="timeline-item">
-                    <div class="timeline-time">10 min</div>
-                    <div>Interactive Exercise & Q&A</div>
+                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #ec4899;">
+                    <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(236, 72, 153, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">🔍</div>
+                    <div style="flex: 1; font-size: 1.1em; color: var(--card-text);">ASVS Scavenger Hunt</div>
+                </div>
+                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #06b6d4;">
+                    <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(6, 182, 212, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">📝</div>
+                    <div style="flex: 1; font-size: 1.1em; color: var(--card-text);">Take-Home Assignment</div>
+                </div>
+                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 12px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #8b5cf6;">
+                    <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(139, 92, 246, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">💬</div>
+                    <div style="flex: 1; font-size: 1.1em; color: var(--card-text);">Questions & Discussion</div>
                 </div>
             </div>
-            <div class="key-point" style="margin-top: 40px;">
+            <div class="key-point" style="margin-top: 30px;">
                 <span class="emoji">🎯</span>
                 Goal: Map security requirements to user stories using ASVS
             </div>
@@ -1591,7 +1657,7 @@
             <p style="font-size: 1.4em; margin-bottom: 30px;">A comprehensive checklist and framework for <strong>defining security requirements</strong> for web applications.</p>
             
             <div class="grid-2" style="margin-top: 40px;">
-                <div class="card">
+                <div class="card hover-lift">
                     <h3 style="margin-top: 0;">📋 What it provides</h3>
                     <ul>
                         <li>Security requirements catalog</li>
@@ -1600,7 +1666,7 @@
                         <li>Industry standard framework</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card hover-lift">
                     <h3 style="margin-top: 0;">✅ Why use it?</h3>
                     <ul>
                         <li>Build security from the start</li>
@@ -1620,42 +1686,42 @@
         <div class="slide">
             <h2>Key ASVS v5.0 Chapters</h2>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 30px;">
-                <div class="card">
+                <div class="card chapter-card">
                     <span class="badge">V6</span>
                     <strong class="card-title">Authentication</strong>
                     <p style="font-size: 1em; margin-top: 10px;">Login, passwords, MFA</p>
                 </div>
-                <div class="card">
+                <div class="card chapter-card">
                     <span class="badge">V7</span>
                     <strong class="card-title">Session Management</strong>
                     <p style="font-size: 1em; margin-top: 10px;">Session tokens, cookies, logout</p>
                 </div>
-                <div class="card">
+                <div class="card chapter-card">
                     <span class="badge">V8</span>
                     <strong class="card-title">Authorization</strong>
                     <p style="font-size: 1em; margin-top: 10px;">Access control, IDOR prevention</p>
                 </div>
-                <div class="card">
+                <div class="card chapter-card">
                     <span class="badge">V2</span>
                     <strong class="card-title">Validation & Business Logic</strong>
                     <p style="font-size: 1em; margin-top: 10px;">Input validation, sanitization</p>
                 </div>
-                <div class="card">
+                <div class="card chapter-card">
                     <span class="badge">V11</span>
                     <strong class="card-title">Cryptography</strong>
                     <p style="font-size: 1em; margin-top: 10px;">Password hashing, encryption</p>
                 </div>
-                <div class="card">
+                <div class="card chapter-card">
                     <span class="badge">V16</span>
                     <strong class="card-title">Logging & Error Handling</strong>
                     <p style="font-size: 1em; margin-top: 10px;">Secure logging, error messages</p>
                 </div>
-                <div class="card">
+                <div class="card chapter-card">
                     <span class="badge">V14</span>
                     <strong class="card-title">Data Protection</strong>
                     <p style="font-size: 1em; margin-top: 10px;">Sensitive data handling, PII</p>
                 </div>
-                <div class="card">
+                <div class="card chapter-card">
                     <span class="badge">V5</span>
                     <strong class="card-title">File Handling</strong>
                     <p style="font-size: 1em; margin-top: 10px;">File uploads, downloads</p>
@@ -1666,12 +1732,12 @@
         <!-- Slide 5: Scenario 1 - User Story -->
         <div class="slide">
             <h2>Scenario 1: User Login Feature</h2>
-            <div class="user-story">
+            <div class="user-story hover-lift">
                 "As a user, I want to log into the application using my email and password so that I can access my account."
             </div>
             
             <h3 style="margin-top: 40px;">🤔 Discussion Question:</h3>
-            <div class="highlight-box">
+            <div class="highlight-box hover-lift">
                 <p style="font-size: 1.5em; margin: 0;">What could go wrong with a login feature?<br>What security concerns should we address?</p>
             </div>
 
@@ -1691,7 +1757,7 @@
         <div class="slide">
             <h2>Scenario 1: ASVS v5.0 Mapping</h2>
             
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V6: Authentication</h4>
                 <ul>
                     <li><strong>V6.2.1</strong> - Password length (minimum 8, recommend 15+ characters)</li>
@@ -1700,14 +1766,14 @@
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V11: Cryptography</h4>
                 <ul>
                     <li><strong>V11.4.2</strong> - Passwords stored using approved key derivation functions (Argon2id, scrypt, bcrypt, PBKDF2)</li>
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V7: Session Management</h4>
                 <ul>
                     <li><strong>V7.2.4</strong> - Generate new session token after authentication</li>
@@ -1715,7 +1781,7 @@
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V2: Validation</h4>
                 <ul>
                     <li><strong>V2.2.1</strong> - Input validation at trusted service layer</li>
@@ -1743,7 +1809,7 @@
         session[<span class="string">'user_id'</span>] = user.id
         <span class="keyword">return</span> <span class="string">"Login successful"</span></div>
 
-            <div class="vulnerability-box" style="margin-top: 20px;">
+            <div class="vulnerability-box hover-lift" style="margin-top: 20px;">
                 <strong style="color: #c62828;">🚨 Critical Issues:</strong>
                 <ul style="margin-top: 15px;">
                     <li>Weak MD5 hashing - easily cracked</li>
@@ -1784,7 +1850,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
         session[<span class="string">'user_id'</span>] = user.id
         <span class="keyword">return</span> {<span class="string">"success"</span>: True}</div>
 
-            <div class="secure-box" style="margin-top: 20px;">
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
                 <strong style="color: #2e7d32;">✓ Security Controls Implemented:</strong>
                 <ul style="margin-top: 15px;">
                     <li>Bcrypt password hashing (V11.4.2)</li>
@@ -1798,16 +1864,16 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
         <!-- Slide 9: Scenario 2 - User Story -->
         <div class="slide">
             <h2>Scenario 2: User Profile API</h2>
-            <div class="user-story">
+            <div class="user-story hover-lift">
                 "As an authenticated user, I want to retrieve my profile information via API so that I can display it in the mobile app."
             </div>
             
-            <div class="api-endpoint-box">
+            <div class="api-endpoint-box hover-lift">
                 <strong class="api-endpoint-label">API Endpoint:</strong> <span class="api-endpoint-text">GET /api/users/{userId}/profile</span>
             </div>
 
             <h3 style="margin-top: 30px;">🤔 Discussion Question:</h3>
-            <div class="highlight-box">
+            <div class="highlight-box hover-lift">
                 <p style="font-size: 1.5em; margin: 0;">What security risks exist when exposing user data through an API?</p>
             </div>
 
@@ -1826,7 +1892,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
         <div class="slide">
             <h2>Scenario 2: ASVS v5.0 Mapping</h2>
             
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V8: Authorization</h4>
                 <ul>
                     <li><strong>V8.2.1</strong> - Function-level access restricted to consumers with explicit permissions</li>
@@ -1834,7 +1900,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V4: API and Web Service</h4>
                 <ul>
                     <li><strong>V4.1.1</strong> - Proper Content-Type headers in HTTP responses</li>
@@ -1842,7 +1908,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V14: Data Protection</h4>
                 <ul>
                     <li><strong>V14.2.1</strong> - Sensitive data only in HTTP body or headers, not in URL</li>
@@ -1850,7 +1916,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V2: Validation</h4>
                 <ul>
                     <li><strong>V2.2.2</strong> - Input validation at trusted service layer</li>
@@ -1880,7 +1946,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
             <span class="string">'credit_card'</span>: user.credit_card
         })</div>
 
-            <div class="vulnerability-box" style="margin-top: 20px;">
+            <div class="vulnerability-box hover-lift" style="margin-top: 20px;">
                 <strong style="color: #c62828;">🚨 Critical Issues:</strong>
                 <ul style="margin-top: 15px;">
                     <li><strong>IDOR (V8.2.2):</strong> Any user can access any profile</li>
@@ -1925,7 +1991,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
     response.headers[<span class="string">'Cache-Control'</span>] = <span class="string">'no-store'</span>
     <span class="keyword">return</span> response</div>
 
-            <div class="secure-box" style="margin-top: 20px;">
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
                 <strong style="color: #2e7d32;">✓ Security Controls Implemented:</strong>
                 <ul style="margin-top: 15px; font-size: 1em;">
                     <li>Authentication required</li>
@@ -1939,16 +2005,16 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
         <!-- Slide 13: Scenario 3 - User Story -->
         <div class="slide">
             <h2>Scenario 3: File Upload Feature</h2>
-            <div class="user-story">
+            <div class="user-story hover-lift">
                 "As a user, I want to upload my profile picture so that other users can see my photo."
             </div>
             
-            <div class="api-endpoint-box">
+            <div class="api-endpoint-box hover-lift">
                 <strong class="api-endpoint-label">API Endpoint:</strong> <span class="api-endpoint-text">POST /api/users/profile-picture</span>
             </div>
 
             <h3 style="margin-top: 30px;">🤔 Discussion Question:</h3>
-            <div class="highlight-box">
+            <div class="highlight-box hover-lift">
                 <p style="font-size: 1.5em; margin: 0;">What can go wrong when users upload files?</p>
             </div>
 
@@ -1968,7 +2034,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
         <div class="slide">
             <h2>Scenario 3: ASVS v5.0 Mapping</h2>
             
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V5: File Handling</h4>
                 <ul>
                     <li><strong>V5.4.1</strong> - Validate or ignore user-submitted filenames</li>
@@ -1980,7 +2046,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V2: Validation</h4>
                 <ul>
                     <li><strong>V2.2.1</strong> - Input validation for file metadata</li>
@@ -1994,8 +2060,10 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
             <div class="code-block"><span class="comment"># Python/Flask - INSECURE</span>
 <span class="keyword">@app</span>.route(<span class="string">'/api/users/profile-picture'</span>, methods=[<span class="string">'POST'</span>])
 <span class="keyword">def</span> upload_profile_picture():
-    <span class="comment"># VULNERABILITY 1: No file validation</span>
     file = request.files[<span class="string">'profile_picture'</span>]
+    
+    <span class="comment"># VULNERABILITY 1: No file validation</span>
+    file_content = file.read()
     
     <span class="comment"># VULNERABILITY 2: Using user filename (path traversal!)</span>
     filename = file.filename
@@ -2010,7 +2078,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
         <span class="string">'file_url'</span>: <span class="string">f'/uploads/{filename}'</span>
     })</div>
 
-            <div class="vulnerability-box" style="margin-top: 20px;">
+            <div class="vulnerability-box hover-lift" style="margin-top: 20px;">
                 <strong style="color: #c62828;">🚨 Critical Issues:</strong>
                 <ul style="margin-top: 15px;">
                     <li><strong>Path Traversal (V5.3.2):</strong> Can upload to <code>../../etc/passwd</code></li>
@@ -2083,7 +2151,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
     <span class="comment"># V5.4.1: Return reference, not direct path</span>
     <span class="keyword">return</span> jsonify({<span class="string">'file_id'</span>: unique_filename})</div>
 
-            <div class="secure-box" style="margin-top: 20px;">
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
                 <strong style="color: #2e7d32;">✓ Security Controls Implemented:</strong>
                 <ul style="margin-top: 15px; font-size: 1em;">
                     <li>Magic number validation (V5.4.1)</li>
@@ -2102,14 +2170,14 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
                 <h3 class="highlight-title" style="margin: 0; font-size: 2em;">ASVS Scavenger Hunt</h3>
             </div>
 
-            <div class="scavenger-scenario">
+            <div class="scavenger-scenario hover-lift">
                 <h4>Scenario:</h4>
                 <p style="font-size: 1.3em; margin: 0;">
                     "Your team is building a <strong style="color: var(--link-color);">password reset feature</strong>. Users receive a reset link via email."
                 </p>
             </div>
 
-            <div class="scavenger-task">
+            <div class="scavenger-task hover-lift">
                 <h4 style="margin-top: 0; color: var(--badge-warning-color); transition: color 0.3s ease;">🔍 Your Task:</h4>
                 <p style="font-size: 1.2em; margin-bottom: 20px;">Navigate the ASVS v5.0 documentation and find relevant security requirements for this feature.</p>
                 <p style="font-size: 1.1em; margin: 0;"><strong>Time:</strong> 5 minutes</p>
@@ -2121,7 +2189,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
             <h2>Exercise Solution</h2>
             <h3 style="color: #4ade80;">Password Reset Requirements</h3>
             
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>Key ASVS v5.0 Requirements Found:</h4>
                 <ul>
                     <li><strong>V6.4.3</strong> - Secure password reset process that doesn't bypass MFA</li>
@@ -2147,7 +2215,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
                     <p class="highlight-title" style="font-size: 1.3em; margin-top: 20px;">A practical exercise to apply ASVS v5.0 to a complete application</p>
                 </div>
 
-                <div class="app-overview-box" style="margin-top: 40px;">
+                <div class="app-overview-box hover-lift" style="margin-top: 40px;">
                     <h3 style="margin-top: 0;">Application Overview</h3>
                     <p style="font-size: 1.2em; line-height: 1.8;">
                         Phoenix Notes is a web application that allows users to register, log in, and manage personal notes with profile pictures.
@@ -2155,7 +2223,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
                 </div>
 
                 <div class="grid-2" style="margin-top: 30px;">
-                    <div class="card">
+                    <div class="card hover-lift">
                         <h4 style="margin-top: 0;">📝 Features</h4>
                         <ul style="font-size: 1em;">
                             <li>User Registration & Login</li>
@@ -2163,7 +2231,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
                             <li>Profile Picture Upload</li>
                         </ul>
                     </div>
-                    <div class="card">
+                    <div class="card hover-lift">
                         <h4 style="margin-top: 0;">💻 Technologies</h4>
                         <ul style="font-size: 1em;">
                             <li>TypeScript (Auth)</li>
@@ -2179,7 +2247,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
         <div class="slide">
             <h2>Feature 1: User Registration & Login</h2>
             
-            <div class="user-story">
+            <div class="user-story hover-lift">
                 <strong>User Stories:</strong><br>
                 • As a new user, I want to create an account with my email and password<br>
                 • As a registered user, I want to log in with my email and password<br>
@@ -2187,7 +2255,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
             </div>
 
             <h3 style="margin-top: 30px;">🎯 Your Task:</h3>
-            <div style="background: rgba(59, 130, 246, 0.15); padding: 25px; border-radius: 10px; border: 2px solid rgba(59, 130, 246, 0.3); margin-top: 20px;">
+            <div class="hover-lift" style="background: rgba(59, 130, 246, 0.15); padding: 25px; border-radius: 10px; border: 2px solid rgba(59, 130, 246, 0.3); margin-top: 20px;">
                 <p style="font-size: 1.2em; margin: 0;">
                     1. Identify security risks in the registration and login process<br>
                     2. Map relevant ASVS v5.0 controls<br>
@@ -2201,7 +2269,7 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
         <div class="slide">
             <h2>Feature 1: ASVS v5.0 Mapping</h2>
             
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V6: Authentication</h4>
                 <ul>
                     <li><strong>V6.2.1</strong> - Password minimum 8 characters (15+ recommended)</li>
@@ -2210,22 +2278,22 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V11: Cryptography</h4>
                 <ul>
                     <li><strong>V11.4.2</strong> - Passwords stored with approved KDF (bcrypt, Argon2id, scrypt)</li>
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V7: Session Management</h4>
                 <ul>
                     <li><strong>V7.2.4</strong> - Generate new session token on authentication</li>
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
-                <h4>V2: Validation & V16: Logging</h4>
+            <div class="asvs-mapping hover-lift">
+                <h4>V2: Validation and V16: Logging</h4>
                 <ul>
                     <li><strong>V2.2.1, V2.2.2</strong> - Input validation at trusted service layer</li>
                     <li><strong>V16.1.1</strong> - Log authentication events</li>
@@ -2269,7 +2337,7 @@ app.post(<span class="string">'/api/login'</span>, <span class="keyword">async</
     req.session.userId = user.id;
     res.json({ <span class="string">success</span>: <span class="keyword">true</span> });
 });</div>
-            <div class="vulnerability-box" style="margin-top: 20px;">
+            <div class="vulnerability-box hover-lift" style="margin-top: 20px;">
                 <strong style="color: #c62828;">🚨 Issues:</strong>
                 <ul style="margin-top: 15px;">
                     <li>Weak hashing</li>
@@ -2380,7 +2448,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>Feature 2: Note Management</h2>
             
-            <div class="user-story">
+            <div class="user-story hover-lift">
                 <strong>User Stories:</strong><br>
                 • As a logged-in user, I want to create a new note with title and content<br>
                 • As a logged-in user, I want to view a list of all my notes<br>
@@ -2388,7 +2456,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 • As a logged-in user, I want to delete a note I created
             </div>
 
-            <div class="api-endpoint-box">
+            <div class="api-endpoint-box hover-lift">
                 <strong class="api-endpoint-label">API Endpoints:</strong><br>
                 <span class="api-endpoint-text">POST /api/notes - Create note<br>
                 GET /api/notes - List all user's notes<br>
@@ -2397,7 +2465,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             </div>
 
             <h3 style="margin-top: 30px;">🎯 Your Task:</h3>
-            <div style="background: rgba(59, 130, 246, 0.15); padding: 25px; border-radius: 10px; border: 2px solid rgba(59, 130, 246, 0.3);">
+            <div class="hover-lift" style="background: rgba(59, 130, 246, 0.15); padding: 25px; border-radius: 10px; border: 2px solid rgba(59, 130, 246, 0.3);">
                 <p style="font-size: 1.2em; margin: 0;">
                     Focus on: Authorization (IDOR), Input validation, Access control
                 </p>
@@ -2408,7 +2476,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>Feature 2: ASVS v5.0 Mapping</h2>
             
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V8: Authorization (Critical!)</h4>
                 <ul>
                     <li><strong>V8.2.1</strong> - Function-level access control (must be authenticated)</li>
@@ -2416,7 +2484,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V2: Validation and Business Logic</h4>
                 <ul>
                     <li><strong>V2.2.1</strong> - Validate note title and content input</li>
@@ -2424,14 +2492,14 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V14: Data Protection</h4>
                 <ul>
                     <li><strong>V14.2.1</strong> - Don't expose sensitive data in URLs</li>
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V16: Logging</h4>
                 <ul>
                     <li><strong>V16.1.1</strong> - Log security events (failed access attempts)</li>
@@ -2486,6 +2554,15 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <span class="keyword">return</span> NoContent();
     }
 }</div>
+            <div class="vulnerability-box hover-lift" style="margin-top: 20px;">
+                <strong style="color: #c62828;">🚨 Critical Issues:</strong>
+                <ul style="margin-top: 15px;">
+                    <li><strong>IDOR (V8.2.2):</strong> Any user can access any note</li>
+                    <li><strong>No Authorization (V8.2.1):</strong> Any user can delete any note</li>
+                    <li><strong>No Input Validation (V2.2.1):</strong> Malicious input accepted</li>
+                    <li><strong>No Authentication (V6.2.1):</strong> No login required</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Slide 29: Feature 2 - Good Code Part 1 (C#) -->
@@ -2616,18 +2693,18 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>Feature 3: Profile Picture Upload</h2>
             
-            <div class="user-story">
+            <div class="user-story hover-lift">
                 <strong>User Story:</strong><br>
                 As a logged-in user, I want to upload a profile picture (JPEG or PNG) so I can personalize my account. The application should store the uploaded picture and display it in my profile area.
             </div>
 
-            <div class="api-endpoint-box">
+            <div class="api-endpoint-box hover-lift">
                 <strong class="api-endpoint-label">API Endpoint:</strong><br>
                 <span class="api-endpoint-text">POST /api/users/profile-picture</span>
             </div>
 
             <h3 style="margin-top: 30px;">🎯 Your Task:</h3>
-            <div style="background: rgba(59, 130, 246, 0.15); padding: 25px; border-radius: 10px; border: 2px solid rgba(59, 130, 246, 0.3);">
+            <div class="hover-lift" style="background: rgba(59, 130, 246, 0.15); padding: 25px; border-radius: 10px; border: 2px solid rgba(59, 130, 246, 0.3);">
                 <p style="font-size: 1.2em; margin: 0;">
                     Focus on: File type validation, Size limits, Path traversal, Storage location
                 </p>
@@ -2638,7 +2715,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>Feature 3: ASVS v5.0 Mapping</h2>
             
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V5: File Handling</h4>
                 <ul>
                     <li><strong>V5.1.1</strong> - Document permitted file types and maximum size</li>
@@ -2649,14 +2726,14 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V2: Validation</h4>
                 <ul>
                     <li><strong>V2.2.1</strong> - Validate file metadata and type</li>
                 </ul>
             </div>
 
-            <div class="asvs-mapping">
+            <div class="asvs-mapping hover-lift">
                 <h4>V8: Authorization</h4>
                 <ul>
                     <li><strong>V8.2.1</strong> - Require authentication for file upload</li>
@@ -2695,10 +2772,10 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         }
         
         <span class="comment">// VULNERABILITY 7: Returning direct file path</span>
-        <span class="keyword">return</span> Ok(<span class="keyword">new</span> { fileUrl = <span class="string">$"/uploads/{fileName}"</span> });
+        <span class="keyword">return</span> Ok(<span class="keyword">new</span> { fileUrl = <span class="string">f"/uploads/{fileName}"</span> });
     }
 }</div>
-            <div class="vulnerability-box" style="margin-top: 20px;">
+            <div class="vulnerability-box hover-lift" style="margin-top: 20px;">
                 <strong style="color: #c62828;">🚨 Critical Issues:</strong>
                 <ul style="margin-top: 15px;">
                     <li>Path traversal</li>
@@ -2858,7 +2935,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>📝 Assignment Summary</h2>
             
-            <div class="card" style="margin: 30px 0; padding: 30px;">
+            <div class="card hover-lift" style="margin: 30px 0; padding: 30px;">
                 <h3 style="margin-top: 0; color: #667eea;">What You've Learned</h3>
                 <div class="grid-2" style="margin-top: 25px;">
                     <div>
@@ -2900,14 +2977,14 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>🚀 Next Steps for Phoenix Notes</h2>
             
-            <div class="contact-box">
+            <div class="contact-box hover-lift">
                 <h3>Contact & Follow-Up</h3>
                 <p style="font-size: 1.2em; line-height: 1.8;">
                     If you have questions about implementing these security controls or want to discuss your solutions, feel free to reach out!
                 </p>
             </div>
 
-            <div class="card" style="padding: 30px; margin-top: 30px;">
+            <div class="card hover-lift" style="padding: 30px; margin-top: 30px;">
                 <h4 style="margin-top: 0;">Additional Practice Ideas:</h4>
                 <ul style="font-size: 1.1em; line-height: 2;">
                     <li>Add multi-factor authentication (V6.3.3)</li>
@@ -2924,7 +3001,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>🎓 Key Takeaways</h2>
             
-            <div class="card" style="margin: 30px 0; padding: 30px;">
+            <div class="card hover-lift" style="margin: 30px 0; padding: 30px;">
                 <h3 style="margin-top: 0; color: #667eea;">Security Requirements Process</h3>
                 <ol style="font-size: 1.2em; line-height: 2.5; margin-left: 25px;">
                     <li style="margin-bottom: 15px;"><strong>Start with User Stories</strong> - Understand the feature</li>
@@ -2936,7 +3013,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             </div>
 
             <div class="comparison" style="margin-top: 30px;">
-                <div class="comparison-bad">
+                <div class="comparison-bad hover-lift">
                     <h4 style="color: #c62828;">❌ Without ASVS</h4>
                     <ul style="font-size: 1em;">
                         <li>Ad-hoc security decisions</li>
@@ -2945,7 +3022,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                         <li>Reactive security</li>
                     </ul>
                 </div>
-                <div class="comparison-good">
+                <div class="comparison-good hover-lift">
                     <h4 style="color: #2e7d32;">✅ With ASVS</h4>
                     <ul style="font-size: 1em;">
                         <li>Systematic approach</li>
@@ -2961,7 +3038,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>📋 Security Checklist for New Features</h2>
             
-            <div class="checklist-box">
+            <div class="checklist-box hover-lift">
                 <ul class="checklist" style="font-size: 1.2em;">
                     <li>Is authentication required? → Check <strong>V6</strong></li>
                     <li>Can users access others' data? → Check <strong>V8.2.2</strong> (IDOR)</li>
@@ -2985,27 +3062,27 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             <h2>OWASP Top 10 ↔️ ASVS v5.0</h2>
             
             <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 30px;">
-                <div class="card">
+                <div class="card hover-lift">
                     <strong style="color: #e53935;">A01: Broken Access Control</strong>
                     <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V8 (Authorization)</p>
                 </div>
-                <div class="card">
+                <div class="card hover-lift">
                     <strong style="color: #e53935;">A02: Cryptographic Failures</strong>
                     <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V11 (Cryptography), V14 (Data Protection)</p>
                 </div>
-                <div class="card">
+                <div class="card hover-lift">
                     <strong style="color: #e53935;">A03: Injection</strong>
                     <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V2 (Validation), V1 (Encoding & Sanitization)</p>
                 </div>
-                <div class="card">
+                <div class="card hover-lift">
                     <strong style="color: #e53935;">A05: Security Misconfiguration</strong>
                     <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V16 (Logging), V13 (Configuration)</p>
                 </div>
-                <div class="card">
+                <div class="card hover-lift">
                     <strong style="color: #e53935;">A07: Authentication Failures</strong>
                     <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V6 (Authentication), V7 (Session Management)</p>
                 </div>
-                <div class="card">
+                <div class="card hover-lift">
                     <strong style="color: #e53935;">A08: Software & Data Integrity</strong>
                     <p style="margin: 10px 0 0 0; font-size: 1em;">→ ASVS V5 (File Handling), V15 (Secure Coding)</p>
                 </div>
@@ -3016,7 +3093,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>📚 Resources & Next Steps</h2>
             
-            <div class="resources-card">
+            <div class="resources-card hover-lift">
                 <h3>Essential Resources</h3>
                 <ul style="font-size: 1.2em; line-height: 2;">
                     <li><strong>OWASP ASVS v5.0:</strong><br><a href="https://owasp.org/www-project-application-security-verification-standard" target="_blank">https://owasp.org/www-project-application-security-verification-standard</a></li>
@@ -3026,7 +3103,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             </div>
 
             <div class="grid-2" style="margin-top: 30px;">
-                <div class="card">
+                <div class="card hover-lift">
                     <h4 style="margin-top: 0;">🛠️ Tools</h4>
                     <ul style="font-size: 1em;">
                         <li>SAST/DAST scanners</li>
@@ -3034,7 +3111,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                         <li>Security linters</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card hover-lift">
                     <h4 style="margin-top: 0;">📖 Learning</h4>
                     <ul style="font-size: 1em;">
                         <li>OWASP WebGoat</li>
@@ -3054,14 +3131,14 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                         Build Security<br>From Day One
                     </h1>
                     
-                    <div class="remember-section" style="margin: 40px 0;">
+                    <div class="remember-section hover-lift" style="margin: 40px 0;">
                         <h3 style="font-size: 1.5em;">Remember:</h3>
                         <p style="font-size: 1.3em; line-height: 1.8;">
                             Security is not a feature you add at the end. It's a requirement you build from the start.
                         </p>
                     </div>
 
-                    <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%); padding: 30px; border-radius: 15px; margin: 30px 0; border-left: 4px solid var(--h2-color);">
+                    <div class="hover-lift" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%); padding: 30px; border-radius: 15px; margin: 30px 0; border-left: 4px solid var(--h2-color);">
                         <p style="font-size: 1.4em; font-weight: 600; margin: 0; color: var(--card-text);">
                             🔐 Build secure. Build with ASVS v5.0.
                         </p>
@@ -3086,26 +3163,26 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
 
                     <!-- Stats Grid -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; border: var(--card-border-width) solid var(--card-border);">
+                        <div class="hover-lift" style="background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; border: var(--card-border-width) solid var(--card-border);">
                             <div style="font-size: 2.5em; font-weight: 700; color: var(--h2-color);">17</div>
                             <div style="font-size: 0.9em; color: var(--subtitle-color); margin-top: 5px;">ASVS Chapters</div>
                         </div>
-                        <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; border: var(--card-border-width) solid var(--card-border);">
+                        <div class="hover-lift" style="background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; border: var(--card-border-width) solid var(--card-border);">
                             <div style="font-size: 2.5em; font-weight: 700; color: var(--h3-color);">300+</div>
                             <div style="font-size: 0.9em; color: var(--subtitle-color); margin-top: 5px;">Requirements</div>
                         </div>
-                        <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; border: var(--card-border-width) solid var(--card-border);">
+                        <div class="hover-lift" style="background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; border: var(--card-border-width) solid var(--card-border);">
                             <div style="font-size: 2.5em; font-weight: 700; color: #4ade80;">80%+</div>
                             <div style="font-size: 0.9em; color: var(--subtitle-color); margin-top: 5px;">Risk Reduction</div>
                         </div>
-                        <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; border: var(--card-border-width) solid var(--card-border);">
+                        <div class="hover-lift" style="background: var(--card-bg); padding: 20px; border-radius: 12px; text-align: center; border: var(--card-border-width) solid var(--card-border);">
                             <div style="font-size: 2.5em; font-weight: 700; color: #fb923c;">v5.0</div>
                             <div style="font-size: 0.9em; color: var(--subtitle-color); margin-top: 5px;">Latest</div>
                         </div>
                     </div>
 
                     <!-- Code Lock Visual -->
-                    <div style="background: var(--code-bg); padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.85em; border: var(--code-border-width) solid var(--code-border);">
+                    <div class="hover-lift" style="background: var(--code-bg); padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.85em; border: var(--code-border-width) solid var(--code-border);">
                         <span style="color: var(--keyword-color);">const</span> <span style="color: var(--code-text);">security</span> <span style="color: var(--code-text);">=</span> <span style="color: var(--string-color);">"built-in"</span><span style="color: var(--code-text);">;</span> <span style="color: var(--comment-color);">// ✓</span>
                     </div>
                 </div>
@@ -3121,8 +3198,8 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
     </div>
 
     <div class="controls">
-        <button class="btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
-        <button class="btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+        <button class="btn nav-btn" id="prevBtn" onclick="changeSlide(-1)" title="Previous Slide">←</button>
+        <button class="btn nav-btn" id="nextBtn" onclick="changeSlide(1)" title="Next Slide">→</button>
     </div>
 
     <script>
