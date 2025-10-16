@@ -851,17 +851,17 @@
             position: fixed;
             top: 20px;
             right: 20px;
+            width: 44px;
+            height: 44px;
             background: var(--btn-bg);
             color: var(--btn-color);
             border: var(--btn-border-width) solid var(--btn-border);
-            padding: 8px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.85em;
-            font-weight: 500;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            font-size: 1.3em;
+            cursor: pointer;
             z-index: 1001;
             transition: all 0.3s ease;
             opacity: var(--btn-opacity);
@@ -872,13 +872,73 @@
             -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
         }
 
+        .theme-toggle #themeIcon {
+            filter: grayscale(1);
+            transition: filter 0.3s ease;
+        }
+
         .theme-toggle:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
             background: var(--btn-hover-bg);
             border-color: var(--btn-hover-border);
             color: var(--btn-hover-color);
             opacity: var(--btn-hover-opacity);
+        }
+
+        .theme-toggle:hover #themeIcon {
+            filter: grayscale(0);
+        }
+
+        .theme-toggle:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .owasp-branding {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--btn-bg);
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: var(--btn-border-width) solid var(--btn-border);
+            z-index: 1001;
+            opacity: var(--btn-opacity);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            transition: all 0.3s ease;
+        }
+
+        .owasp-branding:hover {
             transform: translateY(-2px);
-            box-shadow: var(--btn-shadow);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .owasp-branding img {
+            height: 28px;
+            transition: filter 0.3s ease;
+        }
+
+        body:not(.light-theme) .owasp-branding img {
+            filter: brightness(0) invert(1) opacity(0.9);
+        }
+
+        body.light-theme .owasp-branding img {
+            filter: opacity(0.85);
+        }
+
+        .owasp-branding-text {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--btn-color);
+            white-space: nowrap;
+            transition: color 0.3s ease;
         }
 
         .theme-icon {
@@ -1181,10 +1241,15 @@
     </style>
 </head>
 <body>
+    <!-- OWASP Cebu Chapter Branding -->
+    <div class="owasp-branding">
+        <img src="https://owasp.org/assets/images/logo.png" alt="OWASP">
+        <span class="owasp-branding-text">Cebu Chapter</span>
+    </div>
+
     <!-- Theme Toggle Button -->
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-        <span class="theme-icon" id="themeIcon">☀️</span>
-        <span id="themeText">Light Mode</span>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
+        <span id="themeIcon">☀️</span>
     </button>
 
     <div class="presentation">
@@ -1483,7 +1548,7 @@
                     
                     <!-- Quote or Tagline -->
                     <div class="quote-box">
-                        "Security is not extra work. It is doing the work right. And you now know exactly how to do it."
+                        "You don't add security to your code. You build it secure from the start. Today, you learned how."
                     </div>
                 </div>
             </div>
@@ -3041,14 +3106,14 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
 
                     <!-- Code Lock Visual -->
                     <div style="background: var(--code-bg); padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.85em; border: var(--code-border-width) solid var(--code-border);">
-                        <span style="color: var(--keyword-color);">const</span> <span style="color: var(--code-text);">security</span> = <span style="color: var(--string-color);">"built-in"</span>; <span style="color: var(--comment-color);">// ✓</span>
+                        <span style="color: var(--keyword-color);">const</span> <span style="color: var(--code-text);">security</span> <span style="color: var(--code-text);">=</span> <span style="color: var(--string-color);">"built-in"</span><span style="color: var(--code-text);">;</span> <span style="color: var(--comment-color);">// ✓</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="slide-number" id="slideNumber" onclick="toggleSlideSelector()">1 / 43 📋</div>
+    <div class="slide-number" id="slideNumber" onclick="toggleSlideSelector()">1 / 43</div>
     
     <div class="slide-selector" id="slideSelector">
         <div class="slide-selector-header">Jump to Slide</div>
@@ -3070,7 +3135,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             currentSlide = (n + totalSlides) % totalSlides;
             slides[currentSlide].classList.add('active');
             
-            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides} 📋`;
+            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides}`;
             
             document.getElementById('prevBtn').disabled = currentSlide === 0;
             document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
@@ -3115,9 +3180,9 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 if (index === 0 && h1 && h1.textContent.includes('ASVS')) {
                     title = 'ASVS v5.0';
                 }
-                // Special handling for Thank You slide (slide 43)
-                else if (h1 && h1.textContent.includes('Thank You')) {
-                    title = 'Thank You!';
+                // Special handling for Thank You slide (last slide - slide 44)
+                else if (slide.textContent.includes('Thank You') && slide.textContent.includes('Questions & Discussion')) {
+                    title = 'Thank You! 🎉';
                 } else {
                     title = h2 ? h2.textContent : `Slide ${index + 1}`;
                 }
@@ -3126,7 +3191,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 
                 const item = document.createElement('div');
                 item.className = 'slide-selector-item';
-                item.textContent = `${index + 1}. ${title}`;
+                item.textContent = `${index + 1}) ${title}`;
                 item.onclick = () => jumpToSlide(index);
                 list.appendChild(item);
             });
@@ -3176,12 +3241,12 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             const savedTheme = localStorage.getItem('theme');
             const body = document.body;
             const themeIcon = document.getElementById('themeIcon');
-            const themeText = document.getElementById('themeText');
             
             if (savedTheme === 'light') {
                 body.classList.add('light-theme');
-                themeIcon.textContent = '🌙';
-                themeText.textContent = 'Dark Mode';
+                themeIcon.textContent = '🌙'; // Show moon in light mode (click to go dark)
+            } else {
+                themeIcon.textContent = '☀️'; // Show sun in dark mode (click to go light)
             }
         }
         
