@@ -3778,6 +3778,9 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             
             // Update hash without triggering page scroll
             history.replaceState(null, null, `#slide-${currentSlide + 1}`);
+            
+            // Apply code expansion state to new slide
+            applyCodeExpansionState();
         }
 
         function toggleSlideSelector() {
@@ -3991,6 +3994,9 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             }
         }
 
+        // Global code expansion state with localStorage persistence
+        let isCodeExpandedGlobally = localStorage.getItem('codeExpanded') === 'true';
+
         function toggleCodeExpansion(block, button) {
             const isExpanded = block.classList.contains('expanded');
             
@@ -4003,6 +4009,10 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 button.textContent = '⛶';
                 button.title = 'Expand Code';
                 document.body.style.overflow = '';
+                
+                // Update global state and localStorage
+                isCodeExpandedGlobally = false;
+                localStorage.setItem('codeExpanded', 'false');
                 
                 // Remove slide-right class from vulnerability and secure boxes
                 if (slide) {
@@ -4030,6 +4040,10 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 button.textContent = '⛶';
                 button.title = 'Collapse Code';
                 document.body.style.overflow = 'hidden';
+                
+                // Update global state and localStorage
+                isCodeExpandedGlobally = true;
+                localStorage.setItem('codeExpanded', 'true');
                 
                 // Add slide-right class to vulnerability and secure boxes
                 if (slide) {
@@ -4074,6 +4088,24 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             }
         });
 
+        // Apply code expansion state to current slide
+        function applyCodeExpansionState() {
+            const currentSlideElement = slides[currentSlide];
+            const codeBlock = currentSlideElement.querySelector('.code-block');
+            
+            if (codeBlock) {
+                const button = codeBlock.querySelector('.code-expand-btn');
+                const isExpanded = codeBlock.classList.contains('expanded');
+                
+                // Apply global state if different from current state
+                if (isCodeExpandedGlobally && !isExpanded) {
+                    toggleCodeExpansion(codeBlock, button);
+                } else if (!isCodeExpandedGlobally && isExpanded) {
+                    toggleCodeExpansion(codeBlock, button);
+                }
+            }
+        }
+
         // Wrap slide content for sticky headers
         function initSlideStickyHeaders() {
             const slides = document.querySelectorAll('.slide');
@@ -4113,6 +4145,11 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         initCodeBlocks();
         const initialSlide = restoreSlideFromHash();
         showSlide(initialSlide);
+        
+        // Apply saved code expansion state on page load
+        if (isCodeExpandedGlobally) {
+            applyCodeExpansionState();
+        }
     </script>
 </body>
 </html>
