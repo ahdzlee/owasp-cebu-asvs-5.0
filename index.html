@@ -2440,6 +2440,16 @@ ALLOWED_MIME_TYPES = [<span class="string">'image/jpeg'</span>, <span class="str
     
     <span class="keyword">if</span> detected_mime not in ALLOWED_MIME_TYPES:
         <span class="keyword">return</span> jsonify({<span class="string">'error'</span>: <span class="string">'Invalid file type'</span>}), 400</div>
+
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
+                <strong style="color: #2e7d32;">✓ Security Controls Implemented (Part 1):</strong>
+                <ul style="margin-top: 15px; font-size: 1em;">
+                    <li>File size validation - 5MB limit (V5.2.1)</li>
+                    <li>Magic number validation using python-magic (V5.4.1)</li>
+                    <li>Whitelist allowed MIME types (V5.4.1)</li>
+                    <li>Authentication required for upload (@require_auth)</li>
+                </ul>
+            </div>
             <div class="scroll-indicator">Scroll or see next slide for more →</div>
         </div>
 
