@@ -3853,7 +3853,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         </div>
     </div>
 
-    <div class="slide-number" id="slideNumber" onclick="toggleSlideSelector()">1 / 44</div>
+    <div class="slide-number" id="slideNumber" onclick="toggleSlideSelector()">1 - 44</div>
     
     <div class="slide-selector" id="slideSelector">
         <div class="slide-selector-header">
@@ -3864,7 +3864,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 class="slide-jump-input" 
                 min="1" 
                 max="44" 
-                placeholder="#"
+                placeholder="1 / 44"
                 title="Enter slide number and press Enter"
             />
         </div>
@@ -4357,8 +4357,9 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             }
         });
 
-        // Update max attribute when slides are loaded
+        // Update max attribute and placeholder when slides are loaded
         slideJumpInput.max = totalSlides;
+        slideJumpInput.placeholder = `1 - ${totalSlides}`;
     </script>
 </body>
 </html>
