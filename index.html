@@ -2647,6 +2647,15 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
     
     res.status(201).json({ <span class="string">success</span>: <span class="keyword">true</span> });
 });</div>
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
+                <strong style="color: #2e7d32;">✓ Security Controls Implemented:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Bcrypt password hashing with work factor 12 (V11.4.2)</li>
+                    <li>Input validation on email and password (V2.2.1, V2.2.2)</li>
+                    <li>Parameterized queries prevent SQL injection (V2.2.1)</li>
+                    <li>Security event logging for registration (V16.1.1)</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Slide 25: Feature 1 - Login Good Code (TypeScript) -->
@@ -2695,6 +2704,17 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         res.json({ <span class="string">success</span>: <span class="keyword">true</span> });
     });
 });</div>
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
+                <strong style="color: #2e7d32;">✓ Security Controls Implemented:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Rate limiting prevents brute force attacks (V6.3.1)</li>
+                    <li>Input validation on email and password (V2.2.1, V6.2.1)</li>
+                    <li>Parameterized queries prevent SQL injection (V2.2.1)</li>
+                    <li>Bcrypt password verification (V11.4.2)</li>
+                    <li>Session regeneration after authentication (V7.2.4)</li>
+                    <li>Security event logging for login attempts (V16.1.1)</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Slide 26: Feature 2 - Note Management -->
@@ -2876,6 +2896,15 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         
         <span class="keyword">return</span> Ok(note);
     }</div>
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
+                <strong style="color: #2e7d32;">✓ Security Controls Implemented:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Authentication required with [Authorize] attribute (V8.2.1)</li>
+                    <li>IDOR prevention - users can only access their own notes (V8.2.2)</li>
+                    <li>Authorization checks using UserId filter (V8.2.2)</li>
+                    <li>Security event logging for unauthorized access attempts (V16.1.1)</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Slide 30: Feature 2 - Good Code Part 2 (C#) -->
@@ -2940,6 +2969,15 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <span class="keyword">return</span> NoContent();
     }
 }</div>
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
+                <strong style="color: #2e7d32;">✓ Security Controls Implemented:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Input validation for title and content (V2.2.1, V2.2.2)</li>
+                    <li>Authorization checks - users can only modify their own notes (V8.2.2)</li>
+                    <li>Security event logging for create and delete operations (V16.1.1)</li>
+                    <li>Failed authorization attempts are logged (V16.1.1)</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Slide 31: Feature 3 - Profile Picture Upload -->
@@ -3081,6 +3119,16 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <span class="keyword">var</span> userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
         <span class="keyword">return int</span>.Parse(userIdClaim.Value);
     }</div>
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
+                <strong style="color: #2e7d32;">✓ Security Controls Implemented:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Authentication required with [Authorize] attribute (V8.2.1)</li>
+                    <li>File size limits configured (5MB max) (V5.1.1, V5.2.1)</li>
+                    <li>Allowed file extensions whitelisted (V5.4.1)</li>
+                    <li>Allowed MIME types whitelisted (V2.2.1)</li>
+                    <li>Files stored outside web root for security (V5.3.2)</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Slide 35: Feature 3 - Good Code Part 2 (C#) -->
@@ -3127,6 +3175,17 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             _logger.LogWarning(<span class="string">$"Path traversal attempt by user {userId}"</span>);
             <span class="keyword">return</span> BadRequest(<span class="string">"Invalid file path"</span>);
         }</div>
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
+                <strong style="color: #2e7d32;">✓ Security Controls Implemented:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>File size validation enforced (V5.2.1)</li>
+                    <li>File extension validation against whitelist (V5.4.1)</li>
+                    <li>MIME type validation to prevent spoofing (V2.2.1)</li>
+                    <li>Unique filename generation prevents conflicts (V5.3.2)</li>
+                    <li>Path traversal attack prevention (V5.3.2)</li>
+                    <li>Security event logging for validation failures (V16.1.1)</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Slide 36: Feature 3 - Good Code Part 3 (C#) -->
@@ -3182,6 +3241,18 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         }
     }
 }</div>
+            <div class="secure-box hover-lift" style="margin-top: 20px;">
+                <strong style="color: #2e7d32;">✓ Security Controls Implemented:</strong>
+                <ul style="margin-top: 15px;">
+                    <li>Image content verification by loading file (V5.4.1)</li>
+                    <li>Image resizing to prevent resource exhaustion</li>
+                    <li>Malware scanning placeholder for production (V5.4.2)</li>
+                    <li>Clean up old files to prevent storage bloat</li>
+                    <li>Return file ID instead of direct path (V5.4.1, V14.2.1)</li>
+                    <li>Security event logging for uploads (V16.1.1)</li>
+                    <li>Error handling with generic messages (V16.2.1)</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Slide 37: Assignment Summary -->
