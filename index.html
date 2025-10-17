@@ -3985,8 +3985,8 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            // Ctrl+/ to open slide selector dropdown
-            if (e.ctrlKey && e.key === '/') {
+            // Ctrl+/ (Windows/Linux) or Cmd+/ (macOS) to open slide selector dropdown
+            if ((e.ctrlKey || e.metaKey) && e.key === '/') {
                 e.preventDefault(); // Prevent browser default behavior
                 const selector = document.getElementById('slideSelector');
                 if (!selector.classList.contains('active')) {
@@ -4287,6 +4287,11 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         initCodeBlocks();
         const initialSlide = restoreSlideFromHash();
         showSlide(initialSlide);
+        
+        // Set keyboard shortcut hint based on platform
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        const shortcutKey = isMac ? 'Cmd+/' : 'Ctrl+/';
+        document.getElementById('slideNumber').title = `Click or press ${shortcutKey} to jump to slide`;
         
         // Apply saved code expansion state on page load
         if (isCodeExpandedGlobally) {
