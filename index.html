@@ -380,17 +380,50 @@
 
         .slide-content {
             flex: 1;
-            overflow-y: auto;
+            overflow: auto;
             padding: 30px 70px 50px 70px;
             scrollbar-width: thin;
             scrollbar-color: transparent transparent;
             transition: scrollbar-color 0.3s ease;
+            min-height: 0;
+            min-width: 0;
         }
 
         /* Show scrollbar on hover or active scroll */
         .slide-content:hover,
-        .slide-content:active {
+        .slide-content:active,
+        .slide-content:focus-within {
             scrollbar-color: var(--line-number-border) transparent;
+        }
+
+        /* WebKit scrollbar styling for slide content */
+        .slide-content::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .slide-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .slide-content::-webkit-scrollbar-thumb {
+            background: transparent;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .slide-content:hover::-webkit-scrollbar-thumb,
+        .slide-content:active::-webkit-scrollbar-thumb,
+        .slide-content:focus-within::-webkit-scrollbar-thumb {
+            background: var(--line-number-border);
+        }
+
+        .slide-content::-webkit-scrollbar-thumb:hover {
+            background: var(--h2-color);
+        }
+
+        .slide-content::-webkit-scrollbar-corner {
+            background: transparent;
         }
 
         /* Reduce top padding for slides with code blocks to maximize screen space */
@@ -668,6 +701,8 @@
             box-shadow: inset 0 2px 4px var(--code-shadow);
             transition: all 0.3s ease;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .code-block.expanded {
@@ -692,7 +727,10 @@
         }
 
         .code-block.expanded .code-block-content {
-            max-height: calc(100vh - 200px) !important;
+            flex: 1;
+        }
+
+        .code-block.expanded .code-block-table {
             padding-bottom: 300px !important;
         }
 
@@ -727,16 +765,19 @@
 
         .code-block-content {
             overflow: auto;
-            max-height: 400px;
+            flex: 1;
             scrollbar-width: thin;
             scrollbar-color: transparent transparent;
-            padding-bottom: 200px;
             padding-top: 10px;
             transition: scrollbar-color 0.3s ease;
+            min-height: 0;
+            min-width: 0;
         }
 
         .code-block-content:hover,
-        .code-block-content:active {
+        .code-block-content:active,
+        .code-block-content:focus-within,
+        .code-block-content:is(:hover, :active, :focus-within) {
             scrollbar-color: var(--line-number-border) transparent;
         }
 
@@ -756,7 +797,9 @@
         }
 
         .code-block-content:hover::-webkit-scrollbar-thumb,
-        .code-block-content:active::-webkit-scrollbar-thumb {
+        .code-block-content:active::-webkit-scrollbar-thumb,
+        .code-block-content:focus-within::-webkit-scrollbar-thumb,
+        .code-block-content:is(:hover, :active, :focus-within)::-webkit-scrollbar-thumb {
             background: var(--line-number-border);
         }
 
@@ -768,11 +811,17 @@
             background: transparent;
         }
 
+        /* Ensure horizontal scrollbar is always enabled when needed */
+        .code-block-content::-webkit-scrollbar-horizontal {
+            height: 8px;
+        }
+
         .code-block-table {
             display: table;
-            width: 100%;
+            min-width: 100%;
+            width: max-content;
             border-collapse: collapse;
-            padding: 25px 0;
+            padding: 25px 0 200px 0;
         }
 
         .code-block-row {
@@ -823,7 +872,6 @@
             line-height: 1.6;
             cursor: text;
             vertical-align: top;
-            width: 100%;
         }
 
         .comment {
