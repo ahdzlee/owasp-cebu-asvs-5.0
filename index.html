@@ -532,6 +532,61 @@
             position: relative;
         }
 
+        .code-block.expanded {
+            position: fixed !important;
+            top: 20px !important;
+            left: 20px !important;
+            right: 20px !important;
+            bottom: 20px !important;
+            max-height: none !important;
+            z-index: 2000;
+            border-radius: 12px;
+            margin: 0 !important;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        body:not(.light-theme) .code-block.expanded {
+            background: #0f172a;
+        }
+
+        body.light-theme .code-block.expanded {
+            background: #f8fafc;
+        }
+
+        .code-block.expanded .code-block-content {
+            max-height: calc(100vh - 100px) !important;
+            padding-bottom: 300px !important;
+        }
+
+        .code-expand-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--btn-bg);
+            color: var(--btn-color);
+            border: var(--btn-border-width) solid var(--btn-border);
+            padding: 6px 12px;
+            font-size: 0.85em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            opacity: var(--btn-opacity);
+            z-index: 10;
+            backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .code-expand-btn:hover {
+            background: var(--btn-hover-bg);
+            border-color: var(--btn-hover-border);
+            color: var(--btn-hover-color);
+            opacity: var(--btn-hover-opacity);
+            transform: scale(1.05);
+            box-shadow: var(--btn-shadow);
+        }
+
         .code-block-content {
             overflow: auto;
             max-height: 400px;
@@ -3562,6 +3617,17 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 block.innerHTML = '';
                 contentWrapper.appendChild(table);
                 block.appendChild(contentWrapper);
+                
+                // Add expand/collapse button
+                const expandBtn = document.createElement('button');
+                expandBtn.className = 'code-expand-btn';
+                expandBtn.textContent = '⛶';
+                expandBtn.title = 'Expand/Collapse Code';
+                expandBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleCodeExpansion(block, expandBtn);
+                });
+                block.appendChild(expandBtn);
             });
         }
         
@@ -3583,6 +3649,35 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 }
             }
         }
+
+        function toggleCodeExpansion(block, button) {
+            const isExpanded = block.classList.contains('expanded');
+            
+            if (isExpanded) {
+                // Collapse
+                block.classList.remove('expanded');
+                button.textContent = '⛶';
+                button.title = 'Expand Code';
+                document.body.style.overflow = '';
+            } else {
+                // Expand
+                block.classList.add('expanded');
+                button.textContent = '⛶';
+                button.title = 'Collapse Code';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Close expanded code block with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const expandedBlock = document.querySelector('.code-block.expanded');
+                if (expandedBlock) {
+                    const button = expandedBlock.querySelector('.code-expand-btn');
+                    toggleCodeExpansion(expandedBlock, button);
+                }
+            }
+        });
 
         // Initialize
         loadTheme();
