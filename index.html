@@ -3903,6 +3903,18 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         function toggleSlideSelector() {
             const selector = document.getElementById('slideSelector');
             selector.classList.toggle('active');
+            
+            // Focus the input field when dropdown is opened
+            if (selector.classList.contains('active')) {
+                const slideJumpInput = document.getElementById('slideJumpInput');
+                if (slideJumpInput) {
+                    // Small delay to ensure dropdown animation starts smoothly
+                    setTimeout(() => {
+                        slideJumpInput.focus();
+                        slideJumpInput.select(); // Also select any existing value for easy replacement
+                    }, 100);
+                }
+            }
         }
 
         function jumpToSlide(index) {
