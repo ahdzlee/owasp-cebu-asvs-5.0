@@ -364,6 +364,30 @@
             overflow-y: auto;
             backdrop-filter: blur(20px);
             transition: all 0.3s ease;
+            scrollbar-width: thin;
+            scrollbar-color: var(--line-number-border) transparent;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: var(--line-number-border);
+            border-radius: 4px;
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: var(--h2-color);
+        }
+
+        .slide::-webkit-scrollbar-corner {
+            background: transparent;
         }
 
         .slide.active {
