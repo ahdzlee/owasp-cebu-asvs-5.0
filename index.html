@@ -132,6 +132,13 @@
             --resources-link-hover: #fde68a;
             --shield-opacity: 0.12;
             --shield-shadow: rgba(59, 130, 246, 0.5);
+            --line-number-color: #64748b;
+            --line-number-bg: rgba(15, 23, 42, 0.5);
+            --line-number-hover-bg: rgba(59, 130, 246, 0.15);
+            --line-number-selected-bg: rgba(59, 130, 246, 0.25);
+            --line-number-border: rgba(59, 130, 246, 0.2);
+            --code-line-hover-bg: rgba(59, 130, 246, 0.08);
+            --code-line-selected-bg: rgba(59, 130, 246, 0.15);
         }
 
         body.light-theme {
@@ -259,6 +266,13 @@
             --resources-card-text: #1e293b;
             --resources-link-color: #1e40af;
             --resources-link-hover: #3b82f6;
+            --line-number-color: #94a3b8;
+            --line-number-bg: rgba(248, 250, 252, 0.8);
+            --line-number-hover-bg: rgba(59, 130, 246, 0.1);
+            --line-number-selected-bg: rgba(59, 130, 246, 0.2);
+            --line-number-border: rgba(59, 130, 246, 0.15);
+            --code-line-hover-bg: rgba(59, 130, 246, 0.05);
+            --code-line-selected-bg: rgba(59, 130, 246, 0.12);
         }
 
         * {
@@ -481,19 +495,105 @@
         .code-block {
             background: var(--code-bg);
             color: var(--code-text);
-            padding: 25px;
+            padding: 0;
             border-radius: 8px;
             margin: 20px 0;
             font-family: 'Fira Code', 'Courier New', monospace;
             font-size: 0.95em;
-            overflow-x: auto;
+            overflow: hidden;
             max-height: 400px;
-            overflow-y: auto;
-            white-space: pre;
-            line-height: 1.6;
             border: var(--code-border-width) solid var(--code-border);
             box-shadow: inset 0 2px 4px var(--code-shadow);
             transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .code-block-content {
+            overflow: auto;
+            max-height: 400px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--line-number-border) transparent;
+        }
+
+        .code-block-content::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .code-block-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .code-block-content::-webkit-scrollbar-thumb {
+            background: var(--line-number-border);
+            border-radius: 4px;
+        }
+
+        .code-block-content::-webkit-scrollbar-thumb:hover {
+            background: var(--h2-color);
+        }
+
+        .code-block-content::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        .code-block-table {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .code-block-row {
+            display: table-row;
+        }
+
+        .code-block-row:hover .code-line {
+            background: var(--code-line-hover-bg);
+        }
+
+        .code-block-row:hover .code-line-number {
+            background: var(--line-number-hover-bg);
+        }
+
+        .code-block-row.selected .code-line {
+            background: var(--code-line-selected-bg);
+        }
+
+        .code-block-row.selected .code-line-number {
+            background: var(--line-number-selected-bg);
+            color: var(--h2-color);
+            font-weight: 600;
+        }
+
+        .code-line-number {
+            display: table-cell;
+            background: var(--line-number-bg);
+            color: var(--line-number-color);
+            padding: 0 15px;
+            text-align: right;
+            user-select: none;
+            min-width: 50px;
+            width: 50px;
+            border-right: 1px solid var(--line-number-border);
+            font-size: 0.9em;
+            line-height: 1.6;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            vertical-align: top;
+            position: sticky;
+            left: 0;
+            z-index: 1;
+        }
+
+        .code-line {
+            display: table-cell;
+            padding: 0 25px;
+            white-space: pre;
+            line-height: 1.6;
+            cursor: text;
+            transition: background 0.2s ease;
+            vertical-align: top;
+            width: 100%;
         }
 
         .comment {
@@ -3386,9 +3486,83 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             return 0;
         }
 
+        // Transform code blocks to have line numbers
+        function initCodeBlocks() {
+            const codeBlocks = document.querySelectorAll('.code-block');
+            
+            codeBlocks.forEach(block => {
+                // Skip if already processed
+                if (block.querySelector('.code-block-content')) {
+                    return;
+                }
+                
+                // Get the original content
+                const originalContent = block.innerHTML;
+                
+                // Split into lines
+                const lines = originalContent.split('\n');
+                
+                // Create new structure with table layout
+                const contentWrapper = document.createElement('div');
+                contentWrapper.className = 'code-block-content';
+                
+                const table = document.createElement('div');
+                table.className = 'code-block-table';
+                
+                // Add each line as a table row
+                lines.forEach((line, index) => {
+                    const row = document.createElement('div');
+                    row.className = 'code-block-row';
+                    row.dataset.line = index;
+                    
+                    const lineNumber = document.createElement('div');
+                    lineNumber.className = 'code-line-number';
+                    lineNumber.textContent = index + 1;
+                    
+                    const codeLine = document.createElement('div');
+                    codeLine.className = 'code-line';
+                    codeLine.innerHTML = line || ' '; // Preserve empty lines
+                    
+                    row.appendChild(lineNumber);
+                    row.appendChild(codeLine);
+                    table.appendChild(row);
+                    
+                    // Add click handler for line selection
+                    row.addEventListener('click', () => {
+                        toggleLineSelection(block, index);
+                    });
+                });
+                
+                // Clear original content and add new structure
+                block.innerHTML = '';
+                contentWrapper.appendChild(table);
+                block.appendChild(contentWrapper);
+            });
+        }
+        
+        function toggleLineSelection(block, lineIndex) {
+            const row = block.querySelector(`.code-block-row[data-line="${lineIndex}"]`);
+            
+            if (row) {
+                // Toggle selection
+                const isSelected = row.classList.contains('selected');
+                
+                if (isSelected) {
+                    row.classList.remove('selected');
+                } else {
+                    // Remove previous selections in this block
+                    block.querySelectorAll('.code-block-row.selected').forEach(el => el.classList.remove('selected'));
+                    
+                    // Add new selection
+                    row.classList.add('selected');
+                }
+            }
+        }
+
         // Initialize
         loadTheme();
         initSlideSelector();
+        initCodeBlocks();
         const initialSlide = restoreSlideFromHash();
         showSlide(initialSlide);
     </script>
