@@ -3613,7 +3613,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
     
     <span class="keyword">if</span> (result.rows.length === 0) {
         <span class="comment">// V16.1.1: Log failed attempt</span>
-        logger.warn(<span class="string">`Failed login attempt for ${email}`</span>);
+        logger.warn(<span class="string">`Failed login attempt for ${user.id}`</span>);
         <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
     }
     
@@ -3623,7 +3623,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
     <span class="keyword">const</span> validPassword = <span class="keyword">await</span> bcrypt.compare(password, user.password_hash);
     
     <span class="keyword">if</span> (!validPassword) {
-        logger.warn(<span class="string">`Failed login for ${email}`</span>);
+        logger.warn(<span class="string">`Failed login for ${user.id}`</span>);
         <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
     }
     
