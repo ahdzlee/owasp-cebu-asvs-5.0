@@ -3115,7 +3115,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
             <span class="string">'id'</span>: user.id,
             <span class="string">'email'</span>: user.email,
             <span class="string">'ssn'</span>: user.ssn,  <span class="comment"># Should NEVER be exposed!</span>
-            <span class="string">'password_hash'</span>: user.password_hash,  <span class="comment"># Never expose!</span>
+            <span class="string">'password_hash'</span>: user.password_hash,  <span class="comment"># NEVER expose!</span>
             <span class="string">'salary'</span>: user.salary,
             <span class="string">'credit_card'</span>: user.credit_card
         })</div>
@@ -5068,9 +5068,9 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     codeLine.className = 'code-line';
                     codeLine.innerHTML = line || ' '; // Preserve empty lines
                     
-                    // Check if this line contains VULNERABILITY or ASVS annotation comments
+                    // Check if this line contains VULNERABILITY, ASVS annotation comments, or NEVER warnings
                     const lineText = line.replace(/<[^>]*>/g, ''); // Strip HTML tags for checking
-                    if (lineText.includes('VULNERABILITY') || lineText.match(/V\d+\.\d+\.\d+/)) {
+                    if (lineText.includes('VULNERABILITY') || lineText.match(/V\d+\.\d+\.\d+/) || lineText.match(/NEVER/)) {
                         codeLine.classList.add('annotation-comment');
                         codeLine.classList.add('mask-hidden'); // Start with mask visible by default
                         // Store original line for width calculation later
@@ -5092,7 +5092,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     table.appendChild(row);
                     
                     // Add click handler for line selection (only if not an annotation)
-                    if (!lineText.includes('VULNERABILITY') && !lineText.match(/V\d+\.\d+\.\d+/)) {
+                    if (!lineText.includes('VULNERABILITY') && !lineText.match(/V\d+\.\d+\.\d+/) && !lineText.match(/NEVER|Never/)) {
                         row.addEventListener('click', () => {
                             toggleLineSelection(block, index);
                         });
@@ -5106,7 +5106,8 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 
                 // Check if block has any annotation comments
                 const hasAnnotations = originalContent.includes('VULNERABILITY') || 
-                                      originalContent.match(/V\d+\.\d+\.\d+/);
+                                      originalContent.match(/V\d+\.\d+\.\d+/) ||
+                                      originalContent.match(/NEVER|Never/);
                 
                 // Add toggle comments button if annotations exist
                 if (hasAnnotations) {
