@@ -766,6 +766,161 @@
             box-shadow: var(--btn-shadow);
         }
 
+        .code-toggle-comments-btn {
+            position: absolute;
+            top: 8px;
+            right: 60px;
+            background: var(--btn-bg);
+            color: var(--btn-color);
+            border: var(--btn-border-width) solid var(--btn-border);
+            padding: 6px 12px;
+            font-size: 0.85em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            opacity: var(--btn-opacity);
+            z-index: 10;
+            backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .code-toggle-comments-btn:hover {
+            background: var(--btn-hover-bg);
+            border-color: var(--btn-hover-border);
+            color: var(--btn-hover-color);
+            opacity: var(--btn-hover-opacity);
+            transform: scale(1.05);
+            box-shadow: var(--btn-shadow);
+        }
+
+        .code-toggle-comments-btn.comments-hidden {
+            background: rgba(251, 146, 60, 0.15);
+            border-color: rgba(251, 146, 60, 0.4);
+            color: #fb923c;
+            opacity: 1;
+        }
+
+        /* Visual indicator for annotation comments */
+        .annotation-comment {
+            position: relative;
+        }
+        
+        .annotation-comment::before {
+            content: '';
+            position: absolute;
+            left: -3px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(135deg, #fb923c 0%, #f59e0b 100%);
+            opacity: 0.6;
+            border-radius: 2px;
+        }
+
+        /* Obfuscation mask for annotation comments - Dark theme */
+        .annotation-comment::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(96, 165, 250, 0.15) 0px,
+                    rgba(96, 165, 250, 0.15) 3px,
+                    rgba(139, 92, 246, 0.15) 3px,
+                    rgba(139, 92, 246, 0.15) 6px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(15, 23, 42, 0.98) 0%,
+                    rgba(30, 41, 59, 0.98) 50%,
+                    rgba(15, 23, 42, 0.98) 100%
+                );
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), left 0.6s cubic-bezier(0.4, 0, 0.2, 1), width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        /* Use measured width for precise masking */
+        .annotation-comment.has-measured-mask::after {
+            left: var(--mask-left, 0);
+            width: var(--mask-width, 100%);
+            right: auto;
+        }
+
+        /* Obfuscation mask for annotation comments - Light theme */
+        body.light-theme .annotation-comment::after {
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(96, 165, 250, 0.2) 0px,
+                    rgba(96, 165, 250, 0.2) 3px,
+                    rgba(139, 92, 246, 0.2) 3px,
+                    rgba(139, 92, 246, 0.2) 6px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(248, 250, 252, 0.98) 0%,
+                    rgba(241, 245, 249, 0.98) 50%,
+                    rgba(248, 250, 252, 0.98) 100%
+                );
+        }
+
+        /* Show mask when annotations are hidden */
+        .code-block.hide-annotations .annotation-comment::after {
+            opacity: 1;
+            animation: shimmer 3s ease-in-out infinite, slideIn 0.6s ease-out;
+        }
+
+        /* Shimmer animation for masked comments */
+        @keyframes shimmer {
+            0%, 100% {
+                background-position: 0% 50%;
+                filter: brightness(1);
+            }
+            50% {
+                background-position: 100% 50%;
+                filter: brightness(1.15);
+            }
+        }
+
+        /* Slide in animation when mask appears */
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Ensure text is not selectable when masked */
+        .code-block.hide-annotations .annotation-comment {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Additional visual effect - blur the actual text slightly when masked */
+        .code-block.hide-annotations .annotation-comment .comment {
+            filter: blur(3px);
+            transition: filter 0.5s ease;
+        }
+
+        .annotation-comment .comment {
+            transition: filter 0.5s ease;
+        }
+
         .code-block-content {
             overflow: auto;
             flex: 1;
@@ -4089,6 +4244,14 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     codeLine.className = 'code-line';
                     codeLine.innerHTML = line || ' '; // Preserve empty lines
                     
+                    // Check if this line contains VULNERABILITY or ASVS annotation comments
+                    const lineText = line.replace(/<[^>]*>/g, ''); // Strip HTML tags for checking
+                    if (lineText.includes('VULNERABILITY') || lineText.match(/V\d+\.\d+\.\d+/)) {
+                        codeLine.classList.add('annotation-comment');
+                        // Store original line for width calculation later
+                        codeLine.dataset.hasAnnotation = 'true';
+                    }
+                    
                     row.appendChild(lineNumber);
                     row.appendChild(codeLine);
                     table.appendChild(row);
@@ -4104,6 +4267,23 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 contentWrapper.appendChild(table);
                 block.appendChild(contentWrapper);
                 
+                // Check if block has any annotation comments
+                const hasAnnotations = originalContent.includes('VULNERABILITY') || 
+                                      originalContent.match(/V\d+\.\d+\.\d+/);
+                
+                // Add toggle comments button if annotations exist
+                if (hasAnnotations) {
+                    const toggleCommentsBtn = document.createElement('button');
+                    toggleCommentsBtn.className = 'code-toggle-comments-btn';
+                    toggleCommentsBtn.textContent = '�️';
+                    toggleCommentsBtn.title = 'Mask Annotations (VULNERABILITY/ASVS comments)';
+                    toggleCommentsBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        toggleAnnotations(block, toggleCommentsBtn);
+                    });
+                    block.appendChild(toggleCommentsBtn);
+                }
+                
                 // Add expand/collapse button
                 const expandBtn = document.createElement('button');
                 expandBtn.className = 'code-expand-btn';
@@ -4114,6 +4294,38 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     toggleCodeExpansion(block, expandBtn);
                 });
                 block.appendChild(expandBtn);
+            });
+            
+            // Calculate and apply mask widths for annotation comments after DOM rendering
+            setTimeout(() => {
+                applyAnnotationMaskWidths();
+            }, 0);
+        }
+        
+        // Calculate mask width based on comment span width
+        function applyAnnotationMaskWidths() {
+            const annotationLines = document.querySelectorAll('.annotation-comment');
+            
+            annotationLines.forEach(line => {
+                // Find the comment span element
+                const commentSpan = line.querySelector('.comment');
+                
+                if (commentSpan) {
+                    // Get the bounding rectangle of the comment span
+                    const rect = commentSpan.getBoundingClientRect();
+                    const lineRect = line.getBoundingClientRect();
+                    
+                    // Calculate the start position (left offset from line start)
+                    const startOffset = rect.left - lineRect.left;
+                    
+                    // Calculate the width of the comment
+                    const commentWidth = rect.width;
+                    
+                    // Apply custom CSS properties for the mask
+                    line.style.setProperty('--mask-left', `${startOffset}px`);
+                    line.style.setProperty('--mask-width', `${commentWidth}px`);
+                    line.classList.add('has-measured-mask');
+                }
             });
         }
         
@@ -4217,7 +4429,40 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     }
                 }
             }
+            
+            // Recalculate mask widths after expansion/collapse animation completes
+            setTimeout(() => {
+                applyAnnotationMaskWidths();
+            }, 100);
         }
+
+        // Toggle annotation comments (VULNERABILITY and ASVS comments)
+        function toggleAnnotations(block, button) {
+            const isHidden = block.classList.contains('hide-annotations');
+            
+            if (isHidden) {
+                // Reveal annotations with animation
+                block.classList.remove('hide-annotations');
+                button.classList.remove('comments-hidden');
+                button.textContent = '�️';
+                button.title = 'Mask Annotations (VULNERABILITY/ASVS comments)';
+            } else {
+                // Mask annotations with animation
+                block.classList.add('hide-annotations');
+                button.classList.add('comments-hidden');
+                button.textContent = '�';
+                button.title = 'Reveal Annotations (VULNERABILITY/ASVS comments)';
+            }
+        }
+
+        // Recalculate mask widths on window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                applyAnnotationMaskWidths();
+            }, 150);
+        });
 
         // Close expanded code block with Escape key
         document.addEventListener('keydown', (e) => {
