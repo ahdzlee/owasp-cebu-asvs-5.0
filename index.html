@@ -4321,10 +4321,13 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 
                 // Add toggle comments button if annotations exist
                 if (hasAnnotations) {
+                    // Start with annotations masked by default
+                    block.classList.add('hide-annotations');
+                    
                     const toggleCommentsBtn = document.createElement('button');
-                    toggleCommentsBtn.className = 'code-toggle-comments-btn';
-                    toggleCommentsBtn.textContent = '�️';
-                    toggleCommentsBtn.title = 'Mask Annotations (VULNERABILITY/ASVS comments)';
+                    toggleCommentsBtn.className = 'code-toggle-comments-btn comments-hidden';
+                    toggleCommentsBtn.textContent = '🔒';
+                    toggleCommentsBtn.title = 'Reveal All Annotations (VULNERABILITY/ASVS comments)';
                     toggleCommentsBtn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         toggleAnnotations(block, toggleCommentsBtn);
@@ -4498,7 +4501,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 annotations.forEach(annotation => {
                     annotation.classList.remove('mask-hidden');
                 });
-                button.textContent = '�️';
+                button.textContent = '🔓';
                 button.title = 'Mask All Annotations (VULNERABILITY/ASVS comments)';
             } else {
                 // Mask all annotations with animation
@@ -4510,7 +4513,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 annotations.forEach(annotation => {
                     annotation.classList.add('mask-hidden');
                 });
-                button.textContent = '�';
+                button.textContent = '🔒';
                 button.title = 'Reveal All Annotations (VULNERABILITY/ASVS comments)';
             }
         }
