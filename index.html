@@ -879,6 +879,145 @@
             color: #2563eb;
         }
 
+        .timer-display-wrapper {
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .timer-input {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 8px 8px;
+            padding-right: 32px;
+            width: 110px;
+            text-align: center;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .timer-input:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        /* Hide default spinner buttons - we'll use custom styled ones */
+        .timer-input::-webkit-inner-spin-button,
+        .timer-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox number input */
+        .timer-input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        .timer-spinner-buttons {
+            position: absolute;
+            right: 3px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            padding: 2px;
+            opacity: 0.7;
+            transition: all 0.15s ease;
+        }
+
+        .timer-spinner-buttons:hover {
+            opacity: 1;
+        }
+
+        .timer-spinner-btn {
+            width: 24px;
+            height: 18px;
+            background: transparent;
+            border: none;
+            color: rgba(96, 165, 250, 0.6);
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .timer-spinner-btn:hover {
+            color: rgba(96, 165, 250, 0.9);
+        }
+
+        .timer-spinner-btn:active {
+            color: rgba(96, 165, 250, 1);
+            transform: scale(0.95);
+        }
+
+        body.light-theme .timer-input {
+            color: #2563eb;
+            background: rgba(59, 130, 246, 0.05);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        body.light-theme .timer-spinner-buttons {
+            opacity: 0.7;
+        }
+
+        body.light-theme .timer-spinner-buttons:hover {
+            opacity: 1;
+        }
+
+        body.light-theme .timer-spinner-btn {
+            color: rgba(37, 99, 235, 0.6);
+        }
+
+        body.light-theme .timer-spinner-btn:hover {
+            color: rgba(37, 99, 235, 0.9);
+        }
+
+        body.light-theme .timer-spinner-btn:active {
+            color: rgba(37, 99, 235, 1);
+        }
+
+        body.light-theme .timer-input:focus {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .timer-separator {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #60a5fa;
+            line-height: 1;
+        }
+
+        body.light-theme .timer-separator {
+            color: #2563eb;
+        }
+
         .timer-controls {
             display: flex;
             gap: 8px;
@@ -2207,8 +2346,28 @@
     <!-- Timer for expanded code blocks -->
     <div class="code-timer" id="codeTimer">
         <div class="timer-label">Timer</div>
-        <div class="timer-display" id="timerDisplay">00:00</div>
+        <div class="timer-display-wrapper">
+            <div class="timer-display" id="timerDisplay">00:00</div>
+            <div class="timer-input-group" id="timerInputGroup" style="display: none;">
+                <div class="timer-input-wrapper">
+                    <input type="number" id="timerMinutes" class="timer-input" min="0" max="99" step="1" value="5" placeholder="MM" oninput="validateTimerInput(this, 99)">
+                    <div class="timer-spinner-buttons">
+                        <button class="timer-spinner-btn timer-spinner-up" onclick="incrementMinutes(event)" title="Increase">▲</button>
+                        <button class="timer-spinner-btn timer-spinner-down" onclick="decrementMinutes(event)" title="Decrease">▼</button>
+                    </div>
+                </div>
+                <span class="timer-separator">:</span>
+                <div class="timer-input-wrapper">
+                    <input type="number" id="timerSeconds" class="timer-input" min="0" max="59" step="1" value="0" placeholder="SS" oninput="validateTimerInput(this, 59)">
+                    <div class="timer-spinner-buttons">
+                        <button class="timer-spinner-btn timer-spinner-up" onclick="incrementSeconds(event)" title="Increase">▲</button>
+                        <button class="timer-spinner-btn timer-spinner-down" onclick="decrementSeconds(event)" title="Decrease">▼</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="timer-controls">
+            <button class="timer-btn" id="timerSet" onclick="toggleTimerInput()">Set</button>
             <button class="timer-btn" id="timerStart" onclick="startTimer()">Start</button>
             <button class="timer-btn" id="timerReset" onclick="resetTimer()">Reset</button>
         </div>
@@ -4426,12 +4585,112 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         let timerInterval = null;
         let timerSeconds = 0;
         let timerRunning = false;
+        let isCountdown = false;
+        let initialTimerSeconds = 0;
+        let isInputMode = false;
 
         function updateTimerDisplay() {
             const minutes = Math.floor(timerSeconds / 60);
             const seconds = timerSeconds % 60;
             const display = document.getElementById('timerDisplay');
             display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            // Change color when countdown reaches 0
+            if (isCountdown && timerSeconds === 0) {
+                display.style.color = '#ef4444';
+            } else if (isCountdown && timerSeconds <= 10) {
+                display.style.color = '#f97316';
+            } else {
+                display.style.color = '';
+            }
+        }
+
+        function validateTimerInput(input, max) {
+            // Remove any non-digit characters except empty string
+            let value = input.value.replace(/[^0-9]/g, '');
+            
+            // Convert to integer
+            let numValue = parseInt(value) || 0;
+            
+            // Ensure it's within bounds
+            if (numValue < 0) numValue = 0;
+            if (numValue > max) numValue = max;
+            
+            // Update input value
+            input.value = value === '' ? '' : numValue;
+        }
+
+        function incrementMinutes(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const input = document.getElementById('timerMinutes');
+            let value = parseInt(input.value) || 0;
+            input.value = Math.min(value + 1, 99);
+        }
+
+        function decrementMinutes(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const input = document.getElementById('timerMinutes');
+            let value = parseInt(input.value) || 0;
+            input.value = Math.max(value - 1, 0);
+        }
+
+        function incrementSeconds(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const input = document.getElementById('timerSeconds');
+            let value = parseInt(input.value) || 0;
+            input.value = Math.min(value + 1, 59);
+        }
+
+        function decrementSeconds(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const input = document.getElementById('timerSeconds');
+            let value = parseInt(input.value) || 0;
+            input.value = Math.max(value - 1, 0);
+        }
+
+        function toggleTimerInput() {
+            const display = document.getElementById('timerDisplay');
+            const inputGroup = document.getElementById('timerInputGroup');
+            const setBtn = document.getElementById('timerSet');
+            const startBtn = document.getElementById('timerStart');
+            
+            if (!isInputMode) {
+                // Switch to input mode
+                display.style.display = 'none';
+                inputGroup.style.display = 'flex';
+                setBtn.textContent = 'Done';
+                startBtn.disabled = true;
+                startBtn.style.opacity = '0.5';
+                isInputMode = true;
+                
+                // Populate inputs with current time
+                const minutes = Math.floor(timerSeconds / 60);
+                const seconds = timerSeconds % 60;
+                document.getElementById('timerMinutes').value = minutes;
+                document.getElementById('timerSeconds').value = seconds;
+            } else {
+                // Switch to display mode and apply values
+                const minutes = parseInt(document.getElementById('timerMinutes').value) || 0;
+                const seconds = parseInt(document.getElementById('timerSeconds').value) || 0;
+                
+                // Validate and set timer
+                timerSeconds = Math.max(0, Math.min(minutes * 60 + seconds, 5999)); // Max 99:59
+                initialTimerSeconds = timerSeconds;
+                isCountdown = timerSeconds > 0;
+                
+                display.style.display = 'block';
+                inputGroup.style.display = 'none';
+                setBtn.textContent = 'Set';
+                startBtn.disabled = false;
+                startBtn.style.opacity = '1';
+                isInputMode = false;
+                
+                updateTimerDisplay();
+            }
         }
 
         function startTimer() {
@@ -4445,15 +4704,41 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 timerRunning = true;
                 document.getElementById('timerStart').textContent = 'Pause';
                 timerInterval = setInterval(() => {
-                    timerSeconds++;
-                    updateTimerDisplay();
+                    if (isCountdown) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                        
+                        // Stop at 0 and play alert
+                        if (timerSeconds <= 0) {
+                            timerSeconds = 0;
+                            clearInterval(timerInterval);
+                            timerRunning = false;
+                            document.getElementById('timerStart').textContent = 'Start';
+                            updateTimerDisplay();
+                            
+                            // Visual alert - flash the timer
+                            const display = document.getElementById('timerDisplay');
+                            let flashCount = 0;
+                            const flashInterval = setInterval(() => {
+                                display.style.opacity = display.style.opacity === '0.3' ? '1' : '0.3';
+                                flashCount++;
+                                if (flashCount >= 6) {
+                                    clearInterval(flashInterval);
+                                    display.style.opacity = '1';
+                                }
+                            }, 300);
+                        }
+                    } else {
+                        timerSeconds++;
+                        updateTimerDisplay();
+                    }
                 }, 1000);
             }
         }
 
         function resetTimer() {
             clearInterval(timerInterval);
-            timerSeconds = 0;
+            timerSeconds = isCountdown ? initialTimerSeconds : 0;
             timerRunning = false;
             updateTimerDisplay();
             document.getElementById('timerStart').textContent = 'Start';
@@ -4507,8 +4792,10 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         function dragStart(e) {
             const timer = document.getElementById('codeTimer');
             
-            // Don't drag if clicking on buttons
-            if (e.target.classList.contains('timer-btn')) {
+            // Don't drag if clicking on buttons, inputs, or spinner buttons
+            if (e.target.classList.contains('timer-btn') || 
+                e.target.classList.contains('timer-input') ||
+                e.target.classList.contains('timer-spinner-btn')) {
                 return;
             }
             
