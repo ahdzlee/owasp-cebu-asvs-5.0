@@ -2300,6 +2300,74 @@
             transform: translateX(0);
         }
 
+        .resource-link-item {
+            background: var(--card-bg);
+            border: var(--card-border-width) solid var(--card-border);
+            border-radius: 10px;
+            padding: 18px 25px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            display: block;
+        }
+
+        .resource-link-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #60a5fa, #a78bfa);
+            transform: scaleY(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .resource-link-item:hover {
+            transform: translateX(5px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.12);
+        }
+
+        .resource-link-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .resource-icon-small {
+            font-size: 2em;
+            line-height: 1;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .resource-link-item:hover .resource-icon-small {
+            transform: scale(1.15);
+        }
+
+        .resource-url {
+            font-size: 0.9em;
+            color: var(--h2-color);
+            opacity: 0.75;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        .resource-arrow-small {
+            font-size: 1.5em;
+            color: var(--h2-color);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .resource-link-item:hover .resource-arrow-small {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
         .remember-section {
             background: var(--card-bg);
             padding: 40px;
@@ -4280,13 +4348,42 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>📚 Resources & Next Steps</h2>
             
-            <div class="resources-card hover-lift">
-                <h3>Essential Resources</h3>
-                <ul style="font-size: 1.2em; line-height: 2;">
-                    <li><strong>OWASP ASVS v5.0:</strong><br><a href="https://owasp.org/www-project-application-security-verification-standard" target="_blank">https://owasp.org/www-project-application-security-verification-standard</a></li>
-                    <li><strong>OWASP Cheat Sheet Series:</strong><br><a href="https://cheatsheetseries.owasp.org/" target="_blank">https://cheatsheetseries.owasp.org</a></li>
-                    <li><strong>OWASP Top 10:</strong><br><a href="https://owasp.org/www-project-top-ten" target="_blank">https://owasp.org/www-project-top-ten</a></li>
-                </ul>
+            <div style="margin: 20px 0 30px 0;">
+                <h3 style="font-size: 1.5em; margin-bottom: 20px; color: var(--h2-color);">✨ Essential Resources</h3>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <a href="https://owasp.org/www-project-application-security-verification-standard" target="_blank" class="resource-link-item hover-lift" style="text-decoration: none;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="resource-icon-small">📘</div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0 0 5px 0; font-size: 1.2em; color: var(--card-h-color);">OWASP ASVS v5.0</h4>
+                                <div class="resource-url">https://owasp.org/www-project-application-security-verification-standard</div>
+                            </div>
+                            <div class="resource-arrow-small">→</div>
+                        </div>
+                    </a>
+                    
+                    <a href="https://cheatsheetseries.owasp.org/" target="_blank" class="resource-link-item hover-lift" style="text-decoration: none;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="resource-icon-small">📝</div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0 0 5px 0; font-size: 1.2em; color: var(--card-h-color);">OWASP Cheat Sheet Series</h4>
+                                <div class="resource-url">https://cheatsheetseries.owasp.org</div>
+                            </div>
+                            <div class="resource-arrow-small">→</div>
+                        </div>
+                    </a>
+                    
+                    <a href="https://owasp.org/www-project-top-ten" target="_blank" class="resource-link-item hover-lift" style="text-decoration: none;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="resource-icon-small">🔟</div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0 0 5px 0; font-size: 1.2em; color: var(--card-h-color);">OWASP Top 10</h4>
+                                <div class="resource-url">https://owasp.org/www-project-top-ten</div>
+                            </div>
+                            <div class="resource-arrow-small">→</div>
+                        </div>
+                    </a>
+                </div>
             </div>
 
             <div class="grid-2" style="margin-top: 30px;">
