@@ -4708,8 +4708,6 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                 display.style.display = 'none';
                 inputGroup.style.display = 'flex';
                 setBtn.textContent = 'Done';
-                startBtn.disabled = true;
-                startBtn.style.opacity = '0.5';
                 isInputMode = true;
                 
                 // Populate inputs with current time
@@ -4739,6 +4737,33 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         }
 
         function startTimer() {
+            // If in input mode, apply the values first
+            if (isInputMode) {
+                const display = document.getElementById('timerDisplay');
+                const inputGroup = document.getElementById('timerInputGroup');
+                const setBtn = document.getElementById('timerSet');
+                const startBtn = document.getElementById('timerStart');
+                
+                // Get and validate input values
+                const minutes = parseInt(document.getElementById('timerMinutes').value) || 0;
+                const seconds = parseInt(document.getElementById('timerSeconds').value) || 0;
+                
+                // Set timer
+                timerSeconds = Math.max(0, Math.min(minutes * 60 + seconds, 5999)); // Max 99:59
+                initialTimerSeconds = timerSeconds;
+                isCountdown = timerSeconds > 0;
+                
+                // Switch back to display mode
+                display.style.display = 'block';
+                inputGroup.style.display = 'none';
+                setBtn.textContent = 'Set';
+                startBtn.disabled = false;
+                startBtn.style.opacity = '1';
+                isInputMode = false;
+                
+                updateTimerDisplay();
+            }
+            
             if (timerRunning) {
                 // Pause timer
                 clearInterval(timerInterval);
