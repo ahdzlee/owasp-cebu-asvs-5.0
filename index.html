@@ -875,10 +875,45 @@
                 );
         }
 
-        /* Show mask when annotations are hidden */
+        /* Show mask when annotations are hidden (global toggle) */
         .code-block.hide-annotations .annotation-comment::after {
             opacity: 1;
             animation: shimmer 3s ease-in-out infinite, slideIn 0.6s ease-out;
+        }
+
+        /* Show mask on individual annotation lines (individual toggle) */
+        .annotation-comment.mask-hidden::after {
+            opacity: 1;
+            animation: shimmer 3s ease-in-out infinite, slideIn 0.6s ease-out;
+        }
+
+        /* IMPORTANT: Individual reveal overrides global hide - higher specificity */
+        .code-block.hide-annotations .annotation-comment:not(.mask-hidden)::after {
+            opacity: 0 !important;
+            animation: none;
+        }
+
+        /* Ensure text is not selectable when individually masked */
+        .annotation-comment.mask-hidden {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Individual reveal overrides global hide for text selection */
+        .code-block.hide-annotations .annotation-comment:not(.mask-hidden) {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        /* Additional visual effect - blur the actual text slightly when individually masked */
+        .annotation-comment.mask-hidden .comment {
+            filter: blur(3px);
+            transition: filter 0.5s ease;
+        }
+
+        /* Individual reveal overrides global hide for blur effect */
+        .code-block.hide-annotations .annotation-comment:not(.mask-hidden) .comment {
+            filter: blur(0);
         }
 
         /* Shimmer animation for masked comments */
@@ -4248,18 +4283,31 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     const lineText = line.replace(/<[^>]*>/g, ''); // Strip HTML tags for checking
                     if (lineText.includes('VULNERABILITY') || lineText.match(/V\d+\.\d+\.\d+/)) {
                         codeLine.classList.add('annotation-comment');
+                        codeLine.classList.add('mask-hidden'); // Start with mask visible by default
                         // Store original line for width calculation later
                         codeLine.dataset.hasAnnotation = 'true';
+                        
+                        // Add individual click handler for toggling this specific annotation
+                        codeLine.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent line selection
+                            toggleIndividualMask(codeLine);
+                        });
+                        
+                        // Add cursor pointer and tooltip to indicate clickability
+                        codeLine.style.cursor = 'pointer';
+                        codeLine.title = 'Click to reveal this annotation';
                     }
                     
                     row.appendChild(lineNumber);
                     row.appendChild(codeLine);
                     table.appendChild(row);
                     
-                    // Add click handler for line selection
-                    row.addEventListener('click', () => {
-                        toggleLineSelection(block, index);
-                    });
+                    // Add click handler for line selection (only if not an annotation)
+                    if (!lineText.includes('VULNERABILITY') && !lineText.match(/V\d+\.\d+\.\d+/)) {
+                        row.addEventListener('click', () => {
+                            toggleLineSelection(block, index);
+                        });
+                    }
                 });
                 
                 // Clear original content and add new structure
@@ -4441,17 +4489,44 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             const isHidden = block.classList.contains('hide-annotations');
             
             if (isHidden) {
-                // Reveal annotations with animation
+                // Reveal all annotations with animation
                 block.classList.remove('hide-annotations');
                 button.classList.remove('comments-hidden');
+                
+                // Also reveal all individual masks
+                const annotations = block.querySelectorAll('.annotation-comment');
+                annotations.forEach(annotation => {
+                    annotation.classList.remove('mask-hidden');
+                });
                 button.textContent = '�️';
-                button.title = 'Mask Annotations (VULNERABILITY/ASVS comments)';
+                button.title = 'Mask All Annotations (VULNERABILITY/ASVS comments)';
             } else {
-                // Mask annotations with animation
+                // Mask all annotations with animation
                 block.classList.add('hide-annotations');
                 button.classList.add('comments-hidden');
+                
+                // Also hide all individual masks
+                const annotations = block.querySelectorAll('.annotation-comment');
+                annotations.forEach(annotation => {
+                    annotation.classList.add('mask-hidden');
+                });
                 button.textContent = '�';
-                button.title = 'Reveal Annotations (VULNERABILITY/ASVS comments)';
+                button.title = 'Reveal All Annotations (VULNERABILITY/ASVS comments)';
+            }
+        }
+
+        // Toggle individual annotation mask
+        function toggleIndividualMask(annotationLine) {
+            const isHidden = annotationLine.classList.contains('mask-hidden');
+            
+            if (isHidden) {
+                // Reveal this specific annotation
+                annotationLine.classList.remove('mask-hidden');
+                annotationLine.title = 'Click to mask this annotation';
+            } else {
+                // Hide this specific annotation
+                annotationLine.classList.add('mask-hidden');
+                annotationLine.title = 'Click to reveal this annotation';
             }
         }
 
