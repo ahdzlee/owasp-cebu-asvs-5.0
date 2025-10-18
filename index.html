@@ -819,6 +819,113 @@
             border-radius: 2px;
         }
 
+        /* Timer for expanded code blocks */
+        .code-timer {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 16px 24px;
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 
+                        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            min-width: 180px;
+            cursor: move;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .code-timer:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 
+                        0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+        }
+
+        .code-timer.dragging {
+            cursor: grabbing;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 
+                        0 0 0 2px rgba(96, 165, 250, 0.5) inset;
+        }
+
+        .code-timer.visible {
+            display: flex;
+        }
+
+        body.light-theme .code-timer {
+            background: rgba(248, 250, 252, 0.95);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 
+                        0 0 0 1px rgba(0, 0, 0, 0.05) inset;
+        }
+
+        .timer-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #60a5fa;
+            line-height: 1;
+            letter-spacing: 0.05em;
+        }
+
+        body.light-theme .timer-display {
+            color: #2563eb;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .timer-btn {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #60a5fa;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .timer-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.6);
+            transform: scale(1.05);
+        }
+
+        body.light-theme .timer-btn {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #2563eb;
+        }
+
+        body.light-theme .timer-btn:hover {
+            background: rgba(59, 130, 246, 0.25);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .timer-label {
+            font-size: 0.7em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        body.light-theme .timer-label {
+            color: #64748b;
+        }
+
         /* Obfuscation mask for annotation comments - Dark theme */
         .annotation-comment::after {
             content: '';
@@ -1634,6 +1741,56 @@
             transform: translateY(0) scale(0.95);
         }
 
+        .timer-toggle {
+            position: fixed;
+            top: 20px;
+            right: 74px;
+            width: 44px;
+            height: 44px;
+            background: var(--btn-bg);
+            color: var(--btn-color);
+            border: var(--btn-border-width) solid var(--btn-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            opacity: var(--btn-opacity);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+        }
+
+        .timer-toggle.active {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: rgba(96, 165, 250, 0.5);
+            color: #60a5fa;
+        }
+
+        body.light-theme .timer-toggle.active {
+            background: rgba(37, 99, 235, 0.15);
+            border-color: rgba(37, 99, 235, 0.4);
+            color: #2563eb;
+        }
+
+        .timer-toggle:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+            background: var(--btn-hover-bg);
+            border-color: var(--btn-hover-border);
+            color: var(--btn-hover-color);
+            opacity: var(--btn-hover-opacity);
+        }
+
+        .timer-toggle:active {
+            transform: translateY(0) scale(0.95);
+        }
+
         .owasp-branding {
             position: fixed;
             top: 20px;
@@ -2041,6 +2198,21 @@
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
         <span id="themeIcon">☀️</span>
     </button>
+
+    <!-- Timer Toggle Button -->
+    <button class="timer-toggle" id="timerToggle" onclick="toggleTimerVisibility()" title="Toggle Timer">
+        ⏱️
+    </button>
+
+    <!-- Timer for expanded code blocks -->
+    <div class="code-timer" id="codeTimer">
+        <div class="timer-label">Timer</div>
+        <div class="timer-display" id="timerDisplay">00:00</div>
+        <div class="timer-controls">
+            <button class="timer-btn" id="timerStart" onclick="startTimer()">Start</button>
+            <button class="timer-btn" id="timerReset" onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
 
     <div class="presentation">
         <!-- Slide 1: Title -->
@@ -4250,6 +4422,158 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             return 0;
         }
 
+        // Timer functionality
+        let timerInterval = null;
+        let timerSeconds = 0;
+        let timerRunning = false;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            const display = document.getElementById('timerDisplay');
+            display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (timerRunning) {
+                // Pause timer
+                clearInterval(timerInterval);
+                timerRunning = false;
+                document.getElementById('timerStart').textContent = 'Resume';
+            } else {
+                // Start/Resume timer
+                timerRunning = true;
+                document.getElementById('timerStart').textContent = 'Pause';
+                timerInterval = setInterval(() => {
+                    timerSeconds++;
+                    updateTimerDisplay();
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerSeconds = 0;
+            timerRunning = false;
+            updateTimerDisplay();
+            document.getElementById('timerStart').textContent = 'Start';
+        }
+
+        function showTimer() {
+            const timer = document.getElementById('codeTimer');
+            const toggleBtn = document.getElementById('timerToggle');
+            timer.classList.add('visible');
+            toggleBtn.classList.add('active');
+        }
+
+        function hideTimer() {
+            const timer = document.getElementById('codeTimer');
+            const toggleBtn = document.getElementById('timerToggle');
+            timer.classList.remove('visible');
+            toggleBtn.classList.remove('active');
+        }
+
+        function toggleTimerVisibility() {
+            const timer = document.getElementById('codeTimer');
+            if (timer.classList.contains('visible')) {
+                hideTimer();
+            } else {
+                showTimer();
+            }
+        }
+
+        // Make timer draggable
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        function initTimerDragging() {
+            const timer = document.getElementById('codeTimer');
+            
+            timer.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+            
+            // Touch events for mobile
+            timer.addEventListener('touchstart', dragStart);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', dragEnd);
+        }
+
+        function dragStart(e) {
+            const timer = document.getElementById('codeTimer');
+            
+            // Don't drag if clicking on buttons
+            if (e.target.classList.contains('timer-btn')) {
+                return;
+            }
+            
+            if (e.type === 'touchstart') {
+                initialX = e.touches[0].clientX - xOffset;
+                initialY = e.touches[0].clientY - yOffset;
+            } else {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+
+            if (e.target === timer || timer.contains(e.target)) {
+                isDragging = true;
+                timer.classList.add('dragging');
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                
+                const timer = document.getElementById('codeTimer');
+                
+                if (e.type === 'touchmove') {
+                    currentX = e.touches[0].clientX - initialX;
+                    currentY = e.touches[0].clientY - initialY;
+                } else {
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                }
+
+                xOffset = currentX;
+                yOffset = currentY;
+
+                // Get timer dimensions
+                const timerRect = timer.getBoundingClientRect();
+                const timerWidth = timerRect.width;
+                const timerHeight = timerRect.height;
+
+                // Calculate new position
+                let newLeft = timer.offsetLeft + currentX - xOffset + currentX;
+                let newTop = timer.offsetTop + currentY - yOffset + currentY;
+
+                // Keep within viewport bounds
+                newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - timerWidth));
+                newTop = Math.max(0, Math.min(newTop, window.innerHeight - timerHeight));
+
+                setTranslate(currentX, currentY, timer);
+            }
+        }
+
+        function dragEnd(e) {
+            if (isDragging) {
+                const timer = document.getElementById('codeTimer');
+                initialX = currentX;
+                initialY = currentY;
+                isDragging = false;
+                timer.classList.remove('dragging');
+            }
+        }
+
+        function setTranslate(xPos, yPos, el) {
+            el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+        }
+
         // Transform code blocks to have line numbers
         function initCodeBlocks() {
             const codeBlocks = document.querySelectorAll('.code-block');
@@ -4626,6 +4950,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         initSlideSelector();
         initSlideStickyHeaders();
         initCodeBlocks();
+        initTimerDragging();
         const initialSlide = restoreSlideFromHash();
         showSlide(initialSlide);
         
