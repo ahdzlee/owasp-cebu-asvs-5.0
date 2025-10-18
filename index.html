@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OWASP Cebu - ASVS v5.0 Workshop</title>
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             /* Dark theme (default) */
@@ -693,7 +696,7 @@
             padding: 0;
             border-radius: 8px;
             margin: 20px 0;
-            font-family: 'Fira Code', 'Courier New', monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
             font-size: 0.95em;
             overflow: hidden;
             max-height: 400px;
@@ -761,6 +764,442 @@
             opacity: var(--btn-hover-opacity);
             transform: scale(1.05);
             box-shadow: var(--btn-shadow);
+        }
+
+        .code-toggle-comments-btn {
+            position: absolute;
+            top: 8px;
+            right: 50px;
+            background: var(--btn-bg);
+            color: var(--btn-color);
+            border: var(--btn-border-width) solid var(--btn-border);
+            padding: 6px 12px;
+            font-size: 0.85em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            opacity: var(--btn-opacity);
+            z-index: 10;
+            backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .code-toggle-comments-btn:hover {
+            background: var(--btn-hover-bg);
+            border-color: var(--btn-hover-border);
+            color: var(--btn-hover-color);
+            opacity: var(--btn-hover-opacity);
+            transform: scale(1.05);
+            box-shadow: var(--btn-shadow);
+        }
+
+        .code-toggle-comments-btn.comments-hidden {
+            background: rgba(251, 146, 60, 0.15);
+            border-color: rgba(251, 146, 60, 0.4);
+            color: #fb923c;
+            opacity: 1;
+        }
+
+        /* Visual indicator for annotation comments */
+        .annotation-comment {
+            position: relative;
+        }
+        
+        .annotation-comment::before {
+            content: '';
+            position: absolute;
+            left: -3px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(135deg, #fb923c 0%, #f59e0b 100%);
+            opacity: 0.6;
+            border-radius: 2px;
+        }
+
+        /* Timer for expanded code blocks */
+        .code-timer {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 16px 24px;
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 
+                        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            min-width: 180px;
+            cursor: move;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .code-timer:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 
+                        0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+        }
+
+        .code-timer.dragging {
+            cursor: grabbing;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 
+                        0 0 0 2px rgba(96, 165, 250, 0.5) inset;
+        }
+
+        .code-timer.visible {
+            display: flex;
+        }
+
+        body.light-theme .code-timer {
+            background: rgba(248, 250, 252, 0.95);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 
+                        0 0 0 1px rgba(0, 0, 0, 0.05) inset;
+        }
+
+        .timer-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #60a5fa;
+            line-height: 1;
+            letter-spacing: 0.05em;
+        }
+
+        body.light-theme .timer-display {
+            color: #2563eb;
+        }
+
+        .timer-display-wrapper {
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .timer-input {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 8px 8px;
+            padding-right: 32px;
+            width: 110px;
+            text-align: center;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .timer-input:focus {
+            border-color: rgba(59, 130, 246, 0.6);
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        /* Hide default spinner buttons - we'll use custom styled ones */
+        .timer-input::-webkit-inner-spin-button,
+        .timer-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox number input */
+        .timer-input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        .timer-spinner-buttons {
+            position: absolute;
+            right: 3px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            padding: 2px;
+            opacity: 0.7;
+            transition: all 0.15s ease;
+        }
+
+        .timer-spinner-buttons:hover {
+            opacity: 1;
+        }
+
+        .timer-spinner-btn {
+            width: 24px;
+            height: 18px;
+            background: transparent;
+            border: none;
+            color: rgba(96, 165, 250, 0.6);
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .timer-spinner-btn:hover {
+            color: rgba(96, 165, 250, 0.9);
+        }
+
+        .timer-spinner-btn:active {
+            color: rgba(96, 165, 250, 1);
+            transform: scale(0.95);
+        }
+
+        body.light-theme .timer-input {
+            color: #2563eb;
+            background: rgba(59, 130, 246, 0.05);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        body.light-theme .timer-spinner-buttons {
+            opacity: 0.7;
+        }
+
+        body.light-theme .timer-spinner-buttons:hover {
+            opacity: 1;
+        }
+
+        body.light-theme .timer-spinner-btn {
+            color: rgba(37, 99, 235, 0.6);
+        }
+
+        body.light-theme .timer-spinner-btn:hover {
+            color: rgba(37, 99, 235, 0.9);
+        }
+
+        body.light-theme .timer-spinner-btn:active {
+            color: rgba(37, 99, 235, 1);
+        }
+
+        body.light-theme .timer-input:focus {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .timer-separator {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #60a5fa;
+            line-height: 1;
+        }
+
+        body.light-theme .timer-separator {
+            color: #2563eb;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .timer-btn {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #60a5fa;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75em;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .timer-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.6);
+            transform: scale(1.05);
+        }
+
+        body.light-theme .timer-btn {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #2563eb;
+        }
+
+        body.light-theme .timer-btn:hover {
+            background: rgba(59, 130, 246, 0.25);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .timer-label {
+            font-size: 0.7em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        body.light-theme .timer-label {
+            color: #64748b;
+        }
+
+        /* Obfuscation mask for annotation comments - Dark theme */
+        .annotation-comment::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(96, 165, 250, 0.15) 0px,
+                    rgba(96, 165, 250, 0.15) 3px,
+                    rgba(139, 92, 246, 0.15) 3px,
+                    rgba(139, 92, 246, 0.15) 6px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(15, 23, 42, 0.98) 0%,
+                    rgba(30, 41, 59, 0.98) 50%,
+                    rgba(15, 23, 42, 0.98) 100%
+                );
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), left 0.6s cubic-bezier(0.4, 0, 0.2, 1), width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        /* Use measured width for precise masking */
+        .annotation-comment.has-measured-mask::after {
+            left: var(--mask-left, 0);
+            width: var(--mask-width, 100%);
+            right: auto;
+        }
+
+        /* Obfuscation mask for annotation comments - Light theme */
+        body.light-theme .annotation-comment::after {
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(96, 165, 250, 0.2) 0px,
+                    rgba(96, 165, 250, 0.2) 3px,
+                    rgba(139, 92, 246, 0.2) 3px,
+                    rgba(139, 92, 246, 0.2) 6px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(248, 250, 252, 0.98) 0%,
+                    rgba(241, 245, 249, 0.98) 50%,
+                    rgba(248, 250, 252, 0.98) 100%
+                );
+        }
+
+        /* Show mask when annotations are hidden (global toggle) */
+        .code-block.hide-annotations .annotation-comment::after {
+            opacity: 1;
+            animation: shimmer 3s ease-in-out infinite, slideIn 0.6s ease-out;
+        }
+
+        /* Show mask on individual annotation lines (individual toggle) */
+        .annotation-comment.mask-hidden::after {
+            opacity: 1;
+            animation: shimmer 3s ease-in-out infinite, slideIn 0.6s ease-out;
+        }
+
+        /* IMPORTANT: Individual reveal overrides global hide - higher specificity */
+        .code-block.hide-annotations .annotation-comment:not(.mask-hidden)::after {
+            opacity: 0 !important;
+            animation: none;
+        }
+
+        /* Ensure text is not selectable when individually masked */
+        .annotation-comment.mask-hidden {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Individual reveal overrides global hide for text selection */
+        .code-block.hide-annotations .annotation-comment:not(.mask-hidden) {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        /* Additional visual effect - blur the actual text slightly when individually masked */
+        .annotation-comment.mask-hidden .comment {
+            filter: blur(3px);
+            transition: filter 0.5s ease;
+        }
+
+        /* Individual reveal overrides global hide for blur effect */
+        .code-block.hide-annotations .annotation-comment:not(.mask-hidden) .comment {
+            filter: blur(0);
+        }
+
+        /* Shimmer animation for masked comments */
+        @keyframes shimmer {
+            0%, 100% {
+                background-position: 0% 50%;
+                filter: brightness(1);
+            }
+            50% {
+                background-position: 100% 50%;
+                filter: brightness(1.15);
+            }
+        }
+
+        /* Slide in animation when mask appears */
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Ensure text is not selectable when masked */
+        .code-block.hide-annotations .annotation-comment {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Additional visual effect - blur the actual text slightly when masked */
+        .code-block.hide-annotations .annotation-comment .comment {
+            filter: blur(3px);
+            transition: filter 0.5s ease;
+        }
+
+        .annotation-comment .comment {
+            transition: filter 0.5s ease;
         }
 
         .code-block-content {
@@ -1155,6 +1594,64 @@
             backdrop-filter: blur(10px);
             border-bottom: var(--selector-border-width) solid var(--selector-header-border);
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .slide-jump-input {
+            width: 60px;
+            padding: 6px 10px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--selector-header-border);
+            border-radius: 6px;
+            color: var(--selector-header-color);
+            font-size: 0.9em;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        body.light-theme .slide-jump-input {
+            background: rgba(248, 250, 252, 0.8);
+            color: #3b82f6;
+        }
+
+        .slide-jump-input:hover {
+            border-color: var(--selector-item-current-border);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .slide-jump-input:focus {
+            border-color: var(--selector-item-current-border);
+            background: rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Remove spinner arrows in Chrome, Safari, Edge */
+        .slide-jump-input::-webkit-outer-spin-button,
+        .slide-jump-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Remove spinner arrows in Firefox */
+        .slide-jump-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Shake animation for invalid input - subtle version */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25%, 75% { transform: translateX(-3px); }
+            50% { transform: translateX(3px); }
+        }
+
+        .slide-jump-input.shake {
+            animation: shake 0.3s ease-in-out;
+            border-color: #ef4444;
         }
 
         .grid-2 {
@@ -1383,6 +1880,56 @@
             transform: translateY(0) scale(0.95);
         }
 
+        .timer-toggle {
+            position: fixed;
+            top: 20px;
+            right: 74px;
+            width: 44px;
+            height: 44px;
+            background: var(--btn-bg);
+            color: var(--btn-color);
+            border: var(--btn-border-width) solid var(--btn-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            opacity: var(--btn-opacity);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                        inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.1);
+        }
+
+        .timer-toggle.active {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: rgba(96, 165, 250, 0.5);
+            color: #60a5fa;
+        }
+
+        body.light-theme .timer-toggle.active {
+            background: rgba(37, 99, 235, 0.15);
+            border-color: rgba(37, 99, 235, 0.4);
+            color: #2563eb;
+        }
+
+        .timer-toggle:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+            background: var(--btn-hover-bg);
+            border-color: var(--btn-hover-border);
+            color: var(--btn-hover-color);
+            opacity: var(--btn-hover-opacity);
+        }
+
+        .timer-toggle:active {
+            transform: translateY(0) scale(0.95);
+        }
+
         .owasp-branding {
             position: fixed;
             top: 20px;
@@ -1486,7 +2033,7 @@
             background: var(--badge-float-bg);
             padding: 10px 16px;
             border-radius: 6px;
-            font-family: monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
             font-size: 0.7em;
             backdrop-filter: blur(12px);
             box-shadow: 0 4px 12px var(--badge-float-shadow);
@@ -1594,7 +2141,7 @@
             padding: 20px;
             border-radius: 10px;
             margin: 30px 0;
-            font-family: monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
             border: var(--card-border-width) solid var(--card-border);
             transition: all 0.3s ease;
         }
@@ -1753,6 +2300,74 @@
             transform: translateX(0);
         }
 
+        .resource-link-item {
+            background: var(--card-bg);
+            border: var(--card-border-width) solid var(--card-border);
+            border-radius: 10px;
+            padding: 18px 25px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            display: block;
+        }
+
+        .resource-link-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #60a5fa, #a78bfa);
+            transform: scaleY(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .resource-link-item:hover {
+            transform: translateX(5px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.12);
+        }
+
+        .resource-link-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .resource-icon-small {
+            font-size: 2em;
+            line-height: 1;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .resource-link-item:hover .resource-icon-small {
+            transform: scale(1.15);
+        }
+
+        .resource-url {
+            font-size: 0.9em;
+            color: var(--h2-color);
+            opacity: 0.75;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        .resource-arrow-small {
+            font-size: 1.5em;
+            color: var(--h2-color);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .resource-link-item:hover .resource-arrow-small {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
         .remember-section {
             background: var(--card-bg);
             padding: 40px;
@@ -1790,6 +2405,41 @@
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Theme">
         <span id="themeIcon">☀️</span>
     </button>
+
+    <!-- Timer Toggle Button -->
+    <button class="timer-toggle" id="timerToggle" onclick="toggleTimerVisibility()" title="Toggle Timer">
+        ⏱️
+    </button>
+
+    <!-- Timer for expanded code blocks -->
+    <div class="code-timer" id="codeTimer">
+        <div class="timer-label">Timer</div>
+        <div class="timer-display-wrapper">
+            <div class="timer-display" id="timerDisplay">00:00</div>
+            <div class="timer-input-group" id="timerInputGroup" style="display: none;">
+                <div class="timer-input-wrapper">
+                    <input type="number" id="timerMinutes" class="timer-input" min="0" max="99" step="1" value="5" placeholder="MM" oninput="validateTimerInput(this, 99)">
+                    <div class="timer-spinner-buttons">
+                        <button class="timer-spinner-btn timer-spinner-up" onclick="incrementMinutes(event)" title="Increase">▲</button>
+                        <button class="timer-spinner-btn timer-spinner-down" onclick="decrementMinutes(event)" title="Decrease">▼</button>
+                    </div>
+                </div>
+                <span class="timer-separator">:</span>
+                <div class="timer-input-wrapper">
+                    <input type="number" id="timerSeconds" class="timer-input" min="0" max="59" step="1" value="0" placeholder="SS" oninput="validateTimerInput(this, 59)">
+                    <div class="timer-spinner-buttons">
+                        <button class="timer-spinner-btn timer-spinner-up" onclick="incrementSeconds(event)" title="Increase">▲</button>
+                        <button class="timer-spinner-btn timer-spinner-down" onclick="decrementSeconds(event)" title="Decrease">▼</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="timer-controls">
+            <button class="timer-btn" id="timerSet" onclick="toggleTimerInput()">Set</button>
+            <button class="timer-btn" id="timerStart" onclick="startTimer()">Start</button>
+            <button class="timer-btn" id="timerReset" onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
 
     <div class="presentation">
         <!-- Slide 1: Title -->
@@ -2094,31 +2744,31 @@
         <div class="slide">
             <h2 style="margin-bottom: 25px;">Workshop Agenda</h2>
             <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px;">
-                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #60a5fa;">
+                <div class="agenda-item" onclick="jumpToSlide(4)" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #60a5fa;">
                     <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">📚</div>
                     <div style="flex: 1; font-size: 1.1em; color: var(--card-text);">Introduction to OWASP ASVS v5.0</div>
                 </div>
-                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #a78bfa;">
+                <div class="agenda-item" onclick="jumpToSlide(6)" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #a78bfa;">
                     <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(139, 92, 246, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">🔐</div>
                     <div style="flex: 1; font-size: 1.1em; color: var(--card-text);"><strong>Scenario 1:</strong> User Authentication & Login</div>
                 </div>
-                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #10b981;">
+                <div class="agenda-item" onclick="jumpToSlide(10)" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #10b981;">
                     <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">🛡️</div>
                     <div style="flex: 1; font-size: 1.1em; color: var(--card-text);"><strong>Scenario 2:</strong> API Security & Access Control</div>
                 </div>
-                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #f59e0b;">
+                <div class="agenda-item" onclick="jumpToSlide(14)" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #f59e0b;">
                     <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(245, 158, 11, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">📁</div>
                     <div style="flex: 1; font-size: 1.1em; color: var(--card-text);"><strong>Scenario 3:</strong> File Upload Security</div>
                 </div>
-                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #ec4899;">
+                <div class="agenda-item" onclick="jumpToSlide(19)" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #ec4899;">
                     <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(236, 72, 153, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">🔍</div>
                     <div style="flex: 1; font-size: 1.1em; color: var(--card-text);">ASVS Scavenger Hunt</div>
                 </div>
-                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #06b6d4;">
+                <div class="agenda-item" onclick="jumpToSlide(21)" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #06b6d4;">
                     <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(6, 182, 212, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">📝</div>
                     <div style="flex: 1; font-size: 1.1em; color: var(--card-text);">Take-Home Assignment</div>
                 </div>
-                <div class="agenda-item" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #8b5cf6;">
+                <div class="agenda-item" onclick="jumpToSlide(44)" style="display: flex; align-items: center; gap: 15px; padding: 10px 16px; background: var(--card-bg); border-radius: 10px; border-left: 4px solid #8b5cf6;">
                     <div class="agenda-icon" style="width: 40px; height: 40px; background: rgba(139, 92, 246, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3em; flex-shrink: 0;">💬</div>
                     <div style="flex: 1; font-size: 1.1em; color: var(--card-text);">Questions & Discussion</div>
                 </div>
@@ -2465,7 +3115,7 @@ limiter = Limiter(app, default_limits=[<span class="string">"200 per day"</span>
             <span class="string">'id'</span>: user.id,
             <span class="string">'email'</span>: user.email,
             <span class="string">'ssn'</span>: user.ssn,  <span class="comment"># Should NEVER be exposed!</span>
-            <span class="string">'password_hash'</span>: user.password_hash,  <span class="comment"># Never expose!</span>
+            <span class="string">'password_hash'</span>: user.password_hash,  <span class="comment"># NEVER expose!</span>
             <span class="string">'salary'</span>: user.salary,
             <span class="string">'credit_card'</span>: user.credit_card
         })</div>
@@ -2963,7 +3613,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
     
     <span class="keyword">if</span> (result.rows.length === 0) {
         <span class="comment">// V16.1.1: Log failed attempt</span>
-        logger.warn(<span class="string">`Failed login attempt for ${email}`</span>);
+        logger.warn(<span class="string">`Failed login attempt for ${user.id}`</span>);
         <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
     }
     
@@ -2973,7 +3623,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
     <span class="keyword">const</span> validPassword = <span class="keyword">await</span> bcrypt.compare(password, user.password_hash);
     
     <span class="keyword">if</span> (!validPassword) {
-        logger.warn(<span class="string">`Failed login for ${email}`</span>);
+        logger.warn(<span class="string">`Failed login for ${user.id}`</span>);
         <span class="keyword">return</span> res.status(401).json({ error: <span class="string">'Invalid credentials'</span> });
     }
     
@@ -3698,13 +4348,42 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         <div class="slide">
             <h2>📚 Resources & Next Steps</h2>
             
-            <div class="resources-card hover-lift">
-                <h3>Essential Resources</h3>
-                <ul style="font-size: 1.2em; line-height: 2;">
-                    <li><strong>OWASP ASVS v5.0:</strong><br><a href="https://owasp.org/www-project-application-security-verification-standard" target="_blank">https://owasp.org/www-project-application-security-verification-standard</a></li>
-                    <li><strong>OWASP Cheat Sheet Series:</strong><br><a href="https://cheatsheetseries.owasp.org/" target="_blank">https://cheatsheetseries.owasp.org</a></li>
-                    <li><strong>OWASP Top 10:</strong><br><a href="https://owasp.org/www-project-top-ten" target="_blank">https://owasp.org/www-project-top-ten</a></li>
-                </ul>
+            <div style="margin: 20px 0 30px 0;">
+                <h3 style="font-size: 1.5em; margin-bottom: 20px; color: var(--h2-color);">✨ Essential Resources</h3>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <a href="https://owasp.org/www-project-application-security-verification-standard" target="_blank" class="resource-link-item hover-lift" style="text-decoration: none;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="resource-icon-small">📘</div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0 0 5px 0; font-size: 1.2em; color: var(--card-h-color);">OWASP ASVS v5.0</h4>
+                                <div class="resource-url">https://owasp.org/www-project-application-security-verification-standard</div>
+                            </div>
+                            <div class="resource-arrow-small">→</div>
+                        </div>
+                    </a>
+                    
+                    <a href="https://cheatsheetseries.owasp.org/" target="_blank" class="resource-link-item hover-lift" style="text-decoration: none;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="resource-icon-small">📝</div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0 0 5px 0; font-size: 1.2em; color: var(--card-h-color);">OWASP Cheat Sheet Series</h4>
+                                <div class="resource-url">https://cheatsheetseries.owasp.org</div>
+                            </div>
+                            <div class="resource-arrow-small">→</div>
+                        </div>
+                    </a>
+                    
+                    <a href="https://owasp.org/www-project-top-ten" target="_blank" class="resource-link-item hover-lift" style="text-decoration: none;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div class="resource-icon-small">🔟</div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0 0 5px 0; font-size: 1.2em; color: var(--card-h-color);">OWASP Top 10</h4>
+                                <div class="resource-url">https://owasp.org/www-project-top-ten</div>
+                            </div>
+                            <div class="resource-arrow-small">→</div>
+                        </div>
+                    </a>
+                </div>
             </div>
 
             <div class="grid-2" style="margin-top: 30px;">
@@ -3787,7 +4466,7 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     </div>
 
                     <!-- Code Lock Visual -->
-                    <div class="hover-lift" style="background: var(--code-bg); padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.85em; border: var(--code-border-width) solid var(--code-border);">
+                    <div class="hover-lift" style="background: var(--code-bg); padding: 15px; border-radius: 10px; font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.85em; border: var(--code-border-width) solid var(--code-border);">
                         <span style="color: var(--keyword-color);">const</span> <span style="color: var(--code-text);">security</span> <span style="color: var(--code-text);">=</span> <span style="color: var(--string-color);">"built-in"</span><span style="color: var(--code-text);">;</span> <span style="color: var(--comment-color);">// ✓</span>
                     </div>
                 </div>
@@ -3795,10 +4474,21 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         </div>
     </div>
 
-    <div class="slide-number" id="slideNumber" onclick="toggleSlideSelector()">1 / 44</div>
+    <div class="slide-number" id="slideNumber" onclick="toggleSlideSelector()">1 - 44</div>
     
     <div class="slide-selector" id="slideSelector">
-        <div class="slide-selector-header">Jump to Slide</div>
+        <div class="slide-selector-header">
+            <span>Jump to Slide</span>
+            <input 
+                type="number" 
+                id="slideJumpInput" 
+                class="slide-jump-input" 
+                min="1" 
+                max="44" 
+                placeholder="1 / 44"
+                title="Enter slide number and press Enter"
+            />
+        </div>
         <div id="slideSelectorList"></div>
     </div>
 
@@ -3829,11 +4519,31 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             
             // Apply code expansion state to new slide
             applyCodeExpansionState();
+            
+            // Recalculate annotation mask widths for the new slide
+            // Use requestAnimationFrame + setTimeout to ensure slide is fully rendered
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    applyAnnotationMaskWidths();
+                }, 100);
+            });
         }
 
         function toggleSlideSelector() {
             const selector = document.getElementById('slideSelector');
             selector.classList.toggle('active');
+            
+            // Focus the input field when dropdown is opened
+            if (selector.classList.contains('active')) {
+                const slideJumpInput = document.getElementById('slideJumpInput');
+                if (slideJumpInput) {
+                    // Small delay to ensure dropdown animation starts smoothly
+                    setTimeout(() => {
+                        slideJumpInput.focus();
+                        slideJumpInput.select(); // Also select any existing value for easy replacement
+                    }, 100);
+                }
+            }
         }
 
         function jumpToSlide(index) {
@@ -3901,6 +4611,16 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
+            // Ctrl+/ (Windows/Linux) or Cmd+/ (macOS) to open slide selector dropdown
+            if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                e.preventDefault(); // Prevent browser default behavior
+                const selector = document.getElementById('slideSelector');
+                if (!selector.classList.contains('active')) {
+                    toggleSlideSelector();
+                }
+                return;
+            }
+            
             if (e.key === 'ArrowLeft' && currentSlide > 0) {
                 changeSlide(-1);
             } else if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
@@ -3958,6 +4678,359 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             return 0;
         }
 
+        // Timer functionality
+        let timerInterval = null;
+        let timerSeconds = 0;
+        let timerRunning = false;
+        let isCountdown = false;
+        let initialTimerSeconds = 0;
+        let isInputMode = false;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            const display = document.getElementById('timerDisplay');
+            display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            // Change color when countdown reaches 0
+            if (isCountdown && timerSeconds === 0) {
+                display.style.color = '#ef4444';
+            } else if (isCountdown && timerSeconds <= 10) {
+                display.style.color = '#f97316';
+            } else {
+                display.style.color = '';
+            }
+        }
+
+        function playTimerSound() {
+            // Create a gentle, ear-friendly notification sound
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Play a pleasant repeating chime pattern for 3 seconds
+                const playTone = (frequency, startTime, duration) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = frequency;
+                    oscillator.type = 'sine'; // Smooth sine wave
+                    
+                    // 30% volume with fade out
+                    gainNode.gain.setValueAtTime(0, startTime);
+                    gainNode.gain.linearRampToValueAtTime(0.3, startTime + 0.02); // 30% volume
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+                    
+                    oscillator.start(startTime);
+                    oscillator.stop(startTime + duration);
+                };
+                
+                const now = audioContext.currentTime;
+                // Play repeating two-tone pattern over 5 seconds (C5 -> E5, repeated)
+                playTone(523.25, now, 0.4);         // C5 note
+                playTone(659.25, now + 0.2, 0.5);   // E5 note
+                playTone(523.25, now + 0.8, 0.4);   // C5 note
+                playTone(659.25, now + 1.0, 0.5);   // E5 note
+                playTone(523.25, now + 1.6, 0.4);   // C5 note
+                playTone(659.25, now + 1.8, 0.5);   // E5 note
+                playTone(523.25, now + 2.4, 0.4);   // C5 note
+                playTone(659.25, now + 2.6, 0.5);   // E5 note
+                playTone(523.25, now + 3.2, 0.4);   // C5 note
+                playTone(659.25, now + 3.4, 0.5);   // E5 note
+                playTone(523.25, now + 4.0, 0.4);   // C5 note
+                playTone(659.25, now + 4.2, 0.7);   // E5 note (final, longer)
+                
+            } catch (error) {
+                console.log('Audio playback not supported');
+            }
+        }
+
+        function validateTimerInput(input, max) {
+            // Remove any non-digit characters except empty string
+            let value = input.value.replace(/[^0-9]/g, '');
+            
+            // Convert to integer
+            let numValue = parseInt(value) || 0;
+            
+            // Ensure it's within bounds
+            if (numValue < 0) numValue = 0;
+            if (numValue > max) numValue = max;
+            
+            // Update input value
+            input.value = value === '' ? '' : numValue;
+        }
+
+        function incrementMinutes(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const input = document.getElementById('timerMinutes');
+            let value = parseInt(input.value) || 0;
+            input.value = Math.min(value + 1, 99);
+        }
+
+        function decrementMinutes(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const input = document.getElementById('timerMinutes');
+            let value = parseInt(input.value) || 0;
+            input.value = Math.max(value - 1, 0);
+        }
+
+        function incrementSeconds(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const input = document.getElementById('timerSeconds');
+            let value = parseInt(input.value) || 0;
+            input.value = Math.min(value + 1, 59);
+        }
+
+        function decrementSeconds(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const input = document.getElementById('timerSeconds');
+            let value = parseInt(input.value) || 0;
+            input.value = Math.max(value - 1, 0);
+        }
+
+        function toggleTimerInput() {
+            const display = document.getElementById('timerDisplay');
+            const inputGroup = document.getElementById('timerInputGroup');
+            const setBtn = document.getElementById('timerSet');
+            const startBtn = document.getElementById('timerStart');
+            
+            if (!isInputMode) {
+                // Switch to input mode
+                display.style.display = 'none';
+                inputGroup.style.display = 'flex';
+                setBtn.textContent = 'Done';
+                isInputMode = true;
+                
+                // Populate inputs with current time
+                const minutes = Math.floor(timerSeconds / 60);
+                const seconds = timerSeconds % 60;
+                document.getElementById('timerMinutes').value = minutes;
+                document.getElementById('timerSeconds').value = seconds;
+            } else {
+                // Switch to display mode and apply values
+                const minutes = parseInt(document.getElementById('timerMinutes').value) || 0;
+                const seconds = parseInt(document.getElementById('timerSeconds').value) || 0;
+                
+                // Validate and set timer
+                timerSeconds = Math.max(0, Math.min(minutes * 60 + seconds, 5999)); // Max 99:59
+                initialTimerSeconds = timerSeconds;
+                isCountdown = timerSeconds > 0;
+                
+                display.style.display = 'block';
+                inputGroup.style.display = 'none';
+                setBtn.textContent = 'Set';
+                startBtn.disabled = false;
+                startBtn.style.opacity = '1';
+                isInputMode = false;
+                
+                updateTimerDisplay();
+            }
+        }
+
+        function startTimer() {
+            // If in input mode, apply the values first
+            if (isInputMode) {
+                const display = document.getElementById('timerDisplay');
+                const inputGroup = document.getElementById('timerInputGroup');
+                const setBtn = document.getElementById('timerSet');
+                const startBtn = document.getElementById('timerStart');
+                
+                // Get and validate input values
+                const minutes = parseInt(document.getElementById('timerMinutes').value) || 0;
+                const seconds = parseInt(document.getElementById('timerSeconds').value) || 0;
+                
+                // Set timer
+                timerSeconds = Math.max(0, Math.min(minutes * 60 + seconds, 5999)); // Max 99:59
+                initialTimerSeconds = timerSeconds;
+                isCountdown = timerSeconds > 0;
+                
+                // Switch back to display mode
+                display.style.display = 'block';
+                inputGroup.style.display = 'none';
+                setBtn.textContent = 'Set';
+                startBtn.disabled = false;
+                startBtn.style.opacity = '1';
+                isInputMode = false;
+                
+                updateTimerDisplay();
+            }
+            
+            if (timerRunning) {
+                // Pause timer
+                clearInterval(timerInterval);
+                timerRunning = false;
+                document.getElementById('timerStart').textContent = 'Resume';
+            } else {
+                // Start/Resume timer
+                timerRunning = true;
+                document.getElementById('timerStart').textContent = 'Pause';
+                timerInterval = setInterval(() => {
+                    if (isCountdown) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                        
+                        // Stop at 0 and play alert
+                        if (timerSeconds <= 0) {
+                            timerSeconds = 0;
+                            clearInterval(timerInterval);
+                            timerRunning = false;
+                            document.getElementById('timerStart').textContent = 'Start';
+                            updateTimerDisplay();
+                            
+                            // Play gentle notification sound
+                            playTimerSound();
+                            
+                            // Visual alert - flash the timer
+                            const display = document.getElementById('timerDisplay');
+                            let flashCount = 0;
+                            const flashInterval = setInterval(() => {
+                                display.style.opacity = display.style.opacity === '0.3' ? '1' : '0.3';
+                                flashCount++;
+                                if (flashCount >= 6) {
+                                    clearInterval(flashInterval);
+                                    display.style.opacity = '1';
+                                }
+                            }, 300);
+                        }
+                    } else {
+                        timerSeconds++;
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerSeconds = isCountdown ? initialTimerSeconds : 0;
+            timerRunning = false;
+            updateTimerDisplay();
+            document.getElementById('timerStart').textContent = 'Start';
+        }
+
+        function showTimer() {
+            const timer = document.getElementById('codeTimer');
+            const toggleBtn = document.getElementById('timerToggle');
+            timer.classList.add('visible');
+            toggleBtn.classList.add('active');
+        }
+
+        function hideTimer() {
+            const timer = document.getElementById('codeTimer');
+            const toggleBtn = document.getElementById('timerToggle');
+            timer.classList.remove('visible');
+            toggleBtn.classList.remove('active');
+        }
+
+        function toggleTimerVisibility() {
+            const timer = document.getElementById('codeTimer');
+            if (timer.classList.contains('visible')) {
+                hideTimer();
+            } else {
+                showTimer();
+            }
+        }
+
+        // Make timer draggable
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        function initTimerDragging() {
+            const timer = document.getElementById('codeTimer');
+            
+            timer.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+            
+            // Touch events for mobile
+            timer.addEventListener('touchstart', dragStart);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', dragEnd);
+        }
+
+        function dragStart(e) {
+            const timer = document.getElementById('codeTimer');
+            
+            // Don't drag if clicking on buttons, inputs, or spinner buttons
+            if (e.target.classList.contains('timer-btn') || 
+                e.target.classList.contains('timer-input') ||
+                e.target.classList.contains('timer-spinner-btn')) {
+                return;
+            }
+            
+            if (e.type === 'touchstart') {
+                initialX = e.touches[0].clientX - xOffset;
+                initialY = e.touches[0].clientY - yOffset;
+            } else {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+
+            if (e.target === timer || timer.contains(e.target)) {
+                isDragging = true;
+                timer.classList.add('dragging');
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                
+                const timer = document.getElementById('codeTimer');
+                
+                if (e.type === 'touchmove') {
+                    currentX = e.touches[0].clientX - initialX;
+                    currentY = e.touches[0].clientY - initialY;
+                } else {
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                }
+
+                xOffset = currentX;
+                yOffset = currentY;
+
+                // Get timer dimensions
+                const timerRect = timer.getBoundingClientRect();
+                const timerWidth = timerRect.width;
+                const timerHeight = timerRect.height;
+
+                // Calculate new position
+                let newLeft = timer.offsetLeft + currentX - xOffset + currentX;
+                let newTop = timer.offsetTop + currentY - yOffset + currentY;
+
+                // Keep within viewport bounds
+                newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - timerWidth));
+                newTop = Math.max(0, Math.min(newTop, window.innerHeight - timerHeight));
+
+                setTranslate(currentX, currentY, timer);
+            }
+        }
+
+        function dragEnd(e) {
+            if (isDragging) {
+                const timer = document.getElementById('codeTimer');
+                initialX = currentX;
+                initialY = currentY;
+                isDragging = false;
+                timer.classList.remove('dragging');
+            }
+        }
+
+        function setTranslate(xPos, yPos, el) {
+            el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+        }
+
         // Transform code blocks to have line numbers
         function initCodeBlocks() {
             const codeBlocks = document.querySelectorAll('.code-block');
@@ -3995,20 +5068,62 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     codeLine.className = 'code-line';
                     codeLine.innerHTML = line || ' '; // Preserve empty lines
                     
+                    // Check if this line contains VULNERABILITY, ASVS annotation comments, or NEVER warnings
+                    const lineText = line.replace(/<[^>]*>/g, ''); // Strip HTML tags for checking
+                    if (lineText.includes('VULNERABILITY') || lineText.match(/V\d+\.\d+\.\d+/) || lineText.match(/NEVER/)) {
+                        codeLine.classList.add('annotation-comment');
+                        codeLine.classList.add('mask-hidden'); // Start with mask visible by default
+                        // Store original line for width calculation later
+                        codeLine.dataset.hasAnnotation = 'true';
+                        
+                        // Add individual click handler for toggling this specific annotation
+                        codeLine.addEventListener('click', (e) => {
+                            e.stopPropagation(); // Prevent line selection
+                            toggleIndividualMask(codeLine);
+                        });
+                        
+                        // Add cursor pointer and tooltip to indicate clickability
+                        codeLine.style.cursor = 'pointer';
+                        codeLine.title = 'Click to reveal this annotation';
+                    }
+                    
                     row.appendChild(lineNumber);
                     row.appendChild(codeLine);
                     table.appendChild(row);
                     
-                    // Add click handler for line selection
-                    row.addEventListener('click', () => {
-                        toggleLineSelection(block, index);
-                    });
+                    // Add click handler for line selection (only if not an annotation)
+                    if (!lineText.includes('VULNERABILITY') && !lineText.match(/V\d+\.\d+\.\d+/) && !lineText.match(/NEVER|Never/)) {
+                        row.addEventListener('click', () => {
+                            toggleLineSelection(block, index);
+                        });
+                    }
                 });
                 
                 // Clear original content and add new structure
                 block.innerHTML = '';
                 contentWrapper.appendChild(table);
                 block.appendChild(contentWrapper);
+                
+                // Check if block has any annotation comments
+                const hasAnnotations = originalContent.includes('VULNERABILITY') || 
+                                      originalContent.match(/V\d+\.\d+\.\d+/) ||
+                                      originalContent.match(/NEVER|Never/);
+                
+                // Add toggle comments button if annotations exist
+                if (hasAnnotations) {
+                    // Start with annotations masked by default
+                    block.classList.add('hide-annotations');
+                    
+                    const toggleCommentsBtn = document.createElement('button');
+                    toggleCommentsBtn.className = 'code-toggle-comments-btn comments-hidden';
+                    toggleCommentsBtn.textContent = '🔒';
+                    toggleCommentsBtn.title = 'Reveal All Annotations (VULNERABILITY/ASVS comments)';
+                    toggleCommentsBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        toggleAnnotations(block, toggleCommentsBtn);
+                    });
+                    block.appendChild(toggleCommentsBtn);
+                }
                 
                 // Add expand/collapse button
                 const expandBtn = document.createElement('button');
@@ -4020,6 +5135,48 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     toggleCodeExpansion(block, expandBtn);
                 });
                 block.appendChild(expandBtn);
+            });
+            
+            // Calculate and apply mask widths for annotation comments after DOM rendering
+            setTimeout(() => {
+                applyAnnotationMaskWidths();
+            }, 100);
+        }
+        
+        // Calculate mask width based on comment span width
+        function applyAnnotationMaskWidths() {
+            // Only process visible annotation lines (in the current slide)
+            const currentSlideElement = slides[currentSlide];
+            if (!currentSlideElement) return;
+            
+            const annotationLines = currentSlideElement.querySelectorAll('.annotation-comment');
+            
+            annotationLines.forEach(line => {
+                // Find the comment span element
+                const commentSpan = line.querySelector('.comment');
+                
+                if (commentSpan) {
+                    // Force a reflow to ensure dimensions are correct
+                    void line.offsetHeight;
+                    
+                    // Get the bounding rectangle of the comment span
+                    const rect = commentSpan.getBoundingClientRect();
+                    const lineRect = line.getBoundingClientRect();
+                    
+                    // Only apply if elements are actually visible (width > 0)
+                    if (rect.width > 0 && lineRect.width > 0) {
+                        // Calculate the start position (left offset from line start)
+                        const startOffset = rect.left - lineRect.left;
+                        
+                        // Calculate the width of the comment
+                        const commentWidth = rect.width;
+                        
+                        // Apply custom CSS properties for the mask
+                        line.style.setProperty('--mask-left', `${startOffset}px`);
+                        line.style.setProperty('--mask-width', `${commentWidth}px`);
+                        line.classList.add('has-measured-mask');
+                    }
+                }
             });
         }
         
@@ -4123,7 +5280,67 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
                     }
                 }
             }
+            
+            // Recalculate mask widths after expansion/collapse animation completes
+            setTimeout(() => {
+                applyAnnotationMaskWidths();
+            }, 100);
         }
+
+        // Toggle annotation comments (VULNERABILITY and ASVS comments)
+        function toggleAnnotations(block, button) {
+            const isHidden = block.classList.contains('hide-annotations');
+            
+            if (isHidden) {
+                // Reveal all annotations with animation
+                block.classList.remove('hide-annotations');
+                button.classList.remove('comments-hidden');
+                
+                // Also reveal all individual masks
+                const annotations = block.querySelectorAll('.annotation-comment');
+                annotations.forEach(annotation => {
+                    annotation.classList.remove('mask-hidden');
+                });
+                button.textContent = '🔓';
+                button.title = 'Mask All Annotations (VULNERABILITY/ASVS comments)';
+            } else {
+                // Mask all annotations with animation
+                block.classList.add('hide-annotations');
+                button.classList.add('comments-hidden');
+                
+                // Also hide all individual masks
+                const annotations = block.querySelectorAll('.annotation-comment');
+                annotations.forEach(annotation => {
+                    annotation.classList.add('mask-hidden');
+                });
+                button.textContent = '🔒';
+                button.title = 'Reveal All Annotations (VULNERABILITY/ASVS comments)';
+            }
+        }
+
+        // Toggle individual annotation mask
+        function toggleIndividualMask(annotationLine) {
+            const isHidden = annotationLine.classList.contains('mask-hidden');
+            
+            if (isHidden) {
+                // Reveal this specific annotation
+                annotationLine.classList.remove('mask-hidden');
+                annotationLine.title = 'Click to mask this annotation';
+            } else {
+                // Hide this specific annotation
+                annotationLine.classList.add('mask-hidden');
+                annotationLine.title = 'Click to reveal this annotation';
+            }
+        }
+
+        // Recalculate mask widths on window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                applyAnnotationMaskWidths();
+            }, 150);
+        });
 
         // Close expanded code block with Escape key
         document.addEventListener('keydown', (e) => {
@@ -4191,13 +5408,100 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
         initSlideSelector();
         initSlideStickyHeaders();
         initCodeBlocks();
+        initTimerDragging();
         const initialSlide = restoreSlideFromHash();
         showSlide(initialSlide);
+        
+        // Set keyboard shortcut hint based on platform
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        const shortcutKey = isMac ? 'Cmd+/' : 'Ctrl+/';
+        document.getElementById('slideNumber').title = `Click or press ${shortcutKey} to jump to slide`;
         
         // Apply saved code expansion state on page load
         if (isCodeExpandedGlobally) {
             applyCodeExpansionState();
         }
+
+        // Setup slide jump input
+        const slideJumpInput = document.getElementById('slideJumpInput');
+        
+        // Real-time validation as user types
+        slideJumpInput.addEventListener('input', (e) => {
+            const value = slideJumpInput.value;
+            
+            // Allow empty value (user is clearing)
+            if (value === '') {
+                return;
+            }
+            
+            const slideNum = parseInt(value);
+            
+            // Check if it's a valid number within range
+            if (isNaN(slideNum) || slideNum < 1 || slideNum > totalSlides) {
+                // Invalid input - trigger shake animation
+                slideJumpInput.classList.add('shake');
+                
+                // Remove shake class after animation completes
+                setTimeout(() => {
+                    slideJumpInput.classList.remove('shake');
+                }, 300);
+                
+                // Prevent invalid value - revert to previous valid value or empty
+                e.preventDefault();
+                slideJumpInput.value = '';
+            }
+        });
+        
+        // Prevent typing invalid characters
+        slideJumpInput.addEventListener('keydown', (e) => {
+            // Allow: backspace, delete, tab, escape, enter
+            if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                
+                // Handle Enter key for jumping
+                if (e.key === 'Enter') {
+                    const slideNum = parseInt(slideJumpInput.value);
+                    if (slideNum >= 1 && slideNum <= totalSlides) {
+                        jumpToSlide(slideNum - 1); // Convert to 0-based index
+                        slideJumpInput.value = ''; // Clear input
+                    }
+                }
+                return;
+            }
+            
+            // Ensure it's a number
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && 
+                (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+
+        // Prevent paste of invalid content
+        slideJumpInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+            const slideNum = parseInt(pasteData);
+            
+            if (!isNaN(slideNum) && slideNum >= 1 && slideNum <= totalSlides) {
+                slideJumpInput.value = slideNum;
+            } else {
+                // Trigger shake for invalid paste
+                slideJumpInput.classList.add('shake');
+                setTimeout(() => {
+                    slideJumpInput.classList.remove('shake');
+                }, 300);
+            }
+        });
+
+        // Update max attribute and placeholder when slides are loaded
+        slideJumpInput.max = totalSlides;
+        slideJumpInput.placeholder = `1 - ${totalSlides}`;
     </script>
 </body>
 </html>
