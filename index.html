@@ -769,7 +769,7 @@
         .code-toggle-comments-btn {
             position: absolute;
             top: 8px;
-            right: 60px;
+            right: 50px;
             background: var(--btn-bg);
             color: var(--btn-color);
             border: var(--btn-border-width) solid var(--btn-border);
@@ -4091,6 +4091,14 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             
             // Apply code expansion state to new slide
             applyCodeExpansionState();
+            
+            // Recalculate annotation mask widths for the new slide
+            // Use requestAnimationFrame + setTimeout to ensure slide is fully rendered
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    applyAnnotationMaskWidths();
+                }, 100);
+            });
         }
 
         function toggleSlideSelector() {
@@ -4350,32 +4358,42 @@ app.post(<span class="string">'/api/register'</span>, registerValidation, <span 
             // Calculate and apply mask widths for annotation comments after DOM rendering
             setTimeout(() => {
                 applyAnnotationMaskWidths();
-            }, 0);
+            }, 100);
         }
         
         // Calculate mask width based on comment span width
         function applyAnnotationMaskWidths() {
-            const annotationLines = document.querySelectorAll('.annotation-comment');
+            // Only process visible annotation lines (in the current slide)
+            const currentSlideElement = slides[currentSlide];
+            if (!currentSlideElement) return;
+            
+            const annotationLines = currentSlideElement.querySelectorAll('.annotation-comment');
             
             annotationLines.forEach(line => {
                 // Find the comment span element
                 const commentSpan = line.querySelector('.comment');
                 
                 if (commentSpan) {
+                    // Force a reflow to ensure dimensions are correct
+                    void line.offsetHeight;
+                    
                     // Get the bounding rectangle of the comment span
                     const rect = commentSpan.getBoundingClientRect();
                     const lineRect = line.getBoundingClientRect();
                     
-                    // Calculate the start position (left offset from line start)
-                    const startOffset = rect.left - lineRect.left;
-                    
-                    // Calculate the width of the comment
-                    const commentWidth = rect.width;
-                    
-                    // Apply custom CSS properties for the mask
-                    line.style.setProperty('--mask-left', `${startOffset}px`);
-                    line.style.setProperty('--mask-width', `${commentWidth}px`);
-                    line.classList.add('has-measured-mask');
+                    // Only apply if elements are actually visible (width > 0)
+                    if (rect.width > 0 && lineRect.width > 0) {
+                        // Calculate the start position (left offset from line start)
+                        const startOffset = rect.left - lineRect.left;
+                        
+                        // Calculate the width of the comment
+                        const commentWidth = rect.width;
+                        
+                        // Apply custom CSS properties for the mask
+                        line.style.setProperty('--mask-left', `${startOffset}px`);
+                        line.style.setProperty('--mask-width', `${commentWidth}px`);
+                        line.classList.add('has-measured-mask');
+                    }
                 }
             });
         }
